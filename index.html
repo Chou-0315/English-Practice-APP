@@ -2581,7 +2581,7 @@ function showGate(){const ua=navigator.userAgent,ios=/iPhone|iPod|iPad/i.test(ua
 function gateBoot(){if(gateNeeded()){showGate();return true}return false}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013010039";
+const APP_VER="20261013012133";
 const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
 function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
   try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
@@ -2592,19 +2592,20 @@ function showUpdate(){if(document.getElementById("updBar"))return;const b=docume
   b.innerHTML=`<span class="upd-dot"></span><span><b>有新版本</b> · 點一下更新</span>`;b.onclick=()=>{b.textContent="更新中…";setTimeout(()=>location.reload(),150)};document.body.appendChild(b);requestAnimationFrame(()=>b.classList.add("show"))}
 
 /* ---- voices: prefer natural iOS/Android voices, user can choose ---- */
-function VOICE_RANK(v){const n=v.name;let s=0;if(/en[-_]US/i.test(v.lang))s+=30;else if(/en[-_](GB|AU|CA|IE|NZ)/i.test(v.lang))s+=20;else if(/^en/i.test(v.lang))s+=10;
+function VOICE_RANK(v){const n=v.name+" "+(v.voiceURI||"");let s=0;if(/en[-_]US/i.test(v.lang))s+=30;else if(/en[-_](GB|AU|CA|IE|NZ)/i.test(v.lang))s+=20;else if(/^en/i.test(v.lang))s+=10;
   if(/Premium/i.test(n))s+=40;else if(/Enhanced|Neural|Natural/i.test(n))s+=30;
   if(/^(Ava|Zoe|Samantha|Allison|Susan|Evan|Nathan|Tom|Joelle|Nicky|Serena|Kate|Daniel|Karen|Moira|Tessa|Jamie|Siri)/i.test(n))s+=15;
   if(/Google US English|Microsoft (Aria|Jenny|Guy)/i.test(n))s+=18;
   if(/Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Ralph|Kathy|Grandma|Grandpa|Rocko|Shelley|Flo|Eddy|Reed|Sandy/i.test(n))s-=60;
   return s}
-function engVoices(){if(!canSpeak)return[];return speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)&&VOICE_RANK(v)>0).sort((a,b)=>VOICE_RANK(b)-VOICE_RANK(a))}
+function engVoices(){if(!canSpeak)return[];const all=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));let L=all.filter(v=>VOICE_RANK(v)>0);if(!L.length)L=all;const seen=new Set();return L.sort((a,b)=>VOICE_RANK(b)-VOICE_RANK(a)).filter(v=>{const k=v.name+"|"+v.lang;if(seen.has(k))return false;seen.add(k);return true})}
+if(typeof speechSynthesis!=="undefined")try{speechSynthesis.addEventListener("voiceschanged",()=>{const s=document.getElementById("voiceSel");if(s&&s.options.length!==engVoices().length){const w=document.createElement("div");w.innerHTML=voiceRow();const n=w.querySelector("#voiceSel");if(n){s.replaceWith(n);wireVoice()}}})}catch(e){}
 function pickVoiceBest(){if(!canSpeak)return;const L=engVoices();voice=(S&&S.voice&&L.find(v=>v.voiceURI===S.voice))||L[0]||speechSynthesis.getVoices().find(x=>/^en/i.test(x.lang))||null}
 const voiceLabel=v=>{const acc={US:"美式",GB:"英式",AU:"澳洲",CA:"加拿大",IE:"愛爾蘭",NZ:"紐西蘭",IN:"印度",ZA:"南非"}[(v.lang.split(/[-_]/)[1]||"").toUpperCase()]||"";
   return `${v.name.replace(/\s*\((Enhanced|Premium|English.*?)\)/gi,m=>/Premium/i.test(m)?" · 高品質":/Enhanced/i.test(m)?" · 加強版":"")}${acc?" · "+acc:""}`};
-function voiceRow(){if(!canSpeak)return"";const L=engVoices().slice(0,14);if(!L.length)return"";const curV=voice&&voice.voiceURI;
+function voiceRow(){if(!canSpeak)return"";const L=engVoices();if(!L.length)return"";const curV=voice&&voice.voiceURI;
   return `<div class="seg"><span class="note">發音語音</span><select id="voiceSel" class="vsel" aria-label="發音語音">${L.map(v=>`<option value="${esc(v.voiceURI)}" ${v.voiceURI===curV?"selected":""}>${esc(voiceLabel(v))}</option>`).join("")}</select></div>
-  <p class="note" style="margin:0">想要更自然的聲音：iPhone 到「設定 › 輔助使用 › 朗讀內容 › 聲音 › 英文」下載「高品質」語音（例如 Ava、Zoe），回來就能在這裡選。</p>`}
+  <p class="note" style="margin:0">這裡列的是 iPhone 開放給網頁使用的語音。另外在「設定」下載的語音（例如 Ava）iPhone 不開放給網頁 App，所以不會出現在這裡。</p>`}
 function wireVoice(){const s=document.getElementById("voiceSel");if(!s)return;s.onchange=()=>{S.voice=s.value;save();pickVoice();say("Hello! This is how I sound.")}}
 
 /* ---- backup to / restore from a file ---- */
