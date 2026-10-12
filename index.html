@@ -1021,6 +1021,8 @@ header{padding:22px 16px 6px!important}
 .hbar .lv b{font-size:.78rem;font-weight:700;color:var(--ink);opacity:.85;white-space:nowrap}
 .hbar .lvtrack{flex:1;min-width:40px;max-width:150px;height:5px}
 .hbar .chips{flex:none;gap:14px}
+.appver{text-align:center;font-size:.75rem;color:var(--muted);margin:18px 0 4px;font-variant-numeric:tabular-nums;opacity:.8}
+.upd-v{margin-left:6px;font-size:.72rem;color:var(--muted)}
 </style>
 <script>
 const ORIG=[
@@ -2656,15 +2658,18 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013014455";
+const APP_VER="20261013014848";
+const verLabel=x=>{x=String(x||"");return /^\d{14}$/.test(x)?`${x.slice(0,4)}.${x.slice(4,6)}.${x.slice(6,8)}.${x.slice(8,12)}`:x};
+function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
+  if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到版本 ${verLabel(APP_VER)}`),1600)}
 const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
 function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
   try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
   let lastChk=0;const chk=async()=>{if(Date.now()-lastChk<10*60e3||!navigator.onLine)return;lastChk=Date.now();
-    try{const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(j&&j.v&&j.v!==APP_VER)showUpdate()}catch(e){}};
+    try{const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(j&&j.v&&j.v!==APP_VER)showUpdate(j.v)}catch(e){}};
   setTimeout(chk,6000);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")chk()})}
-function showUpdate(){if(document.getElementById("updBar"))return;const b=document.createElement("button");b.id="updBar";
-  b.innerHTML=`<span class="upd-dot"></span><span><b>有新版本</b> · 點一下更新</span>`;b.onclick=()=>{b.textContent="更新中…";setTimeout(()=>location.reload(),150)};document.body.appendChild(b);requestAnimationFrame(()=>b.classList.add("show"))}
+function showUpdate(nv){if(document.getElementById("updBar"))return;const b=document.createElement("button");b.id="updBar";
+  b.innerHTML=`<span class="upd-dot"></span><span><b>有新版本</b> · 點一下更新${nv?`<small class="upd-v">${verLabel(nv)}</small>`:""}</span>`;b.onclick=()=>{b.textContent="更新中…";setTimeout(()=>location.reload(),150)};document.body.appendChild(b);requestAnimationFrame(()=>b.classList.add("show"))}
 
 /* ---- voices: prefer natural iOS/Android voices, user can choose ---- */
 function VOICE_RANK(v){const n=v.name+" "+(v.voiceURI||"");let s=0;if(/en[-_]US/i.test(v.lang))s+=30;else if(/en[-_](GB|AU|CA|IE|NZ)/i.test(v.lang))s+=20;else if(/^en/i.test(v.lang))s+=10;
@@ -3123,6 +3128,7 @@ function home(){
         <div id="rsMsg" class="note"></div>
       </div></details>`}
     </div></details>
+    <p class="appver">England · 版本 ${verLabel(APP_VER)}</p>
     </section>
   </div>`;
   $("#train").onclick=startTraining;drawMini();if($("#boxBanner"))$("#boxBanner").onclick=()=>mysteryBox("驚喜盒");
@@ -3493,7 +3499,7 @@ function onboarding(step){ROOT=false;
   }
 }
 
-bkBoot();gateBoot();swBoot();applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();if($("#lvBtn"))$("#lvBtn").onclick=()=>{const l=levelOf(S.xp),A=xpFor(l),B=xpFor(l+1);toast(`${S.xp-A} / ${B-A} XP · 再 ${B-S.xp} XP 升到 Lv.${l+1}`)};
+bkBoot();gateBoot();swBoot();verBoot();applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();if($("#lvBtn"))$("#lvBtn").onclick=()=>{const l=levelOf(S.xp),A=xpFor(l),B=xpFor(l+1);toast(`${S.xp-A} / ${B-A} XP · 再 ${B-S.xp} XP 升到 Lv.${l+1}`)};
 renderTabs();renderHeader();
 if(!S.onb)onboarding(1);else home();
 checkAch();cloudInit();
