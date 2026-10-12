@@ -2658,8 +2658,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013015744";
-const APP_NAME="1.3";
+const APP_VER="20261013020042";
+const APP_NAME="1.4";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2747,11 +2747,12 @@ function waLookup(w,ms){if(WA[w]!==undefined)return Promise.resolve(WA[w]);if(!n
 function waPrefetch(){}
 const sayTTS=say;
 /* online voice sources that a plain <audio> element can play (no CORS needed); media audio ignores the silent switch */
-const VSRC=[t=>`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(t)}&type=2`,
-            t=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${encodeURIComponent(t)}`];
-let VOK=null;try{VOK=JSON.parse(localStorage.getItem("eng-vok"))}catch(e){}
+/* one voice for everything: Google's US voice reads words, phrases and sentences the same way; Youdao only as a backup */
+const VSRC=[t=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en-US&q=${encodeURIComponent(t)}`,
+            t=>`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(t)}&type=2`];
+let VOK=null;try{VOK=JSON.parse(localStorage.getItem("eng-vok2"))}catch(e){}
 function playSrc(t,rate,i,cb,fail){if(i>=VSRC.length)return fail();let settled=false;
-  const ok=()=>{if(settled)return;settled=true;clearTimeout(to);try{localStorage.setItem("eng-vok",String(i))}catch(e){}VOK=i;cb&&cb(true)};
+  const ok=()=>{if(settled)return;settled=true;clearTimeout(to);try{localStorage.setItem("eng-vok2",String(i))}catch(e){}VOK=i;cb&&cb(true)};
   const bad=()=>{if(settled)return;settled=true;clearTimeout(to);WA_EL.onplaying=WA_EL.onerror=null;playSrc(t,rate,i+1,cb,fail)};
   try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
   try{if(canSpeak&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel()}catch(e){}
@@ -2759,12 +2760,10 @@ function playSrc(t,rate,i,cb,fail){if(i>=VSRC.length)return fail();let settled=f
   WA_EL.onplaying=ok;WA_EL.onerror=bad;
   WA_EL.onended=()=>{if(typeof musicDuck==="function")setTimeout(()=>musicDuck(false),200);setTimeout(()=>{if(typeof applyLoud==="function")applyLoud()},400)};
   if(typeof musicDuck==="function"&&MUS.playing)musicDuck(true);
-  const to=setTimeout(bad,2600);const p=WA_EL.play();if(p&&p.catch)p.catch(e=>{if(e&&e.name==="NotAllowedError"){settled=true;clearTimeout(to);fail()}else bad()})}
+  const to=setTimeout(bad,VOK===i?6000:3500);const p=WA_EL.play();if(p&&p.catch)p.catch(e=>{if(e&&e.name==="NotAllowedError"){settled=true;clearTimeout(to);fail()}else bad()})}
 say=function(t,rate,cb){t=String(t||"").trim();if(!t)return;
   if(S.realVoice===false||!navigator.onLine||t.length>180)return sayTTS(t,rate,cb);
-  const start=VOK===1?1:0,order=start?[1,0]:[0,1];let k=0;
-  const tryNext=()=>{if(k>=order.length)return sayTTS(t,rate,cb);const i=order[k++];playSrc(t,rate,i,cb,()=>sayTTS(t,rate,cb))};
-  /* playSrc walks forward from i; keep it simple: try preferred source first, then the others */
+  const start=VOK===1?1:0;
   playSrc(t,rate,start,cb,()=>sayTTS(t,rate,cb))};
 /* diagnostics shown under「測試聲音」: can this phone reach the recordings and play them? */
 async function waDiag(){const out=document.getElementById("sndOut");if(!out)return;const L=[];
