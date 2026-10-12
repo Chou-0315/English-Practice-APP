@@ -937,8 +937,7 @@ nav .in{grid-template-columns:repeat(5,1fr)!important}
 
 <div class="app">
   <header>
-    <div class="hd"><h1>England</h1><div class="chips"><span class="chip-s" title="連續天數"><span id="flameI"></span><b id="streakN">0</b></span><button class="chip-s" id="coinChip" aria-label="金幣與主題顏色"><span id="coinI"></span><b id="coinN">0</b></button></div></div>
-    <div class="lv"><b id="lvName">Lv.1 Rookie</b><div class="lvtrack"><i id="lvBar" style="width:0"></i></div><span id="lvXp">0 / 50 XP</span></div>
+    <div class="hbar"><button class="lv" id="lvBtn" aria-label="等級與經驗值"><b id="lvName">Lv.1 Rookie</b><div class="lvtrack"><i id="lvBar" style="width:0"></i></div><span id="lvXp" hidden>0 / 50 XP</span></button><div class="chips"><span class="chip-s" title="連續天數"><span id="flameI"></span><b id="streakN">0</b></span><button class="chip-s" id="coinChip" aria-label="金幣與主題顏色"><span id="coinI"></span><b id="coinN">0</b></button></div></div>
   </header>
   <main id="view"></main>
 </div>
@@ -976,8 +975,7 @@ body.gated{overflow:hidden}body.gated .app{filter:blur(2px);pointer-events:none}
 .g-arrow{position:fixed;left:50%;bottom:calc(8px + env(safe-area-inset-bottom,0px));width:18px;height:18px;margin-left:-9px;border-right:3px solid var(--accent);border-bottom:3px solid var(--accent);transform:rotate(45deg);animation:gbob 1.2s ease-in-out infinite}
 @keyframes gbob{50%{translate:0 8px}}
 </style>
-<style id="v14css">header h1{font-family:var(--f-disp);font-weight:700;font-size:1.05rem;color:var(--ink);letter-spacing:-.01em;opacity:.92}
-#updBar{white-space:nowrap;position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);z-index:150;display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:99px;font:inherit;font-size:.92rem;color:var(--ink);background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),0 10px 30px rgba(0,0,0,.18);transition:transform .45s cubic-bezier(.2,1.3,.4,1);cursor:pointer}
+<style id="v14css">#updBar{white-space:nowrap;position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);z-index:150;display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:99px;font:inherit;font-size:.92rem;color:var(--ink);background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),0 10px 30px rgba(0,0,0,.18);transition:transform .45s cubic-bezier(.2,1.3,.4,1);cursor:pointer}
 #updBar.show{transform:translate(-50%,0)}
 .upd-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
 .g-skip{display:block;margin:12px auto 0;font-size:.82rem;color:var(--muted)!important;background:none;border:0;text-decoration:underline;text-underline-offset:3px}
@@ -1017,6 +1015,12 @@ body.gated{overflow:hidden}body.gated .app{filter:blur(2px);pointer-events:none}
 .lootrow{grid-template-columns:repeat(3,minmax(0,1fr))}
 .loot{min-width:0;width:100%}
 .lf .q{font-family:-apple-system,"SF Pro Rounded",system-ui,sans-serif}
+header{padding:22px 16px 6px!important}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:30px}
+.hbar .lv{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:none;border:0;padding:0;font:inherit;cursor:pointer;color:inherit;text-align:left}
+.hbar .lv b{font-size:.78rem;font-weight:700;color:var(--ink);opacity:.85;white-space:nowrap}
+.hbar .lvtrack{flex:1;min-width:40px;max-width:150px;height:5px}
+.hbar .chips{flex:none;gap:14px}
 </style>
 <script>
 const ORIG=[
@@ -2526,7 +2530,7 @@ function musicPlay(){const M=MSET();if(MUS.frozen||!M.on||document.body.classLis
   if(MUS.playing&&MUS.style!==style){MUS.style=style;ambStart(style);return}
   MUS.style=style;MUS.playing=true;MUS.next=C.currentTime+.1;MUS.step=0;ambStart(style);clearInterval(MUS.timer);MUS.timer=setInterval(()=>{if(MUS.playing)schedule()},250);schedule();musicLevel(2.5);renderMusicChip()}
 function musicStop(){if(!MUS.C)return;MUS.playing=false;musicLevel(.6);setTimeout(()=>{if(!MUS.playing){clearInterval(MUS.timer);ambStop()}},700);renderMusicChip()}
-function musicToggle(){const M=MSET();M.on=!M.on;save();if(M.on){musicPlay();toast(`背景音樂：${MSTYLES[M.style]}`)}else{musicStop();toast("背景音樂已關閉")}renderMusicChip()}
+function musicToggle(){const M=MSET();M.on=!M.on;save();if(typeof applyLoud==="function")applyLoud();if(M.on){musicPlay();toast(`背景音樂：${MSTYLES[M.style]}`)}else{musicStop();toast("背景音樂已關閉")}renderMusicChip()}
 function renderMusicChip(){let b=document.getElementById("musicChip");if(!b){const ch=document.querySelector(".chips");if(!ch)return;b=document.createElement("button");b.id="musicChip";b.className="chip-s mus";b.setAttribute("aria-label","背景音樂");b.onclick=musicToggle;ch.prepend(b)}
   const on=MSET().on;b.classList.toggle("off",!on);b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/>${on?"":`<path d="M4 4l16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`}</svg>`}
 function musicSetup(){renderMusicChip();
@@ -2608,7 +2612,7 @@ let SIL=null;
 function silentLoop(){if(SIL)return SIL;const sr=8000,n=sr,b=new ArrayBuffer(44+n*2),v=new DataView(b),w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
   w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVE");w(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
   SIL=new Audio(URL.createObjectURL(new Blob([b],{type:"audio/wav"})));SIL.loop=true;SIL.setAttribute("playsinline","");SIL.preload="auto";return SIL}
-const LOUD=()=>S.loud!==false;
+const LOUD=()=>S.loud!==false&&(typeof MSET!=="function"||MSET().on);
 function applyLoud(){const on=LOUD();
   if(navigator.audioSession){try{navigator.audioSession.type=on?"playback":"auto"}catch(e){}return}
   try{if(on&&document.visibilityState==="visible")silentLoop().play().catch(()=>{});else if(SIL)SIL.pause()}catch(e){}}
@@ -2652,7 +2656,7 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013013443";
+const APP_VER="20261013013835";
 const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
 function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
   try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
@@ -3462,7 +3466,7 @@ function onboarding(step){ROOT=false;
   }
 }
 
-bkBoot();gateBoot();swBoot();applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();
+bkBoot();gateBoot();swBoot();applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();if($("#lvBtn"))$("#lvBtn").onclick=()=>{const l=levelOf(S.xp),A=xpFor(l),B=xpFor(l+1);toast(`${S.xp-A} / ${B-A} XP · 再 ${B-S.xp} XP 升到 Lv.${l+1}`)};
 renderTabs();renderHeader();
 if(!S.onb)onboarding(1);else home();
 checkAch();cloudInit();
