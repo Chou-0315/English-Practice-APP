@@ -2658,8 +2658,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013015221";
-const APP_NAME="1.2";
+const APP_VER="20261013015744";
+const APP_NAME="1.3";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2744,28 +2744,38 @@ function waLookup(w,ms){if(WA[w]!==undefined)return Promise.resolve(WA[w]);if(!n
   return fetch("https://api.dictionaryapi.dev/api/v2/entries/en/"+encodeURIComponent(w),ctl?{signal:ctl.signal}:{}).then(r=>r.ok?r.json():(r.status===404?[]:null)).then(j=>{clearTimeout(tm);if(j===null)return null;
     const urls=[];(Array.isArray(j)?j:[]).forEach(e=>(e.phonetics||[]).forEach(p=>{if(p&&p.audio)urls.push(p.audio)}));
     const u=urls.find(x=>/-us\.mp3$/i.test(x))||urls.find(x=>/\.mp3$/i.test(x))||"";WA[w]=u;waSave();return u}).catch(()=>{clearTimeout(tm);return null})}
-function waPrefetch(words){let i=0;const L=[...new Set(words.map(waWord).filter(w=>w&&WA[w]===undefined))].slice(0,12);const next=()=>{if(i<L.length)waLookup(L[i++],6000).then(()=>setTimeout(next,150))};next()}
+function waPrefetch(){}
 const sayTTS=say;
-say=function(t,rate,cb){const w=waWord(t);if(!w||S.realVoice===false)return sayTTS(t,rate,cb);
-  const play=u=>{try{if(canSpeak&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel();
-      try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
-      WA_EL.pause();WA_EL.src=u;WA_EL.playbackRate=Math.max(.7,Math.min(1.2,rate||S.rate||1));
-      if(typeof musicDuck==="function"&&MUS.playing)musicDuck(true);
-      WA_EL.onended=WA_EL.onerror=()=>{if(typeof musicDuck==="function")setTimeout(()=>musicDuck(false),200);setTimeout(()=>{if(typeof applyLoud==="function")applyLoud()},400)};
-      const p=WA_EL.play();if(p&&p.then)p.then(()=>cb&&cb(true)).catch(()=>sayTTS(t,rate,cb));else cb&&cb(true)}catch(e){sayTTS(t,rate,cb)}};
-  if(WA[w]){play(WA[w]);return}
-  if(WA[w]===""){sayTTS(t,rate,cb);return}
-  let done=false;const fb=setTimeout(()=>{if(!done){done=true;sayTTS(t,rate,cb)}},1600);
-  waLookup(w,4000).then(u=>{if(done)return;done=true;clearTimeout(fb);u?play(u):sayTTS(t,rate,cb)})};
-
+/* online voice sources that a plain <audio> element can play (no CORS needed); media audio ignores the silent switch */
+const VSRC=[t=>`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(t)}&type=2`,
+            t=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${encodeURIComponent(t)}`];
+let VOK=null;try{VOK=JSON.parse(localStorage.getItem("eng-vok"))}catch(e){}
+function playSrc(t,rate,i,cb,fail){if(i>=VSRC.length)return fail();let settled=false;
+  const ok=()=>{if(settled)return;settled=true;clearTimeout(to);try{localStorage.setItem("eng-vok",String(i))}catch(e){}VOK=i;cb&&cb(true)};
+  const bad=()=>{if(settled)return;settled=true;clearTimeout(to);WA_EL.onplaying=WA_EL.onerror=null;playSrc(t,rate,i+1,cb,fail)};
+  try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
+  try{if(canSpeak&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel()}catch(e){}
+  WA_EL.pause();WA_EL.src=VSRC[i](t);WA_EL.playbackRate=Math.max(.7,Math.min(1.2,(rate||S.rate||.9)/.9));
+  WA_EL.onplaying=ok;WA_EL.onerror=bad;
+  WA_EL.onended=()=>{if(typeof musicDuck==="function")setTimeout(()=>musicDuck(false),200);setTimeout(()=>{if(typeof applyLoud==="function")applyLoud()},400)};
+  if(typeof musicDuck==="function"&&MUS.playing)musicDuck(true);
+  const to=setTimeout(bad,2600);const p=WA_EL.play();if(p&&p.catch)p.catch(e=>{if(e&&e.name==="NotAllowedError"){settled=true;clearTimeout(to);fail()}else bad()})}
+say=function(t,rate,cb){t=String(t||"").trim();if(!t)return;
+  if(S.realVoice===false||!navigator.onLine||t.length>180)return sayTTS(t,rate,cb);
+  const start=VOK===1?1:0,order=start?[1,0]:[0,1];let k=0;
+  const tryNext=()=>{if(k>=order.length)return sayTTS(t,rate,cb);const i=order[k++];playSrc(t,rate,i,cb,()=>sayTTS(t,rate,cb))};
+  /* playSrc walks forward from i; keep it simple: try preferred source first, then the others */
+  playSrc(t,rate,start,cb,()=>sayTTS(t,rate,cb))};
 /* diagnostics shown under「測試聲音」: can this phone reach the recordings and play them? */
 async function waDiag(){const out=document.getElementById("sndOut");if(!out)return;const L=[];
   L.push(`真人發音：${S.realVoice===false?"關閉":"開啟"}`);L.push(`網路：${navigator.onLine?"有":"沒有"}`);
   L.push(`媒體播放模式：${navigator.audioSession?"支援（"+navigator.audioSession.type+"）":"不支援"}`);
-  let st="查詢中…";out.innerHTML=L.join(" · ")+"<br>字典錄音："+st;
-  try{delete WA.hello;const u=await waLookup("hello",6000);st=u?"找得到 ✓":u===""?"這個字沒有錄音":"連不到字典網站 ✗";
-    if(u){try{WA_EL.src=u;await WA_EL.play();st+=" · 播放成功 ✓（靜音時應該聽得到）"}catch(e){st+=` · 播放失敗 ✗（${e&&e.name||"未知"}）`}}}catch(e){st="檢查失敗 ✗"}
-  out.innerHTML=L.join(" · ")+"<br>字典錄音："+st+`<br>已記住 ${Object.values(WA).filter(Boolean).length} 個字的錄音`}
+  let st="查詢中…";out.innerHTML=L.join(" · ")+"<br>線上發音："+st;
+  let tried=[];for(let i=0;i<VSRC.length;i++){const r=await new Promise(res=>{let done=false;const fin=x=>{if(!done){done=true;res(x)}};
+      WA_EL.onplaying=()=>fin("ok");WA_EL.onerror=()=>fin("err");setTimeout(()=>fin("timeout"),4000);WA_EL.src=VSRC[i]("hello");const p=WA_EL.play();if(p&&p.catch)p.catch(e=>fin(e&&e.name||"err"))});
+    tried.push(`${i?"來源 B":"來源 A"}${r==="ok"?" ✓":" ✗"}`);if(r==="ok"){st="可以播放 ✓（靜音時應該聽得到）";break}}
+  if(st==="查詢中…")st="兩個來源都連不到 ✗";st+=`（${tried.join("、")}）`;
+  out.innerHTML=L.join(" · ")+"<br>線上發音："+st}
 
 /* ================= DATA ================= */
 const CATS=Object.fromEntries(Object.entries(SCENES).map(([k,v])=>[k,v[0]]));
@@ -3120,8 +3130,8 @@ function home(){
       <div class="seg"><span class="note">聽不到聲音？</span><button class="link" id="sndTest">測試聲音</button></div>
       <div id="sndOut" class="note"></div>
       <div class="seg"><span class="note">發音速度${canSpeak?"":"（此裝置不支援）"}</span><div class="rate">${[[0.7,"慢"],[0.9,"標準"],[1.1,"快"]].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.rate===r}">${l}</button>`).join("")}</div></div>
-      <div class="seg"><span class="note">單字用真人發音</span><div class="rate"><button data-rv="1" aria-pressed="${S.realVoice!==false}">開</button><button data-rv="0" aria-pressed="${S.realVoice===false}">關</button></div></div>
-      <p class="note" style="margin:0">單字會優先播放字典的真人錄音（需要網路，靜音模式也聽得到）；沒有錄音的字和例句會用手機語音。</p>
+      <div class="seg"><span class="note">線上發音</span><div class="rate"><button data-rv="1" aria-pressed="${S.realVoice!==false}">開</button><button data-rv="0" aria-pressed="${S.realVoice===false}">關</button></div></div>
+      <p class="note" style="margin:0">有網路時，單字和例句會用線上發音播放，靜音模式也聽得到；沒網路或連不上時，改用手機語音。</p>
       ${voiceRow()}
       <div class="seg"><span class="note">第一次使用的導覽</span><button class="link" id="tourAgain">重看導覽</button></div>
       <div class="seg"><span class="note">練習場景：${S.cats.length} 個</span><button class="link" onclick="go('bank')">到單字庫調整</button></div>
