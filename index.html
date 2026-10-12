@@ -2337,14 +2337,16 @@ function mountStage(host,opts={}){
     if(st.label){const j=ISL().job;const el=st.label;if(j){const P=jobPos(j.id),[x,y]=res.project([P[0],1.25,P[1]]);el.hidden=false;el.style.transform=`translate(${x}px,${y}px) translate(-50%,-100%)`;el.textContent="施工中 · "+fmtLeft(j.end-Date.now())}else el.hidden=true}};
   st.redraw=()=>{st.world=islandWorld();draw()};
   if(!st.live){draw();return st}
+  let pinch=null;
   const loop=now=>{if(!document.body.contains(cv)){STG=null;return}const dt=Math.min(.05,(now-st.last)/1000);st.last=now;st.t+=dt;
     if(!st.drag){st.yaw+=st.vy;st.vy*=.93;st.idle+=dt;if(st.idle>2.5&&!reduce)st.yaw+=dt*.12}
-    if(document.visibilityState==="visible")draw();st.raf=requestAnimationFrame(loop)};
+    const calm=!st.drag&&!pinch&&Math.abs(st.vy)<.002&&st.idle>4;st.acc=(st.acc||0)+dt;
+    if(document.visibilityState==="visible"&&(!calm||st.acc>=.031)){draw();st.acc=0}st.raf=requestAnimationFrame(loop)};
   cv.addEventListener("pointerdown",e=>{st.drag={x:e.clientX,y:e.clientY,yaw:st.yaw,pitch:st.pitch};st.idle=0;cv.setPointerCapture(e.pointerId)});
   cv.addEventListener("pointermove",e=>{if(!st.drag)return;const dx=e.clientX-st.drag.x,dy=e.clientY-st.drag.y;const ny=st.drag.yaw+dx*.012;st.vy=ny-st.yaw;st.yaw=ny;st.pitch=Math.max(.22,Math.min(.95,st.drag.pitch+dy*.006))});
   const up=()=>{st.drag=null;st.idle=0};cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",up);
   cv.addEventListener("wheel",e=>{e.preventDefault();st.zoom=Math.max(.75,Math.min(1.6,st.zoom*(e.deltaY>0?.94:1.06)))},{passive:false});
-  let pinch=null;cv.addEventListener("touchstart",e=>{if(e.touches.length===2){pinch={d:Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY),z:st.zoom};st.drag=null}},{passive:true});
+  cv.addEventListener("touchstart",e=>{if(e.touches.length===2){st.idle=0;pinch={d:Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY),z:st.zoom};st.drag=null}},{passive:true});
   cv.addEventListener("touchmove",e=>{if(pinch&&e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);st.zoom=Math.max(.75,Math.min(1.6,pinch.z*d/pinch.d))}},{passive:true});
   cv.addEventListener("touchend",()=>{pinch=null},{passive:true});
   STG=st;st.raf=requestAnimationFrame(loop);return st;
