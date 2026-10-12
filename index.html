@@ -2659,8 +2659,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013020701";
-const APP_NAME="1.6";
+const APP_VER="20261013020940";
+const APP_NAME="1.7";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -3133,12 +3133,9 @@ function home(){
       <div class="seg"><span class="note">音效</span><div class="rate"><button data-snd="1" aria-pressed="${S.sound}">開</button><button data-snd="0" aria-pressed="${!S.sound}">關</button></div></div>
       <div class="seg"><span class="note">聽不到聲音？</span><button class="link" id="sndTest">測試聲音</button></div>
       <div id="sndOut" class="note"></div>
-      <div class="seg"><span class="note">比較發音來源</span><span><button class="link" id="vpW">單字</button>　<button class="link" id="vpP">片語</button>　<button class="link" id="vpS">例句</button></span></div>
-      <div id="vpOut" class="note"></div>
       <div class="seg"><span class="note">發音速度${canSpeak?"":"（此裝置不支援）"}</span><div class="rate">${[[0.7,"慢"],[0.9,"標準"],[1.1,"快"]].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.rate===r}">${l}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">線上發音</span><div class="rate"><button data-rv="1" aria-pressed="${S.realVoice!==false}">開</button><button data-rv="0" aria-pressed="${S.realVoice===false}">關</button></div></div>
-      <p class="note" style="margin:0">有網路時，單字和例句會用線上發音播放，靜音模式也聽得到；沒網路或連不上時，改用手機語音。</p>
-      ${voiceRow()}
+      <p class="note" style="margin:0">有網路時，單字和例句會用同一個線上語音播放，靜音模式也聽得到；沒網路時會自動改用手機語音。</p>
       <div class="seg"><span class="note">第一次使用的導覽</span><button class="link" id="tourAgain">重看導覽</button></div>
       <div class="seg"><span class="note">練習場景：${S.cats.length} 個</span><button class="link" onclick="go('bank')">到單字庫調整</button></div>
     </div></details>
@@ -3162,7 +3159,7 @@ function home(){
   if(streak()>0&&streak()%7===0&&S.days[today()]&&S.stBox!==today()){S.stBox=today();S.boxes=(S.boxes||0)+1;save();setTimeout(()=>toast(`連續 ${streak()} 天！獲得驚喜盒`,"ach"),800)}wireMedals();setTimeout(()=>{if(cur==="home"&&ROOT)checkRings()},1200);view().querySelectorAll("[data-start]").forEach(b=>b.onclick=startTraining);
   const TAPS=["外圈是今日題數，中圈是今日訓練，內圈是新學的字。","今日單字：「"+w.w+"」— "+w.zh,"每 4 XP 可以換 1 枚金幣。","連續練習 "+streak()+" 天。","到期的單字會優先出現在今日訓練。"];
   $("#petTap").onclick=()=>{$("#petSay").textContent=pick(TAPS);const r=$("#petTap .rings");r.classList.remove("anim");void r.getBoundingClientRect();r.classList.add("anim")};
-  $("#sndTest").onclick=()=>{soundTest();setTimeout(waDiag,2600)};[["#vpW","refund"],["#vpP","as a result"],["#vpS","It rained all day."]].forEach(([id,t])=>{const b=$(id);if(b)b.onclick=()=>voiceProbe(t,$("#vpOut"))});renderBk();
+  $("#sndTest").onclick=()=>{soundTest();setTimeout(waDiag,2600)};renderBk();
   view().querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{S.lvl=b.dataset.lv;save();home();toast(`程度改為「${lvName()}」`)});
   view().querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{S.goal=+b.dataset.goal;save();home()});
   view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{S.tlen=b.dataset.tl;save();home();toast(`今日訓練改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
