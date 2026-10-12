@@ -1012,6 +1012,11 @@ body.gated{overflow:hidden}body.gated .app{filter:blur(2px);pointer-events:none}
 .tr-row .btn{width:auto;padding:9px 18px;min-height:0}
 .tr-skip{color:var(--muted)!important;font-size:.9rem}
 .tr-dots{display:flex;gap:5px}.tr-dots i{width:6px;height:6px;border-radius:50%;background:var(--glass-brd);transition:all .3s}.tr-dots i.on{width:16px;border-radius:3px;background:var(--accent)}
+.celebrate.box{display:flex;align-items:center;justify-content:center;padding:16px}
+.box .box-in{width:min(380px,calc(100vw - 32px));max-width:100%;box-sizing:border-box;flex:none}
+.lootrow{grid-template-columns:repeat(3,minmax(0,1fr))}
+.loot{min-width:0;width:100%}
+.lf .q{font-family:-apple-system,"SF Pro Rounded",system-ui,sans-serif}
 </style>
 <script>
 const ORIG=[
@@ -1752,7 +1757,7 @@ const petStage=l=>l<=1?0:l<=3?1:l<=5?2:l<=7?3:4;
 const STAGE_NAME=["新手","入門","進階","熟練","大師"];
 const newToday=()=>((S.nd||{})[today()]||0);
 function ringVals(){const done=S.days[today()]||0,t=tdToday(),plan=trainPlan();
-  return [Math.min(1.5,done/S.goal),plan.filter(s=>t.done.includes(s.k)).length/plan.length,Math.min(1.5,newToday()/TL().nw)]}
+  return [Math.min(1.5,done/S.goal),t.bonus?1:plan.filter(s=>t.done.includes(s.k)).length/plan.length,Math.min(1.5,newToday()/TL().nw)]}
 function rings(v,size,cls){
   const R=[44,33,22],W=9.5,col=["var(--ring1)","var(--ring2)","var(--ring3)"];
   return `<svg class="rings ${cls||""}" width="${size}" height="${size}" viewBox="0 0 104 104" aria-hidden="true">${R.map((r,i)=>{const C=2*Math.PI*r,p=Math.max(0,v[i]);
@@ -1761,10 +1766,11 @@ function rings(v,size,cls){
       <circle class="rg" style="--c:${C};--o:${C*(1-Math.min(1,p))}" cx="52" cy="52" r="${r}" fill="none" stroke="${col[i]}" stroke-width="${W}" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-Math.min(1,p))}" transform="rotate(-90 52 52)" ${p<=0?'opacity="0"':""}/>${over}`}).join("")}</svg>`}
 function mascot(o={}){return rings(o.demo?[.72,.5,.34]:ringVals(),o.size||120,o.anim==="idle"?"":"")}
 function petLine(){
-  const done=S.days[today()]||0,g=S.goal,hr=new Date().getHours(),t=tdToday(),plan=trainPlan(),all=plan.every(s=>t.done.includes(s.k));
+  const done=S.days[today()]||0,g=S.goal,hr=new Date().getHours(),t=tdToday(),plan=trainPlan(),all=!!t.bonus||plan.every(s=>t.done.includes(s.k));
   if(done>=g&&all&&newToday()>=TL().nw)return ["","三個圓環都完成了。"];
   if(done>=g&&all)return ["",`再學 ${Math.max(0,TL().nw-newToday())} 個新字，就能完成所有圓環。`];
   if(all)return ["",`今日訓練已完成，再 ${Math.max(0,g-done)} 題達成目標。`];
+  if(done>=g)return ["",`今天的題數目標達成了！再完成今日訓練，就能補滿綠色圓環。`];
   if(done>0)return ["",`再 ${g-done} 題達成今日目標。`];
   if(hr>=22||hr<5)return ["","睡前花幾分鐘複習，記得更牢。"];
   if(streak()>0)return ["",`已連續 ${streak()} 天。`];
@@ -2450,9 +2456,14 @@ function water(k){const I=ISL();if(careLeft(k)<=0){toast("今天已經澆過 3 �
   checkVisitors();STG&&STG.redraw();islPanel()}
 function islandCard(){const I=ISL(),idle=daysIdle(),ha=harvestAmt(),j=I.job;
   return `<button class="islcard" onclick="go('island')"><span class="ic-globe" style="background:${SKYBG[skyKind()]}"><span id="miniIsl"></span></span>
-    <span class="grow-l"><b>我的小島 · Lv.${islLevel()} ${islName()}</b><small>${j&&Date.now()<j.end?`施工中：${nextDefName(j.id,j.to)}，剩 ${fmtLeft(j.end-Date.now())}`:j?"施工完成，去看看！":idle>=3?"小島有點乾了，練習一下讓它恢復":ha?`今天可以收成 ${ha} 金幣`:"用練習收集的水滴和陽光蓋東西"}</small>
+    <span class="grow-l"><b>我的小島 · Lv.${islLevel()} ${islName()}</b><small>${j&&Date.now()<j.end?`施工中：${nextDefName(j.id,j.to)}，剩 <span class="jobLeft" data-end="${j.end}">${fmtLeft(j.end-Date.now())}</span>`:j?"施工完成，去看看！":idle>=3?"小島有點乾了，練習一下讓它恢復":ha?`今天可以收成 ${ha} 金幣`:"用練習收集的水滴和陽光蓋東西"}</small>
     <span class="res-mini">${WATER}${I.water}　${SUN}${I.sun}</span></span>${icon("chev","chev")}</button>`}
 function drawMini(){const h=document.getElementById("miniIsl");if(h)mountStage(h,{still:true,ratio:1,yaw:.6})}
+
+/* live countdown for every construction timer shown on screen */
+setInterval(()=>{const L=document.querySelectorAll(".jobLeft[data-end]");if(!L.length||document.visibilityState!=="visible")return;
+  L.forEach(el=>{const left=+el.dataset.end-Date.now();if(left>0){el.textContent=fmtLeft(left);return}
+    const sm=el.closest("small");el.removeAttribute("data-end");if(sm)sm.textContent="施工完成，去看看！"})},1000);
 
 /* ================= GENERATIVE BACKGROUND MUSIC (Web Audio, no files) ================= */
 const MUS={C:null,master:null,bus:null,rev:null,noise:null,timer:null,playing:false,next:0,step:0,style:null,duck:1,amb:[],started:false};
@@ -2640,7 +2651,7 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013012731";
+const APP_VER="20261013013228";
 const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
 function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
   try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
@@ -3020,7 +3031,7 @@ function home(){
       <button class="rc-rings" id="petTap" aria-label="今日進度">${rings(ringVals(),148,"anim")}</button>
       <div class="rc-legend">
         <div class="rl r1"><span>題數</span><b>${done}<small>/${g} 題</small></b></div>
-        <div class="rl r2"><span>訓練</span><b>${dn}<small>/${plan.length} 項</small></b></div>
+        <div class="rl r2"><span>訓練</span><b>${t.bonus?plan.length:dn}<small>/${plan.length} 項</small></b></div>
         <div class="rl r3"><span>新字</span><b>${newToday()}<small>/${TL().nw} 個</small></b></div>
       </div>
       <div class="rc-tip" id="petSay">${pm[1]}</div>
