@@ -944,6 +944,7 @@ nav .in{grid-template-columns:repeat(5,1fr)!important}
 <nav><div class="in" id="tabs"></div></nav>
 
 <style id="scrollfix">html{box-sizing:border-box;height:100%;overflow:hidden;overscroll-behavior:none}body{height:100%;overflow:hidden;overscroll-behavior:none;margin:0}main{overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;min-height:0}</style>
+<style id="bkcss">.bk-h{font-weight:600;margin-top:4px}.bk-list{background:var(--fill,rgba(127,127,127,.08));border-radius:12px;overflow:hidden}.bk-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px}.bk-row+.bk-row{border-top:.5px solid var(--sep,rgba(127,127,127,.25))}.bk-row>div{display:flex;flex-direction:column;min-width:0}.bk-row .note{font-size:.8rem}.bk-row .link{flex:none;font-weight:600}.bk-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#34c759;margin-right:6px;vertical-align:middle}.bk-move{margin-top:6px}</style>
 <script>
 const ORIG=[
  ["resilient","/rɪˈzɪliənt/","adj","B2","有韌性的；能迅速恢復的","Children are often more resilient than adults think.","孩子往往比大人以為的更有韌性。"],
@@ -2411,6 +2412,34 @@ function musicSetup(){renderMusicChip();
   document.addEventListener("visibilitychange",()=>{if(!MUS.C)return;if(document.visibilityState==="hidden")MUS.C.suspend();else if(MSET().on){MUS.C.resume();musicPlay()}});
   setInterval(()=>{if(MUS.playing&&MSET().style==="auto"&&musicStyleNow()!==MUS.style)musicPlay()},1500)}
 
+/* ================= AUTO BACKUP (local daily snapshots, mirrored to IndexedDB) ================= */
+const BKEY="eng-daily-bk",BKEEP=7;let bkTimer=null;
+const bkSum=x=>{const r=Object.values(x.srs||{});return{t:x._t||Date.now(),xp:x.xp||0,n:r.filter(e=>e.box>0).length,m:r.filter(e=>e.box>=4).length,d:Object.keys(x.days||{}).length}};
+function bkList(){try{const a=JSON.parse(localStorage.getItem(BKEY));return Array.isArray(a)?a:[]}catch(e){return[]}}
+function bkIDB(fn){try{const rq=indexedDB.open("eng-bk",1);rq.onupgradeneeded=()=>rq.result.createObjectStore("k");rq.onsuccess=()=>{try{fn(rq.result.transaction("k","readwrite").objectStore("k"))}catch(e){}};rq.onerror=()=>{}}catch(e){}}
+function bkStore(L){try{localStorage.setItem(BKEY,JSON.stringify(L))}catch(e){}bkIDB(st=>st.put(L,"list"))}
+function bkNow(){if(isFresh(S))return;const L=bkList().filter(b=>b.day!==today()),s=JSON.stringify(S);
+  const days=L.filter(b=>b.day!=="undo").sort((a,b)=>b.day<a.day?-1:1).slice(0,BKEEP-1),undo=L.filter(b=>b.day==="undo");
+  bkStore([{day:today(),sum:bkSum(S),s},...days,...undo]);if(cur==="home")renderBk()}
+function bkQueue(){clearTimeout(bkTimer);bkTimer=setTimeout(bkNow,2500)}
+function bkBoot(){
+  if(isFresh(S)){const b=bkList().find(x=>x.day!=="undo");if(b){try{S=Object.assign(DEF(),JSON.parse(b.s));migrate();saveLocal();setTimeout(()=>toast("已從自動備份恢復進度"),900)}catch(e){}}}
+  bkIDB(st=>{const g=st.get("list");g.onsuccess=()=>{const L=g.result;if(!Array.isArray(L)||!L.length)return;
+    if(!bkList().length)try{localStorage.setItem(BKEY,JSON.stringify(L))}catch(e){}
+    const b=L.find(x=>x.day!=="undo");if(b&&isFresh(S)){try{adopt(JSON.parse(b.s),"已從自動備份恢復進度")}catch(e){}}}});
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){clearTimeout(bkTimer);bkNow()}});
+  setTimeout(bkNow,4000)}
+function bkLabel(day){if(day==="undo")return "還原前的進度";if(day===today())return "今天";const y=dkey(new Date(Date.now()-864e5));if(day===y)return "昨天";const [,m,d]=day.split("-");return `${+m}月${+d}日`}
+const bkTime=t=>{const d=new Date(t);return `${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}`};
+function renderBk(){const box=document.getElementById("bkList"),st=document.getElementById("bkStat");if(!box)return;const L=bkList();
+  if(st)st.innerHTML=L.length?`<span class="bk-dot"></span>自動備份已開啟 · 最近一次 ${bkLabel(L[0].day)} ${bkTime(L[0].sum.t)} · 保留最近 ${BKEEP} 天`:`<span class="bk-dot"></span>自動備份已開啟 · 開始練習後就會自動備份`;
+  box.innerHTML=L.length?L.map((b,i)=>`<div class="bk-row"><div><b>${bkLabel(b.day)}</b><span class="note">${b.day==="undo"?"":bkTime(b.sum.t)+" · "}${b.sum.xp} XP · 學過 ${b.sum.n} 字 · 熟練 ${b.sum.m} 字</span></div><button class="link" data-bk="${i}">還原</button></div>`).join(""):`<div class="note">還沒有備份。</div>`;
+  box.querySelectorAll("[data-bk]").forEach(btn=>btn.onclick=()=>{
+    if(btn.dataset.arm!=="1"){box.querySelectorAll("[data-bk]").forEach(o=>{o.dataset.arm="";o.textContent="還原"});btn.dataset.arm="1";btn.textContent="確定還原？";return}
+    const b=bkList()[+btn.dataset.bk];if(!b)return;let d;try{d=JSON.parse(b.s)}catch(e){toast("這份備份讀不出來");return}
+    const rest=bkList().filter(x=>x.day!=="undo");bkStore([...rest,{day:"undo",sum:bkSum(S),s:JSON.stringify(S)}]);
+    S=Object.assign(DEF(),d);migrate();S.onb=true;save();CLOUD.dirty=true;cloudPush();renderHeader();home();toast(`已還原到「${bkLabel(b.day)}」的進度`)})}
+
 /* ================= DATA ================= */
 const CATS=Object.fromEntries(Object.entries(SCENES).map(([k,v])=>[k,v[0]]));
 const BUILTIN=(()=>{
@@ -2447,7 +2476,7 @@ function migrate(){
 }
 migrate();
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function save(){S._t=Date.now();saveLocal();cloudQueue()}
+function save(){S._t=Date.now();saveLocal();cloudQueue();if(typeof bkQueue==="function")bkQueue()}
 
 /* ================= CLOUD SYNC (your Claude account) ================= */
 const CLOUD={ref:null,status:"wait",at:0,busy:false,dirty:false};let cloudTimer=null,ROOT=true;
@@ -2767,14 +2796,19 @@ function home(){
       <div><b>Android</b>：用 Chrome 打開這個頁面，點右上角「⋮」，選「加到主畫面」。</div>
       <div class="note">如果你是在 Claude App 裡看到這頁，先用右上角選單在瀏覽器中開啟，再照上面步驟做。</div>
     </div></details>
-    <details><summary>備份與還原進度</summary><div class="body">
-      <div class="note">登入 Claude 帳號時進度會自動同步。沒登入時，換手機前可以先複製備份碼存到記事本。</div>
-      <button class="btn" id="bk">複製備份碼</button>
-      <textarea id="bkText" readonly hidden aria-label="備份碼"></textarea>
-      <label for="rsText" class="note">還原：把備份碼貼在這裡</label>
-      <textarea id="rsText" placeholder="貼上備份碼"></textarea>
-      <button class="btn" id="rs">還原進度</button>
-      <div id="rsMsg" class="note"></div>
+    <details><summary>自動備份與還原</summary><div class="body">
+      <div class="note" id="bkStat"></div>
+      <div class="bk-h">還原進度</div>
+      <div class="bk-list" id="bkList"></div>
+      <p class="note" style="margin:0">每天自動存一份，最多保留 7 天。若進度不見，打開 App 時也會自動從備份找回來。</p>
+      <details class="bk-move"><summary>換手機用的備份碼</summary><div class="body">
+        <div class="note">自動備份存在這支手機裡；換手機或刪掉 App 前，先複製備份碼存到記事本，到新手機貼上即可。</div>
+        <button class="btn" id="bk">複製備份碼</button>
+        <textarea id="bkText" readonly hidden aria-label="備份碼"></textarea>
+        <textarea id="rsText" placeholder="在新手機把備份碼貼在這裡" aria-label="貼上備份碼"></textarea>
+        <button class="btn" id="rs">用備份碼還原</button>
+        <div id="rsMsg" class="note"></div>
+      </div></details>
     </div></details>
     </section>
   </div>`;
@@ -2782,7 +2816,7 @@ function home(){
   if(streak()>0&&streak()%7===0&&S.days[today()]&&S.stBox!==today()){S.stBox=today();S.boxes=(S.boxes||0)+1;save();setTimeout(()=>toast(`連續 ${streak()} 天！獲得驚喜盒`,"ach"),800)}wireMedals();setTimeout(()=>{if(cur==="home"&&ROOT)checkRings()},1200);view().querySelectorAll("[data-start]").forEach(b=>b.onclick=startTraining);
   const TAPS=["外圈是今日題數，中圈是今日訓練，內圈是新學的字。","今日單字：「"+w.w+"」— "+w.zh,"每 4 XP 可以換 1 枚金幣。","連續練習 "+streak()+" 天。","到期的單字會優先出現在今日訓練。"];
   $("#petTap").onclick=()=>{$("#petSay").textContent=pick(TAPS);const r=$("#petTap .rings");r.classList.remove("anim");void r.getBoundingClientRect();r.classList.add("anim")};
-  $("#sndTest").onclick=soundTest;
+  $("#sndTest").onclick=soundTest;renderBk();
   view().querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{S.lvl=b.dataset.lv;save();home();toast(`程度改為「${lvName()}」`)});
   view().querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{S.goal=+b.dataset.goal;save();home()});
   view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{S.tlen=b.dataset.tl;save();home();toast(`今日訓練改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
@@ -3150,7 +3184,7 @@ function onboarding(step){ROOT=false;
   }
 }
 
-applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();
+bkBoot();applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();
 renderTabs();renderHeader();
 if(!S.onb)onboarding(1);else home();
 checkAch();cloudInit();
