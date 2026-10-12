@@ -2482,7 +2482,14 @@ function musicToggle(){const M=MSET();M.on=!M.on;save();if(M.on){musicPlay();toa
 function renderMusicChip(){let b=document.getElementById("musicChip");if(!b){const ch=document.querySelector(".chips");if(!ch)return;b=document.createElement("button");b.id="musicChip";b.className="chip-s mus";b.setAttribute("aria-label","背景音樂");b.onclick=musicToggle;ch.prepend(b)}
   const on=MSET().on;b.classList.toggle("off",!on);b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/>${on?"":`<path d="M4 4l16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`}</svg>`}
 function musicSetup(){renderMusicChip();
-  const kick=()=>{if(MSET().on&&!MUS.playing)musicPlay()};document.addEventListener("pointerdown",kick,{capture:true});
+  /* iOS only unlocks audio on a real tap (touchend/click), not on pointerdown or a scroll — keep retrying until it is actually running */
+  const kick=()=>{if(!MSET().on||MUS.frozen||document.body.classList.contains("gated"))return;
+    if(!MUS.playing){musicPlay()}
+    const C=MUS.C;if(!C)return;
+    if(C.state!=="running"){try{C.resume()}catch(e){}}
+    if(!MUS.unlocked){try{const b=C.createBuffer(1,1,22050),src=C.createBufferSource();src.buffer=b;src.connect(C.destination);src.start(0);MUS.unlocked=true}catch(e){}}
+    if(C.state==="running"&&MUS.playing&&MUS.master.gain.value<.01)musicLevel(1.5)};
+  ["pointerdown","touchend","click","keydown"].forEach(t=>document.addEventListener(t,kick,{capture:true,passive:true}));
   const hide=()=>musicFreeze(),show=()=>{if(document.visibilityState==="visible")musicThaw()};
   document.addEventListener("visibilitychange",()=>document.visibilityState==="hidden"?hide():show());
   window.addEventListener("pagehide",hide);window.addEventListener("pageshow",show);
