@@ -2658,8 +2658,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013020042";
-const APP_NAME="1.4";
+const APP_VER="20261013020504";
+const APP_NAME="1.5";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2750,9 +2750,9 @@ const sayTTS=say;
 /* one voice for everything: Google's US voice reads words, phrases and sentences the same way; Youdao only as a backup */
 const VSRC=[t=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en-US&q=${encodeURIComponent(t)}`,
             t=>`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(t)}&type=2`];
-let VOK=null;try{VOK=JSON.parse(localStorage.getItem("eng-vok2"))}catch(e){}
+let VOK=null,LAST_SRC="";try{VOK=JSON.parse(localStorage.getItem("eng-vok2"))}catch(e){}
 function playSrc(t,rate,i,cb,fail){if(i>=VSRC.length)return fail();let settled=false;
-  const ok=()=>{if(settled)return;settled=true;clearTimeout(to);try{localStorage.setItem("eng-vok2",String(i))}catch(e){}VOK=i;cb&&cb(true)};
+  const ok=()=>{if(settled)return;settled=true;clearTimeout(to);LAST_SRC=i?"有道詞典":"Google";try{localStorage.setItem("eng-vok2",String(i))}catch(e){}VOK=i;cb&&cb(true)};
   const bad=()=>{if(settled)return;settled=true;clearTimeout(to);WA_EL.onplaying=WA_EL.onerror=null;playSrc(t,rate,i+1,cb,fail)};
   try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
   try{if(canSpeak&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel()}catch(e){}
@@ -2762,9 +2762,9 @@ function playSrc(t,rate,i,cb,fail){if(i>=VSRC.length)return fail();let settled=f
   if(typeof musicDuck==="function"&&MUS.playing)musicDuck(true);
   const to=setTimeout(bad,VOK===i?6000:3500);const p=WA_EL.play();if(p&&p.catch)p.catch(e=>{if(e&&e.name==="NotAllowedError"){settled=true;clearTimeout(to);fail()}else bad()})}
 say=function(t,rate,cb){t=String(t||"").trim();if(!t)return;
-  if(S.realVoice===false||!navigator.onLine||t.length>180)return sayTTS(t,rate,cb);
+  if(S.realVoice===false||!navigator.onLine||t.length>180){LAST_SRC="手機語音";return sayTTS(t,rate,cb)}
   const start=VOK===1?1:0;
-  playSrc(t,rate,start,cb,()=>sayTTS(t,rate,cb))};
+  playSrc(t,rate,start,cb,()=>{LAST_SRC="手機語音";sayTTS(t,rate,cb)})};
 /* diagnostics shown under「測試聲音」: can this phone reach the recordings and play them? */
 async function waDiag(){const out=document.getElementById("sndOut");if(!out)return;const L=[];
   L.push(`真人發音：${S.realVoice===false?"關閉":"開啟"}`);L.push(`網路：${navigator.onLine?"有":"沒有"}`);
@@ -2775,6 +2775,8 @@ async function waDiag(){const out=document.getElementById("sndOut");if(!out)retu
     tried.push(`${i?"來源 B":"來源 A"}${r==="ok"?" ✓":" ✗"}`);if(r==="ok"){st="可以播放 ✓（靜音時應該聽得到）";break}}
   if(st==="查詢中…")st="兩個來源都連不到 ✗";st+=`（${tried.join("、")}）`;
   out.innerHTML=L.join(" · ")+"<br>線上發音："+st}
+
+function voiceProbe(text,el){el.textContent="播放中…";LAST_SRC="";say(text);let n=0;const iv=setInterval(()=>{n++;if(LAST_SRC||n>40){clearInterval(iv);el.textContent=LAST_SRC?`「${text}」用的是：${LAST_SRC}`:"沒有播出來"}},200)}
 
 /* ================= DATA ================= */
 const CATS=Object.fromEntries(Object.entries(SCENES).map(([k,v])=>[k,v[0]]));
@@ -3128,6 +3130,8 @@ function home(){
       <div class="seg"><span class="note">音效</span><div class="rate"><button data-snd="1" aria-pressed="${S.sound}">開</button><button data-snd="0" aria-pressed="${!S.sound}">關</button></div></div>
       <div class="seg"><span class="note">聽不到聲音？</span><button class="link" id="sndTest">測試聲音</button></div>
       <div id="sndOut" class="note"></div>
+      <div class="seg"><span class="note">比較發音來源</span><span><button class="link" id="vpW">單字</button>　<button class="link" id="vpP">片語</button>　<button class="link" id="vpS">例句</button></span></div>
+      <div id="vpOut" class="note"></div>
       <div class="seg"><span class="note">發音速度${canSpeak?"":"（此裝置不支援）"}</span><div class="rate">${[[0.7,"慢"],[0.9,"標準"],[1.1,"快"]].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.rate===r}">${l}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">線上發音</span><div class="rate"><button data-rv="1" aria-pressed="${S.realVoice!==false}">開</button><button data-rv="0" aria-pressed="${S.realVoice===false}">關</button></div></div>
       <p class="note" style="margin:0">有網路時，單字和例句會用線上發音播放，靜音模式也聽得到；沒網路或連不上時，改用手機語音。</p>
@@ -3155,7 +3159,7 @@ function home(){
   if(streak()>0&&streak()%7===0&&S.days[today()]&&S.stBox!==today()){S.stBox=today();S.boxes=(S.boxes||0)+1;save();setTimeout(()=>toast(`連續 ${streak()} 天！獲得驚喜盒`,"ach"),800)}wireMedals();setTimeout(()=>{if(cur==="home"&&ROOT)checkRings()},1200);view().querySelectorAll("[data-start]").forEach(b=>b.onclick=startTraining);
   const TAPS=["外圈是今日題數，中圈是今日訓練，內圈是新學的字。","今日單字：「"+w.w+"」— "+w.zh,"每 4 XP 可以換 1 枚金幣。","連續練習 "+streak()+" 天。","到期的單字會優先出現在今日訓練。"];
   $("#petTap").onclick=()=>{$("#petSay").textContent=pick(TAPS);const r=$("#petTap .rings");r.classList.remove("anim");void r.getBoundingClientRect();r.classList.add("anim")};
-  $("#sndTest").onclick=()=>{soundTest();setTimeout(waDiag,2600)};renderBk();
+  $("#sndTest").onclick=()=>{soundTest();setTimeout(waDiag,2600)};[["#vpW","refund"],["#vpP","as a result"],["#vpS","It rained all day."]].forEach(([id,t])=>{const b=$(id);if(b)b.onclick=()=>voiceProbe(t,$("#vpOut"))});renderBk();
   view().querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{S.lvl=b.dataset.lv;save();home();toast(`程度改為「${lvName()}」`)});
   view().querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{S.goal=+b.dataset.goal;save();home()});
   view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{S.tlen=b.dataset.tl;save();home();toast(`今日訓練改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
