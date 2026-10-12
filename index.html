@@ -1000,6 +1000,18 @@ body.gated{overflow:hidden}body.gated .app{filter:blur(2px);pointer-events:none}
 .st-acc{stroke:#34c759}
 .st-area{fill:color-mix(in srgb,var(--accent) 18%,transparent)}
 .st-wrap .body{display:flex;flex-direction:column;gap:10px}
+#tour{position:fixed;inset:0;z-index:180;opacity:0;transition:opacity .3s}
+#tour.show{opacity:1}
+.tr-spot{position:fixed;box-shadow:0 0 0 200vmax rgba(6,8,22,.62),0 0 0 2px rgba(255,255,255,.75),0 0 30px rgba(120,160,255,.5);transition:all .42s cubic-bezier(.3,1.2,.4,1);pointer-events:none}
+.tr-card{position:fixed;left:16px;right:16px;max-width:420px;margin:0 auto;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),0 18px 50px rgba(0,0,0,.3);border-radius:24px;padding:16px 18px 14px;color:var(--ink);transition:top .42s cubic-bezier(.3,1.2,.4,1),opacity .2s}
+#tour.moving .tr-card{opacity:.0}
+.tr-step{font-size:.75rem;color:var(--accent);font-weight:700;letter-spacing:.04em}
+.tr-card h3{margin:2px 0 4px;font-size:1.2rem}
+.tr-card p{margin:0 0 12px;font-size:.95rem;line-height:1.5;color:var(--ink);opacity:.86}
+.tr-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.tr-row .btn{width:auto;padding:9px 18px;min-height:0}
+.tr-skip{color:var(--muted)!important;font-size:.9rem}
+.tr-dots{display:flex;gap:5px}.tr-dots i{width:6px;height:6px;border-radius:50%;background:var(--glass-brd);transition:all .3s}.tr-dots i.on{width:16px;border-radius:3px;background:var(--accent)}
 </style>
 <script>
 const ORIG=[
@@ -2580,8 +2592,55 @@ function showGate(){const ua=navigator.userAgent,ios=/iPhone|iPod|iPad/i.test(ua
   const cb=g.querySelector("#gateCopy");if(cb)cb.onclick=()=>{try{navigator.clipboard.writeText(location.href.split("#")[0]);cb.textContent="已複製，貼到瀏覽器打開"}catch(e){}}}
 function gateBoot(){if(gateNeeded()){showGate();return true}return false}
 
+/* ================= play sound even when the ring/silent switch is on ================= */
+let SIL=null;
+function silentLoop(){if(SIL)return SIL;const sr=8000,n=sr,b=new ArrayBuffer(44+n*2),v=new DataView(b),w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+  w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVE");w(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
+  SIL=new Audio(URL.createObjectURL(new Blob([b],{type:"audio/wav"})));SIL.loop=true;SIL.setAttribute("playsinline","");SIL.preload="auto";return SIL}
+function applyLoud(){const on=!!S.loud;
+  if(navigator.audioSession){try{navigator.audioSession.type=on?"playback":"auto"}catch(e){}return}
+  try{if(on&&document.visibilityState==="visible")silentLoop().play().catch(()=>{});else if(SIL)SIL.pause()}catch(e){}}
+["touchend","click"].forEach(t=>document.addEventListener(t,()=>{if(S.loud)applyLoud()},{capture:true,passive:true}));
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){if(SIL)SIL.pause()}else if(S.loud)applyLoud()});
+
+/* ================= first-run quick tour (coach marks) ================= */
+const TOUR=[
+  {q:()=>document.getElementById("petTap")&&document.getElementById("petTap").closest("section"),t:"今日進度",d:"每天完成三個圓環：答題數、今日訓練、新學的字。三圈都滿就是完美的一天。"},
+  {q:()=>{const t=document.querySelector("section.train");return t&&[t.querySelector(".ghead"),t.querySelector(".tlen")].filter(Boolean)},t:"今日訓練",d:"每天照順序做完幾項短練習就好。可以選輕量、標準或加強，到期的單字會優先複習。"},
+  {q:()=>{const g=document.querySelector(".ic-globe");return g&&(g.closest("button,a,[onclick]")||g.parentElement)},t:"我的小島",d:"答對題目會得到水滴和陽光，拿來種植物、蓋房子，讓小島一級一級慢慢長大。"},
+  {q:()=>document.querySelector('[data-tab="practice"]'),t:"練習",d:"想多練就來這裡：單字卡、測驗、聽寫、造句、60 秒挑戰和泡泡遊戲。"},
+  {q:()=>document.querySelector('[data-tab="weak"]'),t:"弱點",d:"答錯的字會自動收集在這裡。之後在不同的兩天答對，它就會從弱點畢業。"},
+  {q:()=>document.querySelector('[data-tab="bank"]'),t:"單字庫",d:"查看所有單字、調整想練的場景，也可以加入自己的單字。"},
+  {q:()=>document.getElementById("musicChip"),t:"背景音樂",d:"點這裡開關音樂。手機開靜音也想聽，可以到「設定」打開「靜音模式也播放」。"},
+  {q:()=>[...document.querySelectorAll("summary")].find(s=>s.textContent.includes("自動備份")),t:"自動備份",d:"進度每天自動備份在手機裡；換手機前，記得在這裡存一份備份檔。"}];
+let TS=null;
+function startTour(){if(TS||document.getElementById("gate"))return;if(cur!=="home")go("home");
+  const ov=document.createElement("div");ov.id="tour";ov.innerHTML=`<div class="tr-spot"></div><div class="tr-card" role="dialog" aria-live="polite"><div class="tr-step"></div><h3></h3><p></p><div class="tr-row"><button class="link tr-skip">略過</button><div class="tr-dots"></div><button class="btn primary tr-next">下一步</button></div></div>`;
+  document.body.appendChild(ov);TS={i:-1,ov};
+  ov.querySelector(".tr-skip").onclick=e=>{e.stopPropagation();endTour()};
+  ov.querySelector(".tr-next").onclick=e=>{e.stopPropagation();tourStep(TS.i+1)};
+  ov.addEventListener("click",e=>{if(!e.target.closest(".tr-card"))tourStep(TS.i+1)});
+  TS.re=()=>{if(!TS.raf)TS.raf=requestAnimationFrame(()=>{if(TS){TS.raf=0;tourPlace()}})};addEventListener("resize",TS.re);document.addEventListener("scroll",TS.re,true);
+  requestAnimationFrame(()=>ov.classList.add("show"));tourStep(0)}
+function tourStep(i){if(!TS)return;let el=null;while(i<TOUR.length&&!(el=TOUR[i].q()))i++;if(i>=TOUR.length)return endTour(true);
+  TS.i=i;TS.el=el;const s=TOUR[i],ov=TS.ov,last=i===TOUR.length-1||!TOUR.slice(i+1).some(x=>x.q());
+  ov.querySelector(".tr-step").textContent=`${i+1} / ${TOUR.length}`;ov.querySelector("h3").textContent=s.t;ov.querySelector("p").textContent=s.d;
+  ov.querySelector(".tr-next").textContent=last?"開始練習":"下一步";
+  ov.querySelector(".tr-dots").innerHTML=TOUR.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("");
+  ov.classList.add("moving");
+  const first=Array.isArray(el)?el[0]:el,inNav=!!first.closest("nav,header");if(!inNav)try{first.scrollIntoView({block:"center",behavior:"smooth"})}catch(e){first.scrollIntoView()}
+  (TS.ts||[]).forEach(clearTimeout);TS.ts=[60,220,450,800].map(ms=>setTimeout(()=>{tourPlace();if(ms>=(inNav?60:450))ov.classList.remove("moving")},ms))}
+function tourRect(el){const L=Array.isArray(el)?el:[el],rs=L.map(e=>e.getBoundingClientRect());const l=Math.min(...rs.map(r=>r.left)),t=Math.min(...rs.map(r=>r.top)),R=Math.max(...rs.map(r=>r.right)),B=Math.max(...rs.map(r=>r.bottom));return{left:l,top:t,width:R-l,height:B-t}}
+function tourPlace(){if(!TS||!TS.el)return;const r=tourRect(TS.el),p=8,sp=TS.ov.querySelector(".tr-spot"),cd=TS.ov.querySelector(".tr-card");
+  const x=Math.max(6,r.left-p),y=Math.max(6,r.top-p),w=Math.min(innerWidth-12,r.width+p*2),h=r.height+p*2;
+  Object.assign(sp.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px",borderRadius:(r.height<70?22:28)+"px"});
+  const ch=cd.offsetHeight||170,below=y+h+14,above=y-14-ch;let top=(r.top+r.height/2<innerHeight*.52)?below:above;
+  if(top+ch>innerHeight-12)top=above;if(top<12)top=below;top=Math.max(12,Math.min(innerHeight-ch-12,top));cd.style.top=top+"px"}
+function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize",TS.re);document.removeEventListener("scroll",TS.re,true);(TS.ts||[]).forEach(clearTimeout);TS=null;S.tour=1;save();ov.classList.remove("show");setTimeout(()=>ov.remove(),300);
+  try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
+
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013012133";
+const APP_VER="20261013012731";
 const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
 function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
   try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
@@ -2999,11 +3058,14 @@ function home(){
       <div class="seg"><span class="note">音樂風格</span><div class="rate">${Object.entries(MSTYLES).map(([k,n])=>`<button data-mst="${k}" aria-pressed="${MSET().style===k}">${n.replace(" 鋼琴","")}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">音樂音量</span><div class="rate">${[[1,"小"],[2,"中"],[3,"大"]].map(([v,n])=>`<button data-mvol="${v}" aria-pressed="${MSET().vol===v}">${n}</button>`).join("")}</div></div>
       <p class="note" style="margin:0">「自動」會依畫面切換：小島放自然音，練習時放專注音樂，其他時候放 Lo-fi。唸單字時音樂會自動變小聲。</p>
+      <div class="seg"><span class="note">靜音模式也播放</span><div class="rate"><button data-loud="1" aria-pressed="${!!S.loud}">開</button><button data-loud="0" aria-pressed="${!S.loud}">關</button></div></div>
+      <p class="note" style="margin:0">打開後，手機切到靜音也會有音樂和音效（iOS 17 以上效果最好）。單字發音是否跟著出聲依手機而定。上課、開會時記得關掉。</p>
       <div class="seg"><span class="note">音效</span><div class="rate"><button data-snd="1" aria-pressed="${S.sound}">開</button><button data-snd="0" aria-pressed="${!S.sound}">關</button></div></div>
       <div class="seg"><span class="note">聽不到聲音？</span><button class="link" id="sndTest">測試聲音</button></div>
       <div id="sndOut" class="note"></div>
       <div class="seg"><span class="note">發音速度${canSpeak?"":"（此裝置不支援）"}</span><div class="rate">${[[0.7,"慢"],[0.9,"標準"],[1.1,"快"]].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.rate===r}">${l}</button>`).join("")}</div></div>
       ${voiceRow()}
+      <div class="seg"><span class="note">第一次使用的導覽</span><button class="link" id="tourAgain">重看導覽</button></div>
       <div class="seg"><span class="note">練習場景：${S.cats.length} 個</span><button class="link" onclick="go('bank')">到單字庫調整</button></div>
     </div></details>
     <details><summary>自動備份與還原</summary><div class="body">
@@ -3035,6 +3097,8 @@ function home(){
   view().querySelectorAll("[data-snd]").forEach(b=>b.onclick=()=>{S.sound=b.dataset.snd==="1";save();home();sfx("ok")});
   view().querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{S.rate=+b.dataset.rate;save();home();say("This is the new speed.")});
   wireBkFile();wireVoice();
+  view().querySelectorAll("[data-loud]").forEach(b=>b.onclick=()=>{S.loud=b.dataset.loud==="1";save();applyLoud();home();toast(S.loud?"靜音模式也會播放聲音":"已恢復：靜音時不出聲")});
+  if($("#tourAgain"))$("#tourAgain").onclick=()=>{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0});setTimeout(startTour,250)};
 }
 
 /* ================= PRACTICE MENU ================= */
@@ -3381,7 +3445,7 @@ function onboarding(step){ROOT=false;
       <button class="link" id="obBack" style="align-self:flex-start">← 回上一步</button></div>`;
       view().querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{const k=b.dataset.c;OB.cats=OB.cats.includes(k)?OB.cats.filter(x=>x!==k):OB.cats.concat(k);draw()});
       $("#obBack").onclick=()=>onboarding(1);
-      $("#obGo").onclick=()=>{S.lvl=OB.lvl||S.lvl;S.cats=OB.cats.concat(S.custom.length?["c"]:[]);S.onb=true;save();document.body.classList.remove("onb");home();toast(`已設定：${lvName()} · ${OB.cats.length} 個場景`)}};
+      $("#obGo").onclick=()=>{S.lvl=OB.lvl||S.lvl;S.cats=OB.cats.concat(S.custom.length?["c"]:[]);S.onb=true;save();document.body.classList.remove("onb");home();if(!S.tour)setTimeout(startTour,1400);toast(`已設定：${lvName()} · ${OB.cats.length} 個場景`)}};
     draw();
   }
 }
