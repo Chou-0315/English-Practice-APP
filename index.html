@@ -2884,11 +2884,6 @@ function home(){
       <div class="seg"><span class="note">發音速度${canSpeak?"":"（此裝置不支援）"}</span><div class="rate">${[[0.7,"慢"],[0.9,"標準"],[1.1,"快"]].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.rate===r}">${l}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">練習場景：${S.cats.length} 個</span><button class="link" onclick="go('bank')">到單字庫調整</button></div>
     </div></details>
-    <details><summary>加到手機主畫面</summary><div class="body">
-      <div><b>iPhone</b>：用 Safari 打開這個頁面，點下方的分享按鈕，選「加入主畫面」。</div>
-      <div><b>Android</b>：用 Chrome 打開這個頁面，點右上角「⋮」，選「加到主畫面」。</div>
-      <div class="note">如果你是在 Claude App 裡看到這頁，先用右上角選單在瀏覽器中開啟，再照上面步驟做。</div>
-    </div></details>
     <details><summary>自動備份與還原</summary><div class="body">
       <div class="note" id="bkStat"></div>
       <div class="bk-h">還原進度</div>
