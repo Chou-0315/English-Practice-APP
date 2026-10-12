@@ -2606,6 +2606,7 @@ async function cloudInit(){
   }catch(e){CLOUD.status="local";renderSync()}}
 function syncText(){return {wait:"正在連線…",ok:`已同步到你的 Claude 帳號${CLOUD.at?"（"+new Date(CLOUD.at).toLocaleTimeString("zh-TW",{hour:"2-digit",minute:"2-digit"})+"）":""}，換手機或瀏覽器登入同一個帳號就能接著用。`,
   local:"沒有登入 Claude 帳號，進度只存在這個瀏覽器。用瀏覽器打開連結並登入，就能自動同步。",ro:"這個帳號無法寫入雲端，進度只存在這個瀏覽器。",err:"暫時連不上雲端，稍後會自動重試。進度先存在這個瀏覽器。"}[CLOUD.status]}
+const IN_CLAUDE=(()=>{try{if(window.claude)return true;return window.top!==window}catch(e){return true}})();
 function renderSync(){const el=document.getElementById("syncTxt");if(el){el.textContent=syncText();el.className="note sync-"+CLOUD.status}}
 const ALL=()=>BUILTIN.concat(S.custom);
 const inLevel=w=>w.cat==="c"||rank(w.lvl)<=rank(S.lvl);
@@ -2870,7 +2871,7 @@ function home(){
     </section>
     <section class="medalsec">${medalStrip()}</section>
     <section class="more">
-    <div class="syncline"><span class="sdot"></span><span id="syncTxt" class="note sync-${CLOUD.status}">${syncText()}</span></div>
+    ${IN_CLAUDE?`<div class="syncline"><span class="sdot"></span><span id="syncTxt" class="note sync-${CLOUD.status}">${syncText()}</span></div>`:""}
     <details><summary>設定</summary><div class="body">
       <div class="seg"><span class="note">程度</span><div class="rate">${LEVELS.map(([k,n])=>`<button data-lv="${k}" aria-pressed="${S.lvl===k}">${n}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">每日目標</span><div class="rate">${[20,40,60,100].map(n=>`<button data-goal="${n}" aria-pressed="${g===n}">${n}</button>`).join("")}</div></div>
