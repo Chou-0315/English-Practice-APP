@@ -2422,12 +2422,21 @@ const MSTYLES={auto:"自動",lofi:"Lo-fi 鋼琴",nature:"小島自然",focus:"�
 const mtof=m=>440*Math.pow(2,(m-69)/12);
 function musicStyleNow(){const s=MSET().style;if(s!=="auto")return s;return cur==="island"?"nature":(TR||document.querySelector(".card,.opts,#dict,.slot,#bbF"))?"focus":"lofi"}
 function musicBuild(){if(MUS.C)return true;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
-  const C=new AC();MUS.C=C;MUS.master=C.createGain();MUS.master.gain.value=0;const comp=C.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;
-  MUS.master.connect(comp).connect(C.destination);
-  const len=C.sampleRate*3,ir=C.createBuffer(2,len,C.sampleRate);for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}
-  MUS.rev=C.createConvolver();MUS.rev.buffer=ir;const rg=C.createGain();rg.gain.value=.42;MUS.rev.connect(rg).connect(MUS.master);
-  MUS.bus=C.createGain();MUS.bus.connect(MUS.master);MUS.bus.connect(MUS.rev);
-  const nb=C.createBuffer(1,C.sampleRate*2,C.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;MUS.noise=nb;return true}
+  const C=new AC();MUS.C=C;const comp=C.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;comp.connect(C.destination);MUS.comp=comp;
+  const len=C.sampleRate*3,ir=C.createBuffer(2,len,C.sampleRate);for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}MUS.ir=ir;
+  const nb=C.createBuffer(1,C.sampleRate*2,C.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;MUS.noise=nb;musicChain();return true}
+/* fresh output chain: disconnecting the old one silences every note already scheduled on it */
+function musicChain(){const C=MUS.C;if(MUS.master){try{MUS.master.disconnect()}catch(e){}try{MUS.bus.disconnect()}catch(e){}try{MUS.rev.disconnect()}catch(e){}}
+  MUS.master=C.createGain();MUS.master.gain.value=0;MUS.master.connect(MUS.comp);
+  MUS.rev=C.createConvolver();MUS.rev.buffer=MUS.ir;const rg=C.createGain();rg.gain.value=.42;MUS.rev.connect(rg).connect(MUS.master);
+  MUS.bus=C.createGain();MUS.bus.connect(MUS.master);MUS.bus.connect(MUS.rev)}
+/* instant, click-free silence when the app is swiped away / hidden */
+function musicFreeze(){if(!MUS.C||MUS.frozen)return;MUS.frozen=true;const C=MUS.C,now=C.currentTime;
+  try{MUS.master.gain.cancelScheduledValues(now);MUS.master.gain.setValueAtTime(MUS.master.gain.value,now);MUS.master.gain.linearRampToValueAtTime(0,now+.04)}catch(e){}
+  const was=MUS.playing;MUS.playing=false;MUS.wasOn=was||MUS.wasOn;clearInterval(MUS.timer);ambStop();
+  setTimeout(()=>{musicChain();try{C.suspend()}catch(e){}},60)}
+function musicThaw(){if(!MUS.C||!MUS.frozen)return;MUS.frozen=false;const back=MUS.wasOn;MUS.wasOn=false;
+  const go=()=>{if(back&&MSET().on){MUS.playing=false;musicPlay()}};try{MUS.C.resume().then(go,go)}catch(e){go()}}
 const vol=()=>[0,.18,.32,.5][MSET().vol]||.32;
 function musicLevel(t=.8){if(!MUS.C)return;const g=MUS.master.gain,now=MUS.C.currentTime;g.cancelScheduledValues(now);g.setValueAtTime(g.value,now);g.linearRampToValueAtTime(MUS.playing?vol()*MUS.duck:0,now+t)}
 function musicDuck(on){MUS.duck=on?.22:1;musicLevel(on?.15:1.2)}
@@ -2462,7 +2471,7 @@ function schedule(){const C=MUS.C,style=MUS.style,bpm=style==="lofi"?72:style===
     if(style==="nature"){if(eighth===0&&Math.random()<.35)bell(pick(PENTA)-12,t,.6);if(Math.random()<.035)chirp(t);if(eighth===0&&bar%chordLen===0)bass(ch[4]+12,t,beat*6)}
     if(style==="focus"){if(eighth%4===0&&Math.random()<.22)bell(pick(ch.slice(0,4))+24,t,.5)}
     MUS.next+=beat/2;MUS.step++}}
-function musicPlay(){const M=MSET();if(!M.on||document.body.classList.contains("gated")||!musicBuild())return;const C=MUS.C;if(C.state==="suspended")C.resume();
+function musicPlay(){const M=MSET();if(MUS.frozen||!M.on||document.body.classList.contains("gated")||!musicBuild())return;const C=MUS.C;if(C.state==="suspended")C.resume();
   const style=musicStyleNow();if(MUS.playing&&MUS.style===style)return;
   if(MUS.playing&&MUS.style!==style){MUS.style=style;ambStart(style);return}
   MUS.style=style;MUS.playing=true;MUS.next=C.currentTime+.1;MUS.step=0;ambStart(style);clearInterval(MUS.timer);MUS.timer=setInterval(()=>{if(MUS.playing)schedule()},250);schedule();musicLevel(2.5);renderMusicChip()}
@@ -2472,7 +2481,10 @@ function renderMusicChip(){let b=document.getElementById("musicChip");if(!b){con
   const on=MSET().on;b.classList.toggle("off",!on);b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/>${on?"":`<path d="M4 4l16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`}</svg>`}
 function musicSetup(){renderMusicChip();
   const kick=()=>{if(MSET().on&&!MUS.playing)musicPlay()};document.addEventListener("pointerdown",kick,{capture:true});
-  document.addEventListener("visibilitychange",()=>{if(!MUS.C)return;if(document.visibilityState==="hidden")MUS.C.suspend();else if(MSET().on){MUS.C.resume();musicPlay()}});
+  const hide=()=>musicFreeze(),show=()=>{if(document.visibilityState==="visible")musicThaw()};
+  document.addEventListener("visibilitychange",()=>document.visibilityState==="hidden"?hide():show());
+  window.addEventListener("pagehide",hide);window.addEventListener("pageshow",show);
+  const solo=typeof isInstalled==="function"&&isInstalled();if(solo){window.addEventListener("blur",hide);window.addEventListener("focus",show)}
   setInterval(()=>{if(MUS.playing&&MSET().style==="auto"&&musicStyleNow()!==MUS.style)musicPlay()},1500)}
 
 /* ================= AUTO BACKUP (local daily snapshots, mirrored to IndexedDB) ================= */
