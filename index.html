@@ -2658,15 +2658,16 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013014848";
-const verLabel=x=>{x=String(x||"");return /^\d{14}$/.test(x)?`${x.slice(0,4)}.${x.slice(4,6)}.${x.slice(6,8)}.${x.slice(8,12)}`:x};
+const APP_VER="20261013014946";
+const APP_NAME="1.1";
+const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
-  if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到版本 ${verLabel(APP_VER)}`),1600)}
+  if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
 const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
 function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
   try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
   let lastChk=0;const chk=async()=>{if(Date.now()-lastChk<10*60e3||!navigator.onLine)return;lastChk=Date.now();
-    try{const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(j&&j.v&&j.v!==APP_VER)showUpdate(j.v)}catch(e){}};
+    try{const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(j&&j.v&&j.v!==APP_VER)showUpdate(j.n||"")}catch(e){}};
   setTimeout(chk,6000);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")chk()})}
 function showUpdate(nv){if(document.getElementById("updBar"))return;const b=document.createElement("button");b.id="updBar";
   b.innerHTML=`<span class="upd-dot"></span><span><b>有新版本</b> · 點一下更新${nv?`<small class="upd-v">${verLabel(nv)}</small>`:""}</span>`;b.onclick=()=>{b.textContent="更新中…";setTimeout(()=>location.reload(),150)};document.body.appendChild(b);requestAnimationFrame(()=>b.classList.add("show"))}
@@ -3128,7 +3129,7 @@ function home(){
         <div id="rsMsg" class="note"></div>
       </div></details>`}
     </div></details>
-    <p class="appver">England · 版本 ${verLabel(APP_VER)}</p>
+    <p class="appver">England v${APP_NAME}</p>
     </section>
   </div>`;
   $("#train").onclick=startTraining;drawMini();if($("#boxBanner"))$("#boxBanner").onclick=()=>mysteryBox("驚喜盒");
