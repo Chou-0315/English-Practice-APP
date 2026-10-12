@@ -2581,7 +2581,7 @@ function showGate(){const ua=navigator.userAgent,ios=/iPhone|iPod|iPad/i.test(ua
 function gateBoot(){if(gateNeeded()){showGate();return true}return false}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013005918";
+const APP_VER="20261013010039";
 const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
 function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
   try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
@@ -3010,13 +3010,13 @@ function home(){
       <div class="bk-h">還原進度</div>
       <div class="bk-list" id="bkList"></div>
       <p class="note" style="margin:0">每天自動存一份，最多保留 7 天。若進度不見，打開 App 時也會自動從備份找回來。</p>
-      <details class="bk-move"><summary>換手機用的備份檔</summary><div class="body">
+      ${IN_CLAUDE?"":`      <details class="bk-move"><summary>換手機用的備份檔</summary><div class="body">
         <div class="note">自動備份存在這支手機裡。換手機或刪掉 App 前，先把備份檔存到「檔案」或 iCloud；到新手機打開 England，再選這個檔案還原。</div>
         <button class="btn" id="bkSave">儲存備份檔</button>
         <button class="btn" id="bkPick">從備份檔還原</button>
         <input type="file" id="bkFile" accept=".json,application/json,text/plain" hidden>
         <div id="rsMsg" class="note"></div>
-      </div></details>
+      </div></details>`}
     </div></details>
     </section>
   </div>`;
