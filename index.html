@@ -2658,8 +2658,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013014946";
-const APP_NAME="1.1";
+const APP_VER="20261013015221";
+const APP_NAME="1.2";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2748,14 +2748,24 @@ function waPrefetch(words){let i=0;const L=[...new Set(words.map(waWord).filter(
 const sayTTS=say;
 say=function(t,rate,cb){const w=waWord(t);if(!w||S.realVoice===false)return sayTTS(t,rate,cb);
   const play=u=>{try{if(canSpeak&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel();
+      try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
       WA_EL.pause();WA_EL.src=u;WA_EL.playbackRate=Math.max(.7,Math.min(1.2,rate||S.rate||1));
       if(typeof musicDuck==="function"&&MUS.playing)musicDuck(true);
-      WA_EL.onended=WA_EL.onerror=()=>{if(typeof musicDuck==="function")setTimeout(()=>musicDuck(false),200)};
+      WA_EL.onended=WA_EL.onerror=()=>{if(typeof musicDuck==="function")setTimeout(()=>musicDuck(false),200);setTimeout(()=>{if(typeof applyLoud==="function")applyLoud()},400)};
       const p=WA_EL.play();if(p&&p.then)p.then(()=>cb&&cb(true)).catch(()=>sayTTS(t,rate,cb));else cb&&cb(true)}catch(e){sayTTS(t,rate,cb)}};
   if(WA[w]){play(WA[w]);return}
   if(WA[w]===""){sayTTS(t,rate,cb);return}
-  let done=false;const fb=setTimeout(()=>{if(!done){done=true;sayTTS(t,rate,cb)}},900);
+  let done=false;const fb=setTimeout(()=>{if(!done){done=true;sayTTS(t,rate,cb)}},1600);
   waLookup(w,4000).then(u=>{if(done)return;done=true;clearTimeout(fb);u?play(u):sayTTS(t,rate,cb)})};
+
+/* diagnostics shown under「測試聲音」: can this phone reach the recordings and play them? */
+async function waDiag(){const out=document.getElementById("sndOut");if(!out)return;const L=[];
+  L.push(`真人發音：${S.realVoice===false?"關閉":"開啟"}`);L.push(`網路：${navigator.onLine?"有":"沒有"}`);
+  L.push(`媒體播放模式：${navigator.audioSession?"支援（"+navigator.audioSession.type+"）":"不支援"}`);
+  let st="查詢中…";out.innerHTML=L.join(" · ")+"<br>字典錄音："+st;
+  try{delete WA.hello;const u=await waLookup("hello",6000);st=u?"找得到 ✓":u===""?"這個字沒有錄音":"連不到字典網站 ✗";
+    if(u){try{WA_EL.src=u;await WA_EL.play();st+=" · 播放成功 ✓（靜音時應該聽得到）"}catch(e){st+=` · 播放失敗 ✗（${e&&e.name||"未知"}）`}}}catch(e){st="檢查失敗 ✗"}
+  out.innerHTML=L.join(" · ")+"<br>字典錄音："+st+`<br>已記住 ${Object.values(WA).filter(Boolean).length} 個字的錄音`}
 
 /* ================= DATA ================= */
 const CATS=Object.fromEntries(Object.entries(SCENES).map(([k,v])=>[k,v[0]]));
@@ -3136,7 +3146,7 @@ function home(){
   if(streak()>0&&streak()%7===0&&S.days[today()]&&S.stBox!==today()){S.stBox=today();S.boxes=(S.boxes||0)+1;save();setTimeout(()=>toast(`連續 ${streak()} 天！獲得驚喜盒`,"ach"),800)}wireMedals();setTimeout(()=>{if(cur==="home"&&ROOT)checkRings()},1200);view().querySelectorAll("[data-start]").forEach(b=>b.onclick=startTraining);
   const TAPS=["外圈是今日題數，中圈是今日訓練，內圈是新學的字。","今日單字：「"+w.w+"」— "+w.zh,"每 4 XP 可以換 1 枚金幣。","連續練習 "+streak()+" 天。","到期的單字會優先出現在今日訓練。"];
   $("#petTap").onclick=()=>{$("#petSay").textContent=pick(TAPS);const r=$("#petTap .rings");r.classList.remove("anim");void r.getBoundingClientRect();r.classList.add("anim")};
-  $("#sndTest").onclick=soundTest;renderBk();
+  $("#sndTest").onclick=()=>{soundTest();setTimeout(waDiag,2600)};renderBk();
   view().querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{S.lvl=b.dataset.lv;save();home();toast(`程度改為「${lvName()}」`)});
   view().querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{S.goal=+b.dataset.goal;save();home()});
   view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{S.tlen=b.dataset.tl;save();home();toast(`今日訓練改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
