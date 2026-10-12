@@ -930,6 +930,8 @@ nav .in{grid-template-columns:repeat(5,1fr)!important}
 .care-b:disabled{opacity:.5}
 .ic-globe{width:64px;height:64px;border-radius:50%;overflow:hidden;flex:none;display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)}
 .ic-globe #miniIsl{width:64px;height:64px;display:block}
+.chip-s.mus svg{width:17px;height:17px;color:var(--accent)}
+.chip-s.mus.off svg{color:var(--muted)}
 </style>
 
 <div class="app">
@@ -2348,6 +2350,66 @@ function islandCard(){const I=ISL(),idle=daysIdle(),ha=harvestAmt(),j=I.job;
     <span class="res-mini">${WATER}${I.water}　${SUN}${I.sun}</span></span>${icon("chev","chev")}</button>`}
 function drawMini(){const h=document.getElementById("miniIsl");if(h)mountStage(h,{still:true,ratio:1,yaw:.6})}
 
+/* ================= GENERATIVE BACKGROUND MUSIC (Web Audio, no files) ================= */
+const MUS={C:null,master:null,bus:null,rev:null,noise:null,timer:null,playing:false,next:0,step:0,style:null,duck:1,amb:[],started:false};
+const MSET=()=>S.music||(S.music={on:true,style:"auto",vol:2});
+const MSTYLES={auto:"自動",lofi:"Lo-fi 鋼琴",nature:"小島自然",focus:"專注"};
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+function musicStyleNow(){const s=MSET().style;if(s!=="auto")return s;return cur==="island"?"nature":(TR||document.querySelector(".card,.opts,#dict,.slot,#bbF"))?"focus":"lofi"}
+function musicBuild(){if(MUS.C)return true;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
+  const C=new AC();MUS.C=C;MUS.master=C.createGain();MUS.master.gain.value=0;const comp=C.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;
+  MUS.master.connect(comp).connect(C.destination);
+  const len=C.sampleRate*3,ir=C.createBuffer(2,len,C.sampleRate);for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}
+  MUS.rev=C.createConvolver();MUS.rev.buffer=ir;const rg=C.createGain();rg.gain.value=.42;MUS.rev.connect(rg).connect(MUS.master);
+  MUS.bus=C.createGain();MUS.bus.connect(MUS.master);MUS.bus.connect(MUS.rev);
+  const nb=C.createBuffer(1,C.sampleRate*2,C.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;MUS.noise=nb;return true}
+const vol=()=>[0,.18,.32,.5][MSET().vol]||.32;
+function musicLevel(t=.8){if(!MUS.C)return;const g=MUS.master.gain,now=MUS.C.currentTime;g.cancelScheduledValues(now);g.setValueAtTime(g.value,now);g.linearRampToValueAtTime(MUS.playing?vol()*MUS.duck:0,now+t)}
+function musicDuck(on){MUS.duck=on?.22:1;musicLevel(on?.15:1.2)}
+/* --- instruments --- */
+function env(g,t,a,peak,d){g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d)}
+function pad(notes,t,dur,lvl,type){const C=MUS.C,f=C.createBiquadFilter();f.type="lowpass";f.frequency.value=type==="sine"?1800:1000;f.Q.value=.4;const g=C.createGain();
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(lvl,t+1.4);g.gain.setValueAtTime(lvl,t+dur-1.2);g.gain.linearRampToValueAtTime(0,t+dur+.6);f.connect(g).connect(MUS.bus);
+  for(const m of notes)for(const dt of [-6,6]){const o=C.createOscillator();o.type=type||"triangle";o.frequency.value=mtof(m);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+dur+.8)}}
+function keys(m,t,v){const C=MUS.C,g=C.createGain(),o=C.createOscillator(),o2=C.createOscillator(),g2=C.createGain();o.type="sine";o.frequency.value=mtof(m);o2.type="sine";o2.frequency.value=mtof(m)*2.001;g2.gain.value=.22;
+  o2.connect(g2).connect(g);o.connect(g);g.connect(MUS.bus);env(g,t,.012,.16*v,1.6);o.start(t);o2.start(t);o.stop(t+1.8);o2.stop(t+1.8)}
+function bell(m,t,v){const C=MUS.C,g=C.createGain();[[1,1],[2.76,.25],[5.4,.08]].forEach(([r,a])=>{const o=C.createOscillator(),gg=C.createGain();o.frequency.value=mtof(m)*r;gg.gain.value=a;o.connect(gg).connect(g);o.start(t);o.stop(t+4)});g.connect(MUS.bus);env(g,t,.005,.09*v,3.6)}
+function bass(m,t,d){const C=MUS.C,o=C.createOscillator(),g=C.createGain(),f=C.createBiquadFilter();f.type="lowpass";f.frequency.value=380;o.type="triangle";o.frequency.value=mtof(m);o.connect(f).connect(g).connect(MUS.master);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.2,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.start(t);o.stop(t+d+.05)}
+function kick(t){const C=MUS.C,o=C.createOscillator(),g=C.createGain();o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(45,t+.22);o.connect(g).connect(MUS.master);g.gain.setValueAtTime(.32,t);g.gain.exponentialRampToValueAtTime(.0001,t+.3);o.start(t);o.stop(t+.32)}
+function nz(t,ty,fq,d,l,q){const C=MUS.C,s=C.createBufferSource(),f=C.createBiquadFilter(),g=C.createGain();s.buffer=MUS.noise;f.type=ty;f.frequency.value=fq;if(q)f.Q.value=q;s.connect(f).connect(g).connect(MUS.master);g.gain.setValueAtTime(l,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);s.start(t,Math.random());s.stop(t+d+.02)}
+function chirp(t){const C=MUS.C,n=2+Math.floor(Math.random()*4),base=2400+Math.random()*1400;for(let k=0;k<n;k++){const o=C.createOscillator(),g=C.createGain(),s=t+k*.13;o.type="sine";o.frequency.setValueAtTime(base,s);o.frequency.exponentialRampToValueAtTime(base*1.45,s+.05);o.frequency.exponentialRampToValueAtTime(base*.9,s+.1);
+  o.connect(g).connect(MUS.bus);g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.035,s+.01);g.gain.exponentialRampToValueAtTime(.0001,s+.11);o.start(s);o.stop(s+.13)}}
+function ambStart(kind){ambStop();const C=MUS.C;if(kind==="nature"){[[420,.05,.07],[1300,.018,.11]].forEach(([fq,l,rate],i)=>{const s=C.createBufferSource(),f=C.createBiquadFilter(),g=C.createGain(),lfo=C.createOscillator(),lg=C.createGain();
+    s.buffer=MUS.noise;s.loop=true;f.type=i?"bandpass":"lowpass";f.frequency.value=fq;f.Q.value=i?.8:.3;g.gain.value=l;lfo.frequency.value=rate;lg.gain.value=l*.7;lfo.connect(lg).connect(g.gain);s.connect(f).connect(g).connect(MUS.master);s.start();lfo.start();MUS.amb.push(s,lfo)})}
+  if(kind==="lofi"){const s=C.createBufferSource(),f=C.createBiquadFilter(),g=C.createGain();s.buffer=MUS.noise;s.loop=true;f.type="highpass";f.frequency.value=3000;g.gain.value=.006;s.connect(f).connect(g).connect(MUS.master);s.start();MUS.amb.push(s)}}
+function ambStop(){MUS.amb.forEach(n=>{try{n.stop()}catch(e){}});MUS.amb=[]}
+/* --- arrangements --- */
+const PROG={lofi:[[53,57,60,64,41],[52,55,59,62,40],[50,53,57,60,38],[48,52,55,59,36]],
+  nature:[[48,55,60,64,36],[45,52,57,60,33],[41,48,53,57,29],[43,50,55,59,31]],focus:[[50,57,62,64,38],[47,54,59,62,35],[45,52,57,61,33],[43,50,55,62,31]]};
+const PENTA=[72,74,76,79,81,84];
+function schedule(){const C=MUS.C,style=MUS.style,bpm=style==="lofi"?72:style==="focus"?60:56,beat=60/bpm;
+  while(MUS.next<C.currentTime+1.2){const t=MUS.next,st=MUS.step,bar=Math.floor(st/8),eighth=st%8,prog=PROG[style],chordLen=style==="lofi"?2:4,ch=prog[Math.floor(bar/chordLen)%prog.length];
+    if(eighth===0&&bar%chordLen===0){pad(ch.slice(0,4),t,beat*4*chordLen,style==="focus"?.05:.042,style==="lofi"?"triangle":"sine")}
+    if(style==="lofi"){if(eighth===0||eighth===5)bass(ch[4],t,beat*1.6);if(eighth===0||eighth===4)kick(t);if(eighth===2||eighth===6)nz(t,"bandpass",1800,.16,.06,.7);
+      nz(t+(eighth%2?beat*.08:0),"highpass",7500,.05,eighth%2?.018:.03);
+      if(Math.random()<.3){const pool=ch.slice(0,4).map(m=>m+12).concat(PENTA);keys(pick(pool),t+(eighth%2?beat*.06:0),.55+Math.random()*.45)}}
+    if(style==="nature"){if(eighth===0&&Math.random()<.35)bell(pick(PENTA)-12,t,.6);if(Math.random()<.035)chirp(t);if(eighth===0&&bar%chordLen===0)bass(ch[4]+12,t,beat*6)}
+    if(style==="focus"){if(eighth%4===0&&Math.random()<.22)bell(pick(ch.slice(0,4))+24,t,.5)}
+    MUS.next+=beat/2;MUS.step++}}
+function musicPlay(){const M=MSET();if(!M.on||!musicBuild())return;const C=MUS.C;if(C.state==="suspended")C.resume();
+  const style=musicStyleNow();if(MUS.playing&&MUS.style===style)return;
+  if(MUS.playing&&MUS.style!==style){MUS.style=style;ambStart(style);return}
+  MUS.style=style;MUS.playing=true;MUS.next=C.currentTime+.1;MUS.step=0;ambStart(style);clearInterval(MUS.timer);MUS.timer=setInterval(()=>{if(MUS.playing)schedule()},250);schedule();musicLevel(2.5);renderMusicChip()}
+function musicStop(){if(!MUS.C)return;MUS.playing=false;musicLevel(.6);setTimeout(()=>{if(!MUS.playing){clearInterval(MUS.timer);ambStop()}},700);renderMusicChip()}
+function musicToggle(){const M=MSET();M.on=!M.on;save();if(M.on){musicPlay();toast(`背景音樂：${MSTYLES[M.style]}`)}else{musicStop();toast("背景音樂已關閉")}renderMusicChip()}
+function renderMusicChip(){let b=document.getElementById("musicChip");if(!b){const ch=document.querySelector(".chips");if(!ch)return;b=document.createElement("button");b.id="musicChip";b.className="chip-s mus";b.setAttribute("aria-label","背景音樂");b.onclick=musicToggle;ch.prepend(b)}
+  const on=MSET().on;b.classList.toggle("off",!on);b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/>${on?"":`<path d="M4 4l16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`}</svg>`}
+function musicSetup(){renderMusicChip();
+  const kick=()=>{if(MSET().on&&!MUS.playing)musicPlay()};document.addEventListener("pointerdown",kick,{capture:true});
+  document.addEventListener("visibilitychange",()=>{if(!MUS.C)return;if(document.visibilityState==="hidden")MUS.C.suspend();else if(MSET().on){MUS.C.resume();musicPlay()}});
+  setInterval(()=>{if(MUS.playing&&MSET().style==="auto"&&musicStyleNow()!==MUS.style)musicPlay()},1500)}
+
 /* ================= DATA ================= */
 const CATS=Object.fromEntries(Object.entries(SCENES).map(([k,v])=>[k,v[0]]));
 const BUILTIN=(()=>{
@@ -2487,7 +2549,7 @@ function say(t,rate,cb){if(!canSpeak||!t)return;try{const ss=speechSynthesis;
   if(!voice)pickVoice();
   const u=new SpeechSynthesisUtterance(t);u.lang="en-US";if(voice)u.voice=voice;u.rate=rate||S.rate;u.volume=1;
   if(cb){u.onstart=()=>cb(true);u.onerror=e=>cb(false,e&&e.error)}
-  lastUtt=u;ss.speak(u);if(ss.paused)ss.resume()}catch(e){cb&&cb(false,String(e))}}
+  const undo=()=>{if(typeof musicDuck==="function")setTimeout(()=>{if(!speechSynthesis.speaking)musicDuck(false)},250)};u.addEventListener("end",undo);u.addEventListener("error",undo);if(typeof musicDuck==="function"&&MUS.playing)musicDuck(true);lastUtt=u;ss.speak(u);if(ss.paused)ss.resume()}catch(e){cb&&cb(false,String(e))}}
 /* phones only allow speech that starts inside a tap: warm the engine up on the very first tap */
 document.addEventListener("pointerdown",()=>{if(speechUnlocked||!canSpeak)return;speechUnlocked=true;
   try{const u=new SpeechSynthesisUtterance(" ");u.volume=0;u.lang="en-US";speechSynthesis.speak(u)}catch(e){}
@@ -2689,6 +2751,10 @@ function home(){
     <details><summary>設定</summary><div class="body">
       <div class="seg"><span class="note">程度</span><div class="rate">${LEVELS.map(([k,n])=>`<button data-lv="${k}" aria-pressed="${S.lvl===k}">${n}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">每日目標</span><div class="rate">${[20,40,60,100].map(n=>`<button data-goal="${n}" aria-pressed="${g===n}">${n}</button>`).join("")}</div></div>
+      <div class="seg"><span class="note">背景音樂</span><div class="rate"><button data-mon="1" aria-pressed="${MSET().on}">開</button><button data-mon="0" aria-pressed="${!MSET().on}">關</button></div></div>
+      <div class="seg"><span class="note">音樂風格</span><div class="rate">${Object.entries(MSTYLES).map(([k,n])=>`<button data-mst="${k}" aria-pressed="${MSET().style===k}">${n.replace(" 鋼琴","")}</button>`).join("")}</div></div>
+      <div class="seg"><span class="note">音樂音量</span><div class="rate">${[[1,"小"],[2,"中"],[3,"大"]].map(([v,n])=>`<button data-mvol="${v}" aria-pressed="${MSET().vol===v}">${n}</button>`).join("")}</div></div>
+      <p class="note" style="margin:0">「自動」會依畫面切換：小島放自然音，練習時放專注音樂，其他時候放 Lo-fi。唸單字時音樂會自動變小聲。</p>
       <div class="seg"><span class="note">音效</span><div class="rate"><button data-snd="1" aria-pressed="${S.sound}">開</button><button data-snd="0" aria-pressed="${!S.sound}">關</button></div></div>
       <div class="seg"><span class="note">聽不到聲音？</span><button class="link" id="sndTest">測試聲音</button></div>
       <div id="sndOut" class="note"></div>
@@ -2719,6 +2785,9 @@ function home(){
   view().querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{S.lvl=b.dataset.lv;save();home();toast(`程度改為「${lvName()}」`)});
   view().querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{S.goal=+b.dataset.goal;save();home()});
   view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{S.tlen=b.dataset.tl;save();home();toast(`今日訓練改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
+  view().querySelectorAll("[data-mon]").forEach(b=>b.onclick=()=>{const on=b.dataset.mon==="1";if(MSET().on!==on)musicToggle();home()});
+  view().querySelectorAll("[data-mst]").forEach(b=>b.onclick=()=>{MSET().style=b.dataset.mst;MSET().on=true;save();musicPlay();home()});
+  view().querySelectorAll("[data-mvol]").forEach(b=>b.onclick=()=>{MSET().vol=+b.dataset.mvol;save();musicLevel(.4);home()});
   view().querySelectorAll("[data-snd]").forEach(b=>b.onclick=()=>{S.sound=b.dataset.snd==="1";save();home();sfx("ok")});
   view().querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{S.rate=+b.dataset.rate;save();home();say("This is the new speed.")});
   $("#bk").onclick=()=>{const tx=JSON.stringify(S),ta=$("#bkText");ta.value=tx;ta.hidden=false;
@@ -3080,7 +3149,7 @@ function onboarding(step){ROOT=false;
   }
 }
 
-applyTheme();mountAura();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();
+applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();
 renderTabs();renderHeader();
 if(!S.onb)onboarding(1);else home();
 checkAch();cloudInit();
