@@ -17,7 +17,7 @@
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.4 -apple-system,system-ui,sans-serif;background:#fafafa;-webkit-text-size-adjust:100%}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<title>每日英文練功房</title>
+<title>England</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap">
 <style>
@@ -937,7 +937,7 @@ nav .in{grid-template-columns:repeat(5,1fr)!important}
 
 <div class="app">
   <header>
-    <div class="hd"><h1>每日英文練功房</h1><div class="chips"><span class="chip-s" title="連續天數"><span id="flameI"></span><b id="streakN">0</b></span><button class="chip-s" id="coinChip" aria-label="金幣與主題顏色"><span id="coinI"></span><b id="coinN">0</b></button></div></div>
+    <div class="hd"><h1>England</h1><div class="chips"><span class="chip-s" title="連續天數"><span id="flameI"></span><b id="streakN">0</b></span><button class="chip-s" id="coinChip" aria-label="金幣與主題顏色"><span id="coinI"></span><b id="coinN">0</b></button></div></div>
     <div class="lv"><b id="lvName">Lv.1 Rookie</b><div class="lvtrack"><i id="lvBar" style="width:0"></i></div><span id="lvXp">0 / 50 XP</span></div>
   </header>
   <main id="view"></main>
@@ -975,6 +975,31 @@ body.gated{overflow:hidden}body.gated .app{filter:blur(2px);pointer-events:none}
 .g-foot{margin:4px 0 0;color:var(--muted);font-size:.8rem}
 .g-arrow{position:fixed;left:50%;bottom:calc(8px + env(safe-area-inset-bottom,0px));width:18px;height:18px;margin-left:-9px;border-right:3px solid var(--accent);border-bottom:3px solid var(--accent);transform:rotate(45deg);animation:gbob 1.2s ease-in-out infinite}
 @keyframes gbob{50%{translate:0 8px}}
+</style>
+<style id="v14css">header h1{font-family:var(--f-disp);font-weight:700;font-size:1.05rem;color:var(--ink);letter-spacing:-.01em;opacity:.92}
+#updBar{white-space:nowrap;position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);z-index:150;display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:99px;font:inherit;font-size:.92rem;color:var(--ink);background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),0 10px 30px rgba(0,0,0,.18);transition:transform .45s cubic-bezier(.2,1.3,.4,1);cursor:pointer}
+#updBar.show{transform:translate(-50%,0)}
+.upd-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
+.g-skip{display:block;margin:12px auto 0;font-size:.82rem;color:var(--muted)!important;background:none;border:0;text-decoration:underline;text-underline-offset:3px}
+.vsel{font:inherit;font-size:16px;max-width:62%;padding:7px 30px 7px 12px;border-radius:12px;color:var(--ink);background:var(--glass) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 11px center;border:1px solid var(--glass-brd);-webkit-appearance:none;appearance:none}
+#bkSave,#bkPick{width:100%}
+.st-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.st-t{background:var(--glass);border:1px solid var(--glass-brd);border-radius:16px;padding:10px 10px 9px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.st-t b{font-family:var(--f-disp);font-size:1.35rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.st-t span{font-size:.72rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.st-t em{font-style:normal;font-weight:700;font-size:.68rem}.st-t em.up{color:var(--good,#34c759)}.st-t em.down{color:var(--bad,#ff3b30)}
+.st-card{background:var(--glass);border:1px solid var(--glass-brd);border-radius:18px;padding:12px 14px 8px}
+.st-h{font-weight:600;font-size:.92rem;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline;margin-bottom:6px}
+.st-h .note{font-weight:400;font-size:.74rem}
+.st-svg{display:block;width:100%;height:auto;overflow:visible}
+.st-bar{fill:color-mix(in srgb,var(--accent) 45%,transparent)}.st-hit{fill:var(--accent)}.st-today{fill:var(--gold,#ffb800)}
+.st-ax{font-size:9px;fill:var(--muted);text-anchor:middle}
+.st-goal{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3;opacity:.7}
+.st-grid{stroke:var(--glass-brd);stroke-width:.7}
+.st-line{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.st-acc{stroke:#34c759}
+.st-area{fill:color-mix(in srgb,var(--accent) 18%,transparent)}
+.st-wrap .body{display:flex;flex-direction:column;gap:10px}
 </style>
 <script>
 const ORIG=[
@@ -2528,7 +2553,7 @@ function renderBk(){const box=document.getElementById("bkList"),st=document.getE
 function isInstalled(){try{return navigator.standalone===true||matchMedia("(display-mode: standalone)").matches||matchMedia("(display-mode: fullscreen)").matches||/[?&]src=home/.test(location.search)}catch(e){return false}}
 function gateNeeded(){let top=true;try{top=window.top===window}catch(e){top=false}if(!top||isInstalled())return false;
   const ua=navigator.userAgent,mobile=/iPhone|iPod|iPad|Android/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
-  return mobile&&!S.onb&&isFresh(S)}
+  let skip=false;try{skip=localStorage.getItem("eng-gate-skip")==="1"}catch(e){}return mobile&&!skip&&!S.onb&&isFresh(S)}
 let gatePrompt=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();gatePrompt=e;const b=document.getElementById("gateInstall");if(b)b.hidden=false});
 const SHARE_I=`<svg viewBox="0 0 24 24" class="gi"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
 const PLUS_I=`<svg viewBox="0 0 24 24" class="gi"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
@@ -2547,12 +2572,84 @@ function showGate(){const ua=navigator.userAgent,ios=/iPhone|iPod|iPad/i.test(ua
     <ol class="g-steps">${steps}</ol>
     <button class="btn g-btn" id="gateInstall" hidden>安裝 England</button>
     ${inapp?`<button class="btn g-btn" id="gateCopy">複製連結</button>`:""}
-    <p class="g-foot">加好之後，請從主畫面的圖示打開，這個頁面可以關掉。</p></div>
+    <p class="g-foot">加好之後，請從主畫面的圖示打開，這個頁面可以關掉。</p><button class="link g-skip" id="gateSkip">暫時在瀏覽器使用</button></div>
     ${ios&&!inapp&&!iosOther?`<div class="g-arrow" aria-hidden="true"></div>`:""}`;
   document.body.appendChild(g);document.body.classList.add("gated");
   const ib=g.querySelector("#gateInstall");if(gatePrompt)ib.hidden=false;ib.onclick=async()=>{if(!gatePrompt)return;gatePrompt.prompt();try{await gatePrompt.userChoice}catch(e){}gatePrompt=null;ib.hidden=true};
+  g.querySelector("#gateSkip").onclick=()=>{try{localStorage.setItem("eng-gate-skip","1")}catch(e){}g.remove();document.body.classList.remove("gated");toast("在瀏覽器裡使用時，進度只存在這個瀏覽器")};
   const cb=g.querySelector("#gateCopy");if(cb)cb.onclick=()=>{try{navigator.clipboard.writeText(location.href.split("#")[0]);cb.textContent="已複製，貼到瀏覽器打開"}catch(e){}}}
 function gateBoot(){if(gateNeeded()){showGate();return true}return false}
+
+/* ================= v14: offline + update prompt, voices, file backup, stats ================= */
+const APP_VER="20261013005918";
+const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
+function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
+  try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
+  let lastChk=0;const chk=async()=>{if(Date.now()-lastChk<10*60e3||!navigator.onLine)return;lastChk=Date.now();
+    try{const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(j&&j.v&&j.v!==APP_VER)showUpdate()}catch(e){}};
+  setTimeout(chk,6000);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")chk()})}
+function showUpdate(){if(document.getElementById("updBar"))return;const b=document.createElement("button");b.id="updBar";
+  b.innerHTML=`<span class="upd-dot"></span><span><b>有新版本</b> · 點一下更新</span>`;b.onclick=()=>{b.textContent="更新中…";setTimeout(()=>location.reload(),150)};document.body.appendChild(b);requestAnimationFrame(()=>b.classList.add("show"))}
+
+/* ---- voices: prefer natural iOS/Android voices, user can choose ---- */
+function VOICE_RANK(v){const n=v.name;let s=0;if(/en[-_]US/i.test(v.lang))s+=30;else if(/en[-_](GB|AU|CA|IE|NZ)/i.test(v.lang))s+=20;else if(/^en/i.test(v.lang))s+=10;
+  if(/Premium/i.test(n))s+=40;else if(/Enhanced|Neural|Natural/i.test(n))s+=30;
+  if(/^(Ava|Zoe|Samantha|Allison|Susan|Evan|Nathan|Tom|Joelle|Nicky|Serena|Kate|Daniel|Karen|Moira|Tessa|Jamie|Siri)/i.test(n))s+=15;
+  if(/Google US English|Microsoft (Aria|Jenny|Guy)/i.test(n))s+=18;
+  if(/Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Ralph|Kathy|Grandma|Grandpa|Rocko|Shelley|Flo|Eddy|Reed|Sandy/i.test(n))s-=60;
+  return s}
+function engVoices(){if(!canSpeak)return[];return speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)&&VOICE_RANK(v)>0).sort((a,b)=>VOICE_RANK(b)-VOICE_RANK(a))}
+function pickVoiceBest(){if(!canSpeak)return;const L=engVoices();voice=(S&&S.voice&&L.find(v=>v.voiceURI===S.voice))||L[0]||speechSynthesis.getVoices().find(x=>/^en/i.test(x.lang))||null}
+const voiceLabel=v=>{const acc={US:"美式",GB:"英式",AU:"澳洲",CA:"加拿大",IE:"愛爾蘭",NZ:"紐西蘭",IN:"印度",ZA:"南非"}[(v.lang.split(/[-_]/)[1]||"").toUpperCase()]||"";
+  return `${v.name.replace(/\s*\((Enhanced|Premium|English.*?)\)/gi,m=>/Premium/i.test(m)?" · 高品質":/Enhanced/i.test(m)?" · 加強版":"")}${acc?" · "+acc:""}`};
+function voiceRow(){if(!canSpeak)return"";const L=engVoices().slice(0,14);if(!L.length)return"";const curV=voice&&voice.voiceURI;
+  return `<div class="seg"><span class="note">發音語音</span><select id="voiceSel" class="vsel" aria-label="發音語音">${L.map(v=>`<option value="${esc(v.voiceURI)}" ${v.voiceURI===curV?"selected":""}>${esc(voiceLabel(v))}</option>`).join("")}</select></div>
+  <p class="note" style="margin:0">想要更自然的聲音：iPhone 到「設定 › 輔助使用 › 朗讀內容 › 聲音 › 英文」下載「高品質」語音（例如 Ava、Zoe），回來就能在這裡選。</p>`}
+function wireVoice(){const s=document.getElementById("voiceSel");if(!s)return;s.onchange=()=>{S.voice=s.value;save();pickVoice();say("Hello! This is how I sound.")}}
+
+/* ---- backup to / restore from a file ---- */
+function bkFileName(){const d=new Date();return `England-備份-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}.json`}
+async function bkSaveFile(btn){const data=JSON.stringify({app:"england",v:1,at:Date.now(),s:S});const name=bkFileName();
+  try{const f=new File([data],name,{type:"application/json"});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"England 備份"});btn.textContent="已儲存備份檔";return}}catch(e){if(e&&e.name==="AbortError")return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);btn.textContent="已下載備份檔"}
+function bkReadFile(file,msg,done){const rd=new FileReader();rd.onload=()=>{let d;try{d=JSON.parse(rd.result)}catch(e){msg.textContent="讀不出這個檔案，請選 England 的備份檔（.json）。";return}
+  if(d&&d.app==="england"&&d.s)d=d.s;if(!d||typeof d!=="object"||!d.srs){msg.textContent="這不是 England 的備份檔。";return}done(d)};rd.onerror=()=>{msg.textContent="檔案讀取失敗，請再試一次。"};rd.readAsText(file)}
+function wireBkFile(){const sv=document.getElementById("bkSave"),inp=document.getElementById("bkFile"),pick=document.getElementById("bkPick"),msg=document.getElementById("rsMsg");if(!sv)return;
+  sv.onclick=()=>bkSaveFile(sv);pick.onclick=()=>inp.click();
+  inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;bkReadFile(f,msg,d=>{const sum=bkSum(d);
+    msg.innerHTML=`找到備份：${sum.xp} XP · 學過 ${sum.n} 字 · 熟練 ${sum.m} 字。<button class="link" id="bkGo">確定還原</button>`;
+    document.getElementById("bkGo").onclick=()=>{const rest=bkList().filter(x=>x.day!=="undo");if(!isFresh(S))bkStore([...rest,{day:"undo",sum:bkSum(S),s:JSON.stringify(S)}]);
+      S=Object.assign(DEF(),d);migrate();S.onb=true;save();CLOUD.dirty=true;cloudPush();renderHeader();home();toast("已從備份檔還原進度")}});inp.value=""}}
+
+/* ---- learning stats ---- */
+function statsData(){const days=[],acc=[],d=new Date();d.setDate(d.getDate()-13);
+  for(let i=0;i<14;i++){const k=dkey(d);days.push({k,n:S.days[k]||0,lab:`${d.getMonth()+1}/${d.getDate()}`,wd:"日一二三四五六"[d.getDay()]});
+    const a=S.accd[k];let ok=0,all=0;if(a)for(const s in a){ok+=a[s][0];all+=a[s][1]}acc.push(all?ok/all:null);d.setDate(d.getDate()+1)}
+  const mt=Object.values(S.mt||{}).sort(),cum=[],c=new Date();c.setDate(c.getDate()-29);
+  for(let i=0;i<30;i++){const k=dkey(c);cum.push(mt.filter(x=>x<=k).length);c.setDate(c.getDate()+1)}
+  const r=Object.values(S.srs||{}),tot=Object.values(S.days||{}).reduce((a,b)=>a+b,0);
+  let ok7=0,all7=0;const w=new Date();for(let i=0;i<7;i++){const a=S.accd[dkey(w)];if(a)for(const s in a){ok7+=a[s][0];all7+=a[s][1]}w.setDate(w.getDate()-1)}
+  return{days,acc,cum,tot,act:Object.keys(S.days||{}).filter(k=>S.days[k]>0).length,learned:r.filter(e=>e.box>0).length,mastered:masteredCount(),acc7:all7?Math.round(ok7/all7*100):null,week:days.slice(7).reduce((a,b)=>a+b.n,0),prev:days.slice(0,7).reduce((a,b)=>a+b.n,0)}}
+function statsHTML(){const D=statsData(),W=320,H=120,max=Math.max(S.goal||40,...D.days.map(x=>x.n),1),bw=W/14;
+  const bars=D.days.map((x,i)=>{const h=Math.round(x.n/max*(H-18)),y=H-14-h,t=i===13;return `<rect x="${i*bw+3}" y="${y}" width="${bw-6}" height="${Math.max(h,x.n?3:1.5)}" rx="3" class="${t?"st-today":x.n>=(S.goal||40)?"st-hit":"st-bar"}"/><text x="${i*bw+bw/2}" y="${H-2}" class="st-ax">${t?"今":x.wd}</text>`}).join("");
+  const gy=H-14-Math.round((S.goal||40)/max*(H-18));
+  const line=(arr,h,fmt)=>{const pts=arr.map((v,i)=>v==null?null:[i*(W/(arr.length-1)),h-8-v*(h-16)]);let p="",started=false;pts.forEach(q=>{if(!q){started=false;return}p+=(started?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1);started=true});return p};
+  const cmax=Math.max(1,...D.cum),cumN=D.cum.map(v=>v/cmax),accLine=line(D.acc,90),cumLine=line(cumN,90);
+  const cumArea=cumLine?cumLine+`L${W} 82L0 82Z`:"";
+  const trend=D.prev?Math.round((D.week-D.prev)/D.prev*100):null;
+  return `<div class="st-tiles">
+    <div class="st-t"><b>${D.week}</b><span>近 7 天答題${trend==null?"":`<em class="${trend>=0?"up":"down"}">${trend>=0?"▲":"▼"}${Math.abs(trend)}%</em>`}</span></div>
+    <div class="st-t"><b>${D.acc7==null?"—":D.acc7+"%"}</b><span>近 7 天正確率</span></div>
+    <div class="st-t"><b>${D.learned}</b><span>學過的字</span></div>
+    <div class="st-t"><b>${D.mastered}</b><span>熟練的字</span></div>
+    <div class="st-t"><b>${D.tot}</b><span>累計答題</span></div>
+    <div class="st-t"><b>${D.act}</b><span>練習天數</span></div></div>
+  <div class="st-card"><div class="st-h">每天答題 <span class="note">近 14 天 · 虛線是每日目標</span></div>
+    <svg viewBox="0 0 ${W} ${H}" class="st-svg" role="img" aria-label="近 14 天每天答題數">${bars}<line x1="0" x2="${W}" y1="${gy}" y2="${gy}" class="st-goal"/></svg></div>
+  <div class="st-card"><div class="st-h">熟練的字 <span class="note">近 30 天累積 · 目前 ${D.cum[29]} 個</span></div>
+    <svg viewBox="0 0 ${W} 90" class="st-svg" role="img" aria-label="熟練單字累積">${cumArea?`<path d="${cumArea}" class="st-area"/><path d="${cumLine}" class="st-line"/>`:""}</svg></div>
+  <div class="st-card"><div class="st-h">正確率 <span class="note">近 14 天</span></div>
+    ${accLine?`<svg viewBox="0 0 ${W} 90" class="st-svg" role="img" aria-label="正確率">${[0,.5,1].map(v=>`<line x1="0" x2="${W}" y1="${82-v*74}" y2="${82-v*74}" class="st-grid"/><text x="${W-2}" y="${80-v*74}" class="st-ax" text-anchor="end">${v*100}%</text>`).join("")}<path d="${accLine}" class="st-line st-acc"/></svg>`:`<div class="note">練習幾天後就會看到正確率的變化。</div>`}</div>`}
 
 /* ================= DATA ================= */
 const CATS=Object.fromEntries(Object.entries(SCENES).map(([k,v])=>[k,v[0]]));
@@ -2686,7 +2783,7 @@ function pickWord(filter){
 /* ================= SPEECH ================= */
 const canSpeak="speechSynthesis" in window;
 let voice=null;
-function pickVoice(){if(!canSpeak)return;const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]US/i.test(x.lang)&&/Samantha|Google|Natural|Aria|Jenny/i.test(x.name))||v.find(x=>/en[-_]US/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
+function pickVoice(){pickVoiceBest()}
 if(canSpeak){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
 let lastUtt=null,speechUnlocked=false;
 function say(t,rate,cb){if(!canSpeak||!t)return;try{const ss=speechSynthesis;
@@ -2893,6 +2990,7 @@ function home(){
     <section class="medalsec">${medalStrip()}</section>
     <section class="more">
     ${IN_CLAUDE?`<div class="syncline"><span class="sdot"></span><span id="syncTxt" class="note sync-${CLOUD.status}">${syncText()}</span></div>`:""}
+    <details class="st-wrap"><summary>學習紀錄</summary><div class="body">${statsHTML()}</div></details>
     <details><summary>設定</summary><div class="body">
       <div class="seg"><span class="note">程度</span><div class="rate">${LEVELS.map(([k,n])=>`<button data-lv="${k}" aria-pressed="${S.lvl===k}">${n}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">每日目標</span><div class="rate">${[20,40,60,100].map(n=>`<button data-goal="${n}" aria-pressed="${g===n}">${n}</button>`).join("")}</div></div>
@@ -2904,6 +3002,7 @@ function home(){
       <div class="seg"><span class="note">聽不到聲音？</span><button class="link" id="sndTest">測試聲音</button></div>
       <div id="sndOut" class="note"></div>
       <div class="seg"><span class="note">發音速度${canSpeak?"":"（此裝置不支援）"}</span><div class="rate">${[[0.7,"慢"],[0.9,"標準"],[1.1,"快"]].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.rate===r}">${l}</button>`).join("")}</div></div>
+      ${voiceRow()}
       <div class="seg"><span class="note">練習場景：${S.cats.length} 個</span><button class="link" onclick="go('bank')">到單字庫調整</button></div>
     </div></details>
     <details><summary>自動備份與還原</summary><div class="body">
@@ -2911,12 +3010,11 @@ function home(){
       <div class="bk-h">還原進度</div>
       <div class="bk-list" id="bkList"></div>
       <p class="note" style="margin:0">每天自動存一份，最多保留 7 天。若進度不見，打開 App 時也會自動從備份找回來。</p>
-      <details class="bk-move"><summary>換手機用的備份碼</summary><div class="body">
-        <div class="note">自動備份存在這支手機裡；換手機或刪掉 App 前，先複製備份碼存到記事本，到新手機貼上即可。</div>
-        <button class="btn" id="bk">複製備份碼</button>
-        <textarea id="bkText" readonly hidden aria-label="備份碼"></textarea>
-        <textarea id="rsText" placeholder="在新手機把備份碼貼在這裡" aria-label="貼上備份碼"></textarea>
-        <button class="btn" id="rs">用備份碼還原</button>
+      <details class="bk-move"><summary>換手機用的備份檔</summary><div class="body">
+        <div class="note">自動備份存在這支手機裡。換手機或刪掉 App 前，先把備份檔存到「檔案」或 iCloud；到新手機打開 England，再選這個檔案還原。</div>
+        <button class="btn" id="bkSave">儲存備份檔</button>
+        <button class="btn" id="bkPick">從備份檔還原</button>
+        <input type="file" id="bkFile" accept=".json,application/json,text/plain" hidden>
         <div id="rsMsg" class="note"></div>
       </div></details>
     </div></details>
@@ -2935,14 +3033,7 @@ function home(){
   view().querySelectorAll("[data-mvol]").forEach(b=>b.onclick=()=>{MSET().vol=+b.dataset.mvol;save();musicLevel(.4);home()});
   view().querySelectorAll("[data-snd]").forEach(b=>b.onclick=()=>{S.sound=b.dataset.snd==="1";save();home();sfx("ok")});
   view().querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{S.rate=+b.dataset.rate;save();home();say("This is the new speed.")});
-  $("#bk").onclick=()=>{const tx=JSON.stringify(S),ta=$("#bkText");ta.value=tx;ta.hidden=false;
-    const fb=()=>{ta.focus();ta.select();$("#bk").textContent="已選取，請手動複製"};
-    try{navigator.clipboard.writeText(tx).then(()=>{$("#bk").textContent="已複製備份碼"},fb)}catch(e){fb()}};
-  let armed=false;
-  $("#rs").onclick=()=>{let d;try{d=JSON.parse($("#rsText").value.trim())}catch(e){$("#rsMsg").textContent="備份碼格式不對，請確認有完整貼上。";return}
-    if(!d||typeof d!=="object"||!d.srs){$("#rsMsg").textContent="這不是這個 App 的備份碼。";return}
-    if(!armed){armed=true;$("#rs").textContent="確定覆蓋目前進度";$("#rsMsg").textContent="還原會取代這支手機上目前的進度，再按一次確認。";return}
-    S=Object.assign(DEF(),d);migrate();S.onb=true;save();CLOUD.dirty=true;cloudPush();renderHeader();home();toast("已還原進度")};
+  wireBkFile();wireVoice();
 }
 
 /* ================= PRACTICE MENU ================= */
@@ -3294,7 +3385,7 @@ function onboarding(step){ROOT=false;
   }
 }
 
-bkBoot();gateBoot();applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();
+bkBoot();gateBoot();swBoot();applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();
 renderTabs();renderHeader();
 if(!S.onb)onboarding(1);else home();
 checkAch();cloudInit();
