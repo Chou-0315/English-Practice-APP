@@ -2656,7 +2656,7 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013013835";
+const APP_VER="20261013014455";
 const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
 function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
   try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
@@ -2726,6 +2726,30 @@ function statsHTML(){const D=statsData(),W=320,H=120,max=Math.max(S.goal||40,...
     <svg viewBox="0 0 ${W} 90" class="st-svg" role="img" aria-label="熟練單字累積">${cumArea?`<path d="${cumArea}" class="st-area"/><path d="${cumLine}" class="st-line"/>`:""}</svg></div>
   <div class="st-card"><div class="st-h">正確率 <span class="note">近 14 天</span></div>
     ${accLine?`<svg viewBox="0 0 ${W} 90" class="st-svg" role="img" aria-label="正確率">${[0,.5,1].map(v=>`<line x1="0" x2="${W}" y1="${82-v*74}" y2="${82-v*74}" class="st-grid"/><text x="${W-2}" y="${80-v*74}" class="st-ax" text-anchor="end">${v*100}%</text>`).join("")}<path d="${accLine}" class="st-line st-acc"/></svg>`:`<div class="note">練習幾天後就會看到正確率的變化。</div>`}</div>`}
+
+/* ---- real recorded pronunciation for single words (plays even in silent mode; falls back to speech) ---- */
+const WA_KEY="eng-wa";let WA={};try{WA=JSON.parse(localStorage.getItem(WA_KEY))||{}}catch(e){WA={}}
+const WA_EL=new Audio();WA_EL.preload="auto";WA_EL.setAttribute("playsinline","");let waUnlocked=false;
+["touchend","click"].forEach(t=>document.addEventListener(t,()=>{if(waUnlocked)return;waUnlocked=true;try{WA_EL.src=silentLoop().src;WA_EL.play().then(()=>WA_EL.pause()).catch(()=>{})}catch(e){}},{capture:true,passive:true}));
+const waWord=t=>{const w=String(t||"").trim();return /^[A-Za-z][A-Za-z'\-]{0,24}$/.test(w)?w.toLowerCase():null};
+function waSave(){try{const k=Object.keys(WA);if(k.length>1500)for(const x of k.slice(0,300))delete WA[x];localStorage.setItem(WA_KEY,JSON.stringify(WA))}catch(e){}}
+function waLookup(w,ms){if(WA[w]!==undefined)return Promise.resolve(WA[w]);if(!navigator.onLine)return Promise.resolve(null);
+  const ctl=typeof AbortController!=="undefined"?new AbortController():null,tm=setTimeout(()=>ctl&&ctl.abort(),ms||4000);
+  return fetch("https://api.dictionaryapi.dev/api/v2/entries/en/"+encodeURIComponent(w),ctl?{signal:ctl.signal}:{}).then(r=>r.ok?r.json():(r.status===404?[]:null)).then(j=>{clearTimeout(tm);if(j===null)return null;
+    const urls=[];(Array.isArray(j)?j:[]).forEach(e=>(e.phonetics||[]).forEach(p=>{if(p&&p.audio)urls.push(p.audio)}));
+    const u=urls.find(x=>/-us\.mp3$/i.test(x))||urls.find(x=>/\.mp3$/i.test(x))||"";WA[w]=u;waSave();return u}).catch(()=>{clearTimeout(tm);return null})}
+function waPrefetch(words){let i=0;const L=[...new Set(words.map(waWord).filter(w=>w&&WA[w]===undefined))].slice(0,12);const next=()=>{if(i<L.length)waLookup(L[i++],6000).then(()=>setTimeout(next,150))};next()}
+const sayTTS=say;
+say=function(t,rate,cb){const w=waWord(t);if(!w||S.realVoice===false)return sayTTS(t,rate,cb);
+  const play=u=>{try{if(canSpeak&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel();
+      WA_EL.pause();WA_EL.src=u;WA_EL.playbackRate=Math.max(.7,Math.min(1.2,rate||S.rate||1));
+      if(typeof musicDuck==="function"&&MUS.playing)musicDuck(true);
+      WA_EL.onended=WA_EL.onerror=()=>{if(typeof musicDuck==="function")setTimeout(()=>musicDuck(false),200)};
+      const p=WA_EL.play();if(p&&p.then)p.then(()=>cb&&cb(true)).catch(()=>sayTTS(t,rate,cb));else cb&&cb(true)}catch(e){sayTTS(t,rate,cb)}};
+  if(WA[w]){play(WA[w]);return}
+  if(WA[w]===""){sayTTS(t,rate,cb);return}
+  let done=false;const fb=setTimeout(()=>{if(!done){done=true;sayTTS(t,rate,cb)}},900);
+  waLookup(w,4000).then(u=>{if(done)return;done=true;clearTimeout(fb);u?play(u):sayTTS(t,rate,cb)})};
 
 /* ================= DATA ================= */
 const CATS=Object.fromEntries(Object.entries(SCENES).map(([k,v])=>[k,v[0]]));
@@ -3080,6 +3104,8 @@ function home(){
       <div class="seg"><span class="note">聽不到聲音？</span><button class="link" id="sndTest">測試聲音</button></div>
       <div id="sndOut" class="note"></div>
       <div class="seg"><span class="note">發音速度${canSpeak?"":"（此裝置不支援）"}</span><div class="rate">${[[0.7,"慢"],[0.9,"標準"],[1.1,"快"]].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.rate===r}">${l}</button>`).join("")}</div></div>
+      <div class="seg"><span class="note">單字用真人發音</span><div class="rate"><button data-rv="1" aria-pressed="${S.realVoice!==false}">開</button><button data-rv="0" aria-pressed="${S.realVoice===false}">關</button></div></div>
+      <p class="note" style="margin:0">單字會優先播放字典的真人錄音（需要網路，靜音模式也聽得到）；沒有錄音的字和例句會用手機語音。</p>
       ${voiceRow()}
       <div class="seg"><span class="note">第一次使用的導覽</span><button class="link" id="tourAgain">重看導覽</button></div>
       <div class="seg"><span class="note">練習場景：${S.cats.length} 個</span><button class="link" onclick="go('bank')">到單字庫調整</button></div>
@@ -3113,6 +3139,7 @@ function home(){
   view().querySelectorAll("[data-snd]").forEach(b=>b.onclick=()=>{S.sound=b.dataset.snd==="1";save();home();sfx("ok")});
   view().querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{S.rate=+b.dataset.rate;save();home();say("This is the new speed.")});
   wireBkFile();wireVoice();
+  view().querySelectorAll("[data-rv]").forEach(b=>b.onclick=()=>{S.realVoice=b.dataset.rv==="1";save();home();say("pronunciation")});
   view().querySelectorAll("[data-loud]").forEach(b=>b.onclick=()=>{S.loud=b.dataset.loud==="1";save();applyLoud();home();toast(S.loud!==false?"靜音模式也會播放聲音":"已恢復：靜音時不出聲")});
   if($("#tourAgain"))$("#tourAgain").onclick=()=>{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0});setTimeout(startTour,250)};
 }
@@ -3148,7 +3175,7 @@ function drawCard(){
     <p class="sub">${c.deck.length?`剛剛複習了 ${c.deck.length} 張卡。`:"記得的字都還沒到複習時間。"}</p>
     <div class="stack"><button class="btn primary" onclick="runQuiz({total:10})">做一輪測驗</button>
     <button class="btn" onclick="runCards(shuffle(ACTIVE()).slice(0,10),'自由複習')">不管排程，再看 10 個字</button></div>`;return}
-  const w=c.deck[c.i],b=srs(w.id).box;
+  const w=c.deck[c.i],b=srs(w.id).box;if(typeof waPrefetch==="function")waPrefetch(c.deck.slice(c.i,c.i+6).map(x=>x.w));
   view().innerHTML=`${backBtn()}<h2>${c.label}</h2><p class="sub">先自己想意思，再翻面。第 ${c.i+1} / ${c.deck.length} 張</p>
   <div class="progress"><i style="width:${c.i/c.deck.length*100}%"></i></div>
   <div class="card ${c.flipped?"flipin":""}" id="card" role="button" tabindex="0" aria-label="翻面" style="--sc:${SC[w.cat]}">
