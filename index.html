@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="England">
 <meta name="application-name" content="England">
 <title>England</title>
+<meta name="referrer" content="no-referrer">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#EEF1FA" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#07080D" media="(prefers-color-scheme: dark)">
@@ -2658,8 +2659,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013020504";
-const APP_NAME="1.5";
+const APP_VER="20261013020701";
+const APP_NAME="1.6";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2749,10 +2750,12 @@ const sayTTS=say;
 /* online voice sources that a plain <audio> element can play (no CORS needed); media audio ignores the silent switch */
 /* one voice for everything: Google's US voice reads words, phrases and sentences the same way; Youdao only as a backup */
 const VSRC=[t=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en-US&q=${encodeURIComponent(t)}`,
-            t=>`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(t)}&type=2`];
-let VOK=null,LAST_SRC="";try{VOK=JSON.parse(localStorage.getItem("eng-vok2"))}catch(e){}
+            t=>`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(/\s/.test(t)||/[.!?]$/.test(t)?t:t+".")}&type=2`];
+/* Google refuses voice requests that carry another site as referrer: send none */
+try{if(!document.querySelector('meta[name="referrer"]')){const m=document.createElement("meta");m.name="referrer";m.content="no-referrer";document.head.appendChild(m)}}catch(e){}
+let VOK=null,LAST_SRC="";try{VOK=JSON.parse(localStorage.getItem("eng-vok3"))}catch(e){}
 function playSrc(t,rate,i,cb,fail){if(i>=VSRC.length)return fail();let settled=false;
-  const ok=()=>{if(settled)return;settled=true;clearTimeout(to);LAST_SRC=i?"有道詞典":"Google";try{localStorage.setItem("eng-vok2",String(i))}catch(e){}VOK=i;cb&&cb(true)};
+  const ok=()=>{if(settled)return;settled=true;clearTimeout(to);LAST_SRC=i?"有道詞典":"Google";try{localStorage.setItem("eng-vok3",String(i))}catch(e){}VOK=i;cb&&cb(true)};
   const bad=()=>{if(settled)return;settled=true;clearTimeout(to);WA_EL.onplaying=WA_EL.onerror=null;playSrc(t,rate,i+1,cb,fail)};
   try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
   try{if(canSpeak&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel()}catch(e){}
@@ -2763,7 +2766,7 @@ function playSrc(t,rate,i,cb,fail){if(i>=VSRC.length)return fail();let settled=f
   const to=setTimeout(bad,VOK===i?6000:3500);const p=WA_EL.play();if(p&&p.catch)p.catch(e=>{if(e&&e.name==="NotAllowedError"){settled=true;clearTimeout(to);fail()}else bad()})}
 say=function(t,rate,cb){t=String(t||"").trim();if(!t)return;
   if(S.realVoice===false||!navigator.onLine||t.length>180){LAST_SRC="手機語音";return sayTTS(t,rate,cb)}
-  const start=VOK===1?1:0;
+  const start=VOK===1&&window.__gTried?1:0;window.__gTried=1;
   playSrc(t,rate,start,cb,()=>{LAST_SRC="手機語音";sayTTS(t,rate,cb)})};
 /* diagnostics shown under「測試聲音」: can this phone reach the recordings and play them? */
 async function waDiag(){const out=document.getElementById("sndOut");if(!out)return;const L=[];
