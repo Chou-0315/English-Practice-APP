@@ -2608,11 +2608,12 @@ let SIL=null;
 function silentLoop(){if(SIL)return SIL;const sr=8000,n=sr,b=new ArrayBuffer(44+n*2),v=new DataView(b),w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
   w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVE");w(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
   SIL=new Audio(URL.createObjectURL(new Blob([b],{type:"audio/wav"})));SIL.loop=true;SIL.setAttribute("playsinline","");SIL.preload="auto";return SIL}
-function applyLoud(){const on=!!S.loud;
+const LOUD=()=>S.loud!==false;
+function applyLoud(){const on=LOUD();
   if(navigator.audioSession){try{navigator.audioSession.type=on?"playback":"auto"}catch(e){}return}
   try{if(on&&document.visibilityState==="visible")silentLoop().play().catch(()=>{});else if(SIL)SIL.pause()}catch(e){}}
-["touchend","click"].forEach(t=>document.addEventListener(t,()=>{if(S.loud)applyLoud()},{capture:true,passive:true}));
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){if(SIL)SIL.pause()}else if(S.loud)applyLoud()});
+["touchend","click"].forEach(t=>document.addEventListener(t,()=>{if(LOUD())applyLoud()},{capture:true,passive:true}));
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){if(SIL)SIL.pause()}else if(LOUD())applyLoud()});
 
 /* ================= first-run quick tour (coach marks) ================= */
 const TOUR=[
@@ -2622,7 +2623,7 @@ const TOUR=[
   {q:()=>document.querySelector('[data-tab="practice"]'),t:"練習",d:"想多練就來這裡：單字卡、測驗、聽寫、造句、60 秒挑戰和泡泡遊戲。"},
   {q:()=>document.querySelector('[data-tab="weak"]'),t:"弱點",d:"答錯的字會自動收集在這裡。之後在不同的兩天答對，它就會從弱點畢業。"},
   {q:()=>document.querySelector('[data-tab="bank"]'),t:"單字庫",d:"查看所有單字、調整想練的場景，也可以加入自己的單字。"},
-  {q:()=>document.getElementById("musicChip"),t:"背景音樂",d:"點這裡開關音樂。手機開靜音也想聽，可以到「設定」打開「靜音模式也播放」。"},
+  {q:()=>document.getElementById("musicChip"),t:"背景音樂",d:"點這裡開關音樂。手機切到靜音也會照常播放；不想出聲時，點這裡關掉就好。"},
   {q:()=>[...document.querySelectorAll("summary")].find(s=>s.textContent.includes("自動備份")),t:"自動備份",d:"進度每天自動備份在手機裡；換手機前，記得在這裡存一份備份檔。"}];
 let TS=null;
 function startTour(){if(TS||document.getElementById("gate"))return;if(cur!=="home")go("home");
@@ -2651,7 +2652,7 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013013228";
+const APP_VER="20261013013443";
 const IS_WEB=(()=>{try{return window.top===window&&/^https?:$/.test(location.protocol)&&!window.claude}catch(e){return false}})();
 function swBoot(){if(!IS_WEB||!("serviceWorker" in navigator)||!(location.protocol==="https:"||location.hostname==="localhost"))return;
   try{navigator.serviceWorker.register("./sw.js").catch(()=>{})}catch(e){}
@@ -3069,8 +3070,8 @@ function home(){
       <div class="seg"><span class="note">音樂風格</span><div class="rate">${Object.entries(MSTYLES).map(([k,n])=>`<button data-mst="${k}" aria-pressed="${MSET().style===k}">${n.replace(" 鋼琴","")}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">音樂音量</span><div class="rate">${[[1,"小"],[2,"中"],[3,"大"]].map(([v,n])=>`<button data-mvol="${v}" aria-pressed="${MSET().vol===v}">${n}</button>`).join("")}</div></div>
       <p class="note" style="margin:0">「自動」會依畫面切換：小島放自然音，練習時放專注音樂，其他時候放 Lo-fi。唸單字時音樂會自動變小聲。</p>
-      <div class="seg"><span class="note">靜音模式也播放</span><div class="rate"><button data-loud="1" aria-pressed="${!!S.loud}">開</button><button data-loud="0" aria-pressed="${!S.loud}">關</button></div></div>
-      <p class="note" style="margin:0">打開後，手機切到靜音也會有音樂和音效（iOS 17 以上效果最好）。單字發音是否跟著出聲依手機而定。上課、開會時記得關掉。</p>
+      <div class="seg"><span class="note">靜音模式也播放</span><div class="rate"><button data-loud="1" aria-pressed="${S.loud!==false}">開</button><button data-loud="0" aria-pressed="${S.loud===false}">關</button></div></div>
+      <p class="note" style="margin:0">預設開啟：手機切到靜音也會有音樂和音效（iOS 17 以上效果最好）。單字發音是否跟著出聲依手機而定。上課、開會時可以關掉。</p>
       <div class="seg"><span class="note">音效</span><div class="rate"><button data-snd="1" aria-pressed="${S.sound}">開</button><button data-snd="0" aria-pressed="${!S.sound}">關</button></div></div>
       <div class="seg"><span class="note">聽不到聲音？</span><button class="link" id="sndTest">測試聲音</button></div>
       <div id="sndOut" class="note"></div>
@@ -3108,7 +3109,7 @@ function home(){
   view().querySelectorAll("[data-snd]").forEach(b=>b.onclick=()=>{S.sound=b.dataset.snd==="1";save();home();sfx("ok")});
   view().querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{S.rate=+b.dataset.rate;save();home();say("This is the new speed.")});
   wireBkFile();wireVoice();
-  view().querySelectorAll("[data-loud]").forEach(b=>b.onclick=()=>{S.loud=b.dataset.loud==="1";save();applyLoud();home();toast(S.loud?"靜音模式也會播放聲音":"已恢復：靜音時不出聲")});
+  view().querySelectorAll("[data-loud]").forEach(b=>b.onclick=()=>{S.loud=b.dataset.loud==="1";save();applyLoud();home();toast(S.loud!==false?"靜音模式也會播放聲音":"已恢復：靜音時不出聲")});
   if($("#tourAgain"))$("#tourAgain").onclick=()=>{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0});setTimeout(startTour,250)};
 }
 
