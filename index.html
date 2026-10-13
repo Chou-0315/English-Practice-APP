@@ -1027,6 +1027,16 @@ header{padding:22px 16px 6px!important}
 #aura i{animation:none!important;filter:none!important;will-change:auto!important;translate:none!important}
 #aura .b1,#aura .b2,#aura .b3,#aura .b4{opacity:.62}
 .lf.front::after,.boxbanner{animation-duration:6s}
+#tryBar{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:60;max-width:500px;margin:0 auto;display:flex;align-items:center;gap:8px;padding:10px 10px 10px 16px;border-radius:22px;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),0 14px 40px rgba(0,0,0,.25);transform:translateY(30px);opacity:0;transition:transform .35s cubic-bezier(.2,1.3,.4,1),opacity .25s}
+#tryBar.show{transform:none;opacity:1}
+#tryBar .tb-l{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+#tryBar .tb-l small{font-size:.72rem;color:var(--accent);font-weight:700}
+#tryBar .tb-l b{font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tryBar .btn{width:auto;min-height:0;padding:9px 14px;margin:0;flex:none;display:inline-flex;align-items:center;gap:4px}
+#tryBar .btn svg{width:16px;height:16px}
+.sw.trying .sw-c,.bgi.trying .bgprev{outline:3px solid var(--accent);outline-offset:3px;animation:tryPulse 1.6s ease-in-out infinite}
+.sw.trying .sw-p,.bgi.trying .sw-p{color:var(--accent);font-weight:700}
+@keyframes tryPulse{50%{outline-offset:6px}}
 </style>
 <script>
 const ORIG=[
@@ -2128,37 +2138,55 @@ function newCardNotice(id){const w=byId(id);if(!w)return;const r=rarityOf(w);
 
 /* ---------- shop with tabs ---------- */
 let shopTab="color";
+/* try-on preview: tapping a locked color/background shows it on the whole app before buying */
+let TRY=null;
+function tryOn(kind,id){const key=kind==="color"?"theme":"bg",old=S[key];S[key]=id;kind==="color"?applyTheme():applyBg();S[key]=old;TRY={kind,id};sfx("ok");shop()}
+function endTry(){if(!TRY)return;TRY=null;applyTheme();applyBg();const b=document.getElementById("tryBar");if(b)b.remove()}
+function tryBar(){let bar=document.getElementById("tryBar");if(!TRY){if(bar)bar.remove();return}
+  const it=TRY.kind==="color"?itemById(TRY.id):bgById(TRY.id),price=it.price;
+  if(!bar){bar=document.createElement("div");bar.id="tryBar";document.body.appendChild(bar);requestAnimationFrame(()=>bar.classList.add("show"))}
+  bar.innerHTML=`<div class="tb-l"><small>試穿中 · ${TRY.kind==="color"?"顏色":"背景"}</small><b>${esc(it.name)}</b></div>
+    <button class="btn tb-x" id="tryNo">取消</button><button class="btn primary tb-buy" id="tryBuy">${COIN}${price} 購買</button>`;
+  bar.querySelector("#tryNo").onclick=()=>{endTry();shop()};
+  bar.querySelector("#tryBuy").onclick=()=>{const t=TRY;if(!t)return;if(coins()<price){const b=bar.querySelector("#tryBuy");b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");toast(`還差 ${price-coins()} 金幣`);sfx("bad");return}
+    S.spent=(S.spent||0)+price;TRY=null;
+    if(t.kind==="color"){(S.ownedT2||(S.ownedT2=["blue"])).push(t.id);S.theme=t.id;applyTheme();toast(`已解鎖「${it.name}」`)}
+    else{(S.ownedBg||(S.ownedBg=["aurora"])).push(t.id);S.bg=t.id;applyBg();toast(`已解鎖背景「${it.name}」`)}
+    save();sfx("level");checkAch();bar.remove();shop()}}
 function shop(){
   ROOT=false;clearSheet();enter("home");const own=S.ownedT2||(S.ownedT2=["blue"]),ownBg=S.ownedBg||(S.ownedBg=["aurora"]),I=inv();
   const tabs=`<div class="rate shoptabs">${[["color","顏色"],["bg","背景"],["item","道具"]].map(([k,n])=>`<button data-st="${k}" aria-pressed="${shopTab===k}">${n}</button>`).join("")}</div>`;
   let body="";
   if(shopTab==="color")body=`<div class="group swatches">${ITEMS.map(i=>{const has=own.includes(i.id),on=themeId()===i.id;
-    return `<button class="sw ${on?"on":""} ${shopArmed===i.id?"armed":""}" data-it="${i.id}" aria-label="${i.name}">
+    const tr=TRY&&TRY.kind==="color"&&TRY.id===i.id;
+    return `<button class="sw ${on&&!TRY?"on":""} ${tr?"trying":""}" data-it="${i.id}" aria-label="${i.name}">
       <span class="sw-c" style="--c:${i.l};--cd:${i.d}">${on?icon("check"):!has?`<span class="lock"></span>`:""}</span>
-      <span class="sw-n">${i.name}</span><span class="sw-p">${on?"使用中":has?"已解鎖":shopArmed===i.id?"再點一次":`${COIN}${i.price}`}</span></button>`}).join("")}</div>
-    <p class="foot">顏色會套用到按鈕、進度條和選取狀態。</p>`;
+      <span class="sw-n">${i.name}</span><span class="sw-p">${tr?"試穿中":on?"使用中":has?"已解鎖":`${COIN}${i.price}`}</span></button>`}).join("")}</div>
+    <p class="foot">點還沒解鎖的顏色可以先試穿，整個 App 會換成那個顏色，喜歡再買。</p>`;
   if(shopTab==="bg")body=`<div class="bggrid">${BGS.map(b=>{const has=ownBg.includes(b.id),on=(S.bg||"aurora")===b.id,c=b.c||["#7FB2FF","#FF9EC7","#9CF0D8","#FFD38A"];
-    return `<button class="bgi ${on?"on":""} ${shopArmed==="bg_"+b.id?"armed":""}" data-bg="${b.id}"><span class="bgprev" style="background:radial-gradient(circle at 20% 25%,${c[0]},transparent 55%),radial-gradient(circle at 85% 30%,${c[1]},transparent 55%),radial-gradient(circle at 30% 90%,${c[2]},transparent 55%),radial-gradient(circle at 80% 85%,${c[3]},transparent 55%),#fff">${on?icon("check"):""}</span>
-      <span class="sw-n">${b.name}</span><span class="sw-p">${on?"使用中":has?"已解鎖":shopArmed==="bg_"+b.id?"再點一次":`${COIN}${b.price}`}</span></button>`}).join("")}</div>
-    <p class="foot">背景是 App 後面流動的光暈。驚喜盒也有機會開出新背景。</p>`;
+    const tr=TRY&&TRY.kind==="bg"&&TRY.id===b.id;
+    return `<button class="bgi ${on&&!TRY?"on":""} ${tr?"trying":""}" data-bg="${b.id}"><span class="bgprev" style="background:radial-gradient(circle at 20% 25%,${c[0]},transparent 55%),radial-gradient(circle at 85% 30%,${c[1]},transparent 55%),radial-gradient(circle at 30% 90%,${c[2]},transparent 55%),radial-gradient(circle at 80% 85%,${c[3]},transparent 55%),#fff">${on?icon("check"):""}</span>
+      <span class="sw-n">${b.name}</span><span class="sw-p">${tr?"試穿中":on?"使用中":has?"已解鎖":`${COIN}${b.price}`}</span></button>`}).join("")}</div>
+    <p class="foot">點還沒解鎖的背景可以先試穿，看看整個 App 的樣子再決定。驚喜盒也有機會開出新背景。</p>`;
   if(shopTab==="item"){const IT=[["freeze","連勝保護","錯過一天時自動使用，連續天數不會歸零。",60,`擁有 ${I.freeze} 個`,"flame","#FF9500"],["boost","雙倍經驗 15 分鐘","期間內獲得的 XP 加倍。",40,boostLeft()?`剩 ${Math.ceil(boostLeft()/60000)} 分鐘`:"未啟用","bolt","#AF52DE"],["box","驚喜盒","三選一，可能開出金幣、道具或背景。",80,`擁有 ${S.boxes||0} 個`,"job","#FF2D55"]];
     body=`<div class="group">${IT.map(([k,n,d,p,st,ic,col])=>`<button class="grow" data-buy="${k}">${sq(ic,col)}<span class="grow-l"><b>${n}</b><small>${d}<br>${st}</small></span><span class="grow-r ${shopArmed==="it_"+k?"armed-t":""}">${shopArmed==="it_"+k?"確定購買":`${COIN}${p}`}</span></button>`).join("")}</div>
     ${(S.boxes||0)>0?`<button class="btn primary cta" id="openBox" style="width:100%;margin-top:14px">打開驚喜盒（${S.boxes}）</button>`:""}`}
   view().innerHTML=`<button class="back" onclick="go('home')">${icon("chev","flip")}今日</button><h2>商店</h2>
   <div class="group"><div class="grow"><span class="grow-l"><b>金幣</b><small>每 4 XP 換 1 枚，解鎖成就另送 20 枚</small></span><span class="grow-r">${COIN}<b style="color:var(--ink);font-weight:600">${coins()}</b></span></div></div>
   <div style="margin:16px 0 12px">${tabs}</div>${body}`;
-  view().querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{shopTab=b.dataset.st;shopArmed=null;shop()});
+  view().querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{shopTab=b.dataset.st;shopArmed=null;endTry();shop()});
   const pay=(price,key,ok,btn)=>{if(coins()<price){shopArmed=null;btn.classList.remove("shake");void btn.offsetWidth;btn.classList.add("shake");toast(`還差 ${price-coins()} 金幣`);sfx("bad");return}
     if(shopArmed!==key){shopArmed=key;shop();return}S.spent=(S.spent||0)+price;shopArmed=null;ok();save();sfx("level");checkAch();shop()};
   view().querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{const it=itemById(b.dataset.it);
-    if(own.includes(it.id)){S.theme=it.id;applyTheme();shopArmed=null;save();sfx("ok");shop();return}
-    pay(it.price,it.id,()=>{own.push(it.id);S.theme=it.id;applyTheme();toast(`已解鎖「${it.name}」`)},b)});
+    if(own.includes(it.id)){endTry();S.theme=it.id;applyTheme();shopArmed=null;save();sfx("ok");shop();return}
+    if(TRY&&TRY.kind==="color"&&TRY.id===it.id){endTry();shop();return}endTry();tryOn("color",it.id)});
   view().querySelectorAll("[data-bg]").forEach(b=>b.onclick=()=>{const bg=bgById(b.dataset.bg);
-    if(ownBg.includes(bg.id)){S.bg=bg.id;applyBg();shopArmed=null;save();sfx("ok");shop();return}
-    pay(bg.price,"bg_"+bg.id,()=>{ownBg.push(bg.id);S.bg=bg.id;applyBg();toast(`已解鎖背景「${bg.name}」`)},b)});
+    if(ownBg.includes(bg.id)){endTry();S.bg=bg.id;applyBg();shopArmed=null;save();sfx("ok");shop();return}
+    if(TRY&&TRY.kind==="bg"&&TRY.id===bg.id){endTry();shop();return}endTry();tryOn("bg",bg.id)});
   view().querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>{const k=b.dataset.buy,price={freeze:60,boost:40,box:80}[k];
     pay(price,"it_"+k,()=>{if(k==="freeze"){inv().freeze++;toast("獲得 1 個連勝保護")}if(k==="boost"){S.boostUntil=Math.max(Date.now(),S.boostUntil||0)+15*60000;toast("雙倍經驗啟動 15 分鐘")}if(k==="box"){S.boxes=(S.boxes||0)+1;toast("獲得 1 個驚喜盒")}},b)});
   const ob=$("#openBox");if(ob)ob.onclick=()=>mysteryBox("驚喜盒",()=>shop());
+  tryBar();
 }
 
 /* ================= tiny low-poly 3D engine (canvas 2D, painter's algorithm) ================= */
@@ -2664,8 +2692,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013135218";
-const APP_NAME="1.8";
+const APP_VER="20261013135907";
+const APP_NAME="1.9";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -3022,7 +3050,7 @@ const TABS=[
 let cur="home";
 function renderTabs(){$("#tabs").innerHTML=TABS.map(([k,l,p])=>`<button data-tab="${k}" aria-current="${k===cur}"><span class="tab-ic"><svg viewBox="0 0 24 24">${p}</svg></span>${l}</button>`).join("")}
 $("#tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
-function go(k){clearSheet();if(BB)BB.running=false;cur=k;TR=null;renderTabs();clearInterval(rushTimer);rush=null;if(canSpeak)speechSynthesis.cancel();({home,practice,island:islandView,weak,bank})[k]();view().scrollTop=0}
+function go(k){if(typeof endTry==="function")endTry();clearSheet();if(BB)BB.running=false;cur=k;TR=null;renderTabs();clearInterval(rushTimer);rush=null;if(canSpeak)speechSynthesis.cancel();({home,practice,island:islandView,weak,bank})[k]();view().scrollTop=0}
 function enter(tab){if(cur!==tab){cur=tab;renderTabs()}view().scrollTop=0}
 
 /* ================= TODAY'S TRAINING ================= */
