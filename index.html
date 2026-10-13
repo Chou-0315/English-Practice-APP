@@ -1024,6 +1024,9 @@ header{padding:22px 16px 6px!important}
 .hbar .chips{flex:none;gap:14px}
 .appver{text-align:center;font-size:.75rem;color:var(--muted);margin:18px 0 4px;font-variant-numeric:tabular-nums;opacity:.8}
 .upd-v{margin-left:6px;font-size:.72rem;color:var(--muted)}
+#aura i{animation:none!important;filter:none!important;will-change:auto!important;translate:none!important}
+#aura .b1,#aura .b2,#aura .b3,#aura .b4{opacity:.62}
+.lf.front::after,.boxbanner{animation-duration:6s}
 </style>
 <script>
 const ORIG=[
@@ -2390,8 +2393,10 @@ function mountStage(host,opts={}){
   let pinch=null;
   const loop=now=>{if(!document.body.contains(cv)){STG=null;return}const dt=Math.min(.05,(now-st.last)/1000);st.last=now;st.t+=dt;
     if(!st.drag){st.yaw+=st.vy;st.vy*=.93;st.idle+=dt;if(st.idle>2.5&&!reduce)st.yaw+=dt*.12}
-    const calm=!st.drag&&!pinch&&Math.abs(st.vy)<.002&&st.idle>4;st.acc=(st.acc||0)+dt;
-    if(document.visibilityState==="visible"&&(!calm||st.acc>=.031)){draw();st.acc=0}st.raf=requestAnimationFrame(loop)};
+    const calm=!st.drag&&!pinch&&Math.abs(st.vy)<.002&&st.idle>4,deep=calm&&st.idle>20;st.acc=(st.acc||0)+(now-(st.pt||now))/1000;st.pt=now;
+    /* frame budget: 60fps while touching (ProMotion screens would otherwise run 120), 30fps when idle, 15fps after 20s idle */
+    const need=deep?.064:calm?.031:.0155;
+    if(document.visibilityState==="visible"&&st.acc>=need){draw();st.acc=0}st.raf=requestAnimationFrame(loop)};
   cv.addEventListener("pointerdown",e=>{st.drag={x:e.clientX,y:e.clientY,yaw:st.yaw,pitch:st.pitch};st.idle=0;cv.setPointerCapture(e.pointerId)});
   cv.addEventListener("pointermove",e=>{if(!st.drag)return;const dx=e.clientX-st.drag.x,dy=e.clientY-st.drag.y;const ny=st.drag.yaw+dx*.012;st.vy=ny-st.yaw;st.yaw=ny;st.pitch=Math.max(.22,Math.min(.95,st.drag.pitch+dy*.006))});
   const up=()=>{st.drag=null;st.idle=0};cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",up);
@@ -2480,7 +2485,7 @@ const mtof=m=>440*Math.pow(2,(m-69)/12);
 function musicStyleNow(){const s=MSET().style;if(s!=="auto")return s;return cur==="island"?"nature":(TR||document.querySelector(".card,.opts,#dict,.slot,#bbF"))?"focus":"lofi"}
 function musicBuild(){if(MUS.C)return true;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
   const C=new AC();MUS.C=C;const comp=C.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;comp.connect(C.destination);MUS.comp=comp;
-  const len=C.sampleRate*3,ir=C.createBuffer(2,len,C.sampleRate);for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}MUS.ir=ir;
+  const len=Math.round(C.sampleRate*1.8),ir=C.createBuffer(2,len,C.sampleRate);for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}MUS.ir=ir;
   const nb=C.createBuffer(1,C.sampleRate*2,C.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;MUS.noise=nb;musicChain();return true}
 /* fresh output chain: disconnecting the old one silences every note already scheduled on it */
 function musicChain(){const C=MUS.C;if(MUS.master){try{MUS.master.disconnect()}catch(e){}try{MUS.bus.disconnect()}catch(e){}try{MUS.rev.disconnect()}catch(e){}}
@@ -2549,7 +2554,7 @@ function musicSetup(){renderMusicChip();
   document.addEventListener("visibilitychange",()=>document.visibilityState==="hidden"?hide():show());
   window.addEventListener("pagehide",hide);window.addEventListener("pageshow",show);
   const solo=typeof isInstalled==="function"&&isInstalled();if(solo){window.addEventListener("blur",hide);window.addEventListener("focus",show)}
-  setInterval(()=>{if(MUS.playing&&MSET().style==="auto"&&musicStyleNow()!==MUS.style)musicPlay()},1500)}
+  setInterval(()=>{if(document.visibilityState==="visible"&&MUS.playing&&MSET().style==="auto"&&musicStyleNow()!==MUS.style)musicPlay()},2000)}
 
 /* ================= AUTO BACKUP (local daily snapshots, mirrored to IndexedDB) ================= */
 const BKEY="eng-daily-bk",BKEEP=7;let bkTimer=null;
@@ -2659,8 +2664,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013020940";
-const APP_NAME="1.7";
+const APP_VER="20261013135218";
+const APP_NAME="1.8";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2780,6 +2785,10 @@ async function waDiag(){const out=document.getElementById("sndOut");if(!out)retu
   out.innerHTML=L.join(" · ")+"<br>線上發音："+st}
 
 function voiceProbe(text,el){el.textContent="播放中…";LAST_SRC="";say(text);let n=0;const iv=setInterval(()=>{n++;if(LAST_SRC||n>40){clearInterval(iv);el.textContent=LAST_SRC?`「${text}」用的是：${LAST_SRC}`:"沒有播出來"}},200)}
+
+/* battery: static aura background (no animated full-screen blur under the glass layers) */
+function mountAura(){if(document.getElementById("aura"))return;const a=document.createElement("div");a.id="aura";a.setAttribute("aria-hidden","true");
+  a.innerHTML='<i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><i class="grain"></i>';document.body.prepend(a)}
 
 /* ================= DATA ================= */
 const CATS=Object.fromEntries(Object.entries(SCENES).map(([k,v])=>[k,v[0]]));
