@@ -1037,6 +1037,7 @@ header{padding:22px 16px 6px!important}
 .sw.trying .sw-c,.bgi.trying .bgprev{outline:3px solid var(--accent);outline-offset:3px;animation:tryPulse 1.6s ease-in-out infinite}
 .sw.trying .sw-p,.bgi.trying .sw-p{color:var(--accent);font-weight:700}
 @keyframes tryPulse{50%{outline-offset:6px}}
+.btn.pulse{animation:btnPulse 1s ease-in-out infinite}@keyframes btnPulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 30%,transparent)}}
 </style>
 <script>
 const ORIG=[
@@ -2692,8 +2693,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261013135907";
-const APP_NAME="1.9";
+const APP_VER="20261019172823";
+const APP_NAME="1.10";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2787,20 +2788,30 @@ const VSRC=[t=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob
 /* Google refuses voice requests that carry another site as referrer: send none */
 try{if(!document.querySelector('meta[name="referrer"]')){const m=document.createElement("meta");m.name="referrer";m.content="no-referrer";document.head.appendChild(m)}}catch(e){}
 let VOK=null,LAST_SRC="";try{VOK=JSON.parse(localStorage.getItem("eng-vok3"))}catch(e){}
-function playSrc(t,rate,i,cb,fail){if(i>=VSRC.length)return fail();let settled=false;
-  const ok=()=>{if(settled)return;settled=true;clearTimeout(to);LAST_SRC=i?"有道詞典":"Google";try{localStorage.setItem("eng-vok3",String(i))}catch(e){}VOK=i;cb&&cb(true)};
-  const bad=()=>{if(settled)return;settled=true;clearTimeout(to);WA_EL.onplaying=WA_EL.onerror=null;playSrc(t,rate,i+1,cb,fail)};
+/* every say() gets an id; callbacks from an older request are ignored, so a replay/next question can never be hijacked by a stale fallback */
+let SAY_ID=0;
+const sayState=(st,id)=>{try{document.dispatchEvent(new CustomEvent("say-state",{detail:{st,id}}))}catch(e){}};
+function playSrc(t,rate,i,cb,fail,id,tries){if(id!==SAY_ID)return;if(i>=VSRC.length)return fail();tries=tries||0;let settled=false;
+  const live=()=>id===SAY_ID&&!settled;
+  const ok=()=>{if(!live())return;settled=true;clearTimeout(to);LAST_SRC=i?"有道詞典":"Google";try{localStorage.setItem("eng-vok3",String(i))}catch(e){}VOK=i;sayState("playing",id);cb&&cb(true)};
+  const bad=()=>{if(!live())return;settled=true;clearTimeout(to);
+    /* one quick retry on the same voice before switching, so a hiccup doesn't change the voice */
+    if(tries<1)setTimeout(()=>playSrc(t,rate,i,cb,fail,id,tries+1),250);else playSrc(t,rate,i+1,cb,fail,id,0)};
   try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
   try{if(canSpeak&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel()}catch(e){}
-  WA_EL.pause();WA_EL.src=VSRC[i](t);WA_EL.playbackRate=Math.max(.7,Math.min(1.2,(rate||S.rate||.9)/.9));
+  WA_EL.pause();WA_EL.src=VSRC[i](t)+(tries?`&_=${Date.now()%100000}`:"");WA_EL.playbackRate=Math.max(.7,Math.min(1.2,(rate||S.rate||.9)/.9));
   WA_EL.onplaying=ok;WA_EL.onerror=bad;
-  WA_EL.onended=()=>{if(typeof musicDuck==="function")setTimeout(()=>musicDuck(false),200);setTimeout(()=>{if(typeof applyLoud==="function")applyLoud()},400)};
+  WA_EL.onended=()=>{if(id!==SAY_ID)return;sayState("ended",id);if(typeof musicDuck==="function")setTimeout(()=>musicDuck(false),200);setTimeout(()=>{if(typeof applyLoud==="function")applyLoud()},400)};
   if(typeof musicDuck==="function"&&MUS.playing)musicDuck(true);
-  const to=setTimeout(bad,VOK===i?6000:3500);const p=WA_EL.play();if(p&&p.catch)p.catch(e=>{if(e&&e.name==="NotAllowedError"){settled=true;clearTimeout(to);fail()}else bad()})}
-say=function(t,rate,cb){t=String(t||"").trim();if(!t)return;
-  if(S.realVoice===false||!navigator.onLine||t.length>180){LAST_SRC="手機語音";return sayTTS(t,rate,cb)}
-  const start=VOK===1&&window.__gTried?1:0;window.__gTried=1;
-  playSrc(t,rate,start,cb,()=>{LAST_SRC="手機語音";sayTTS(t,rate,cb)})};
+  const to=setTimeout(bad,VOK===i?5000:3500);const p=WA_EL.play();
+  if(p&&p.catch)p.catch(e=>{if(!live())return;const n=e&&e.name;
+    if(n==="AbortError")return; /* replaced by a newer request */
+    if(n==="NotAllowedError"){settled=true;clearTimeout(to);sayState("blocked",id);return}
+    bad()})}
+say=function(t,rate,cb){t=String(t||"").trim();if(!t)return;const id=++SAY_ID;
+  if(S.realVoice===false||!navigator.onLine||t.length>180){LAST_SRC="手機語音";sayState("tts",id);return sayTTS(t,rate,cb)}
+  const start=VOK===1&&window.__gTried?1:0;window.__gTried=1;sayState("loading",id);
+  playSrc(t,rate,start,cb,()=>{if(id!==SAY_ID)return;LAST_SRC="手機語音";sayState("fallback",id);sayTTS(t,rate,cb)},id,0)};
 /* diagnostics shown under「測試聲音」: can this phone reach the recordings and play them? */
 async function waDiag(){const out=document.getElementById("sndOut");if(!out)return;const L=[];
   L.push(`真人發音：${S.realVoice===false?"關閉":"開啟"}`);L.push(`網路：${navigator.onLine?"有":"沒有"}`);
@@ -3374,6 +3385,17 @@ function nextListen(){
     <div id="res"></div>
   </div>`;
   $("#p1").onclick=()=>say(lt.ex);$("#p2").onclick=()=>say(lt.ex,0.65);$("#sndTest").onclick=soundTest;
+  /* show what the voice is doing, so a slow network never looks like silence */
+  const p1=$("#p1"),st=$("#sndOut");
+  if(LS.ev)document.removeEventListener("say-state",LS.ev);
+  LS.ev=e=>{if(!document.body.contains(p1)){document.removeEventListener("say-state",LS.ev);return}const s2=e.detail.st;
+    p1.classList.remove("pulse");
+    if(s2==="loading"){p1.textContent="載入中…"}
+    else if(s2==="playing"){p1.textContent="播放中"}
+    else if(s2==="ended"){p1.textContent="再聽一次"}
+    else if(s2==="blocked"){p1.textContent="點我播放";p1.classList.add("pulse")}
+    else if(s2==="fallback"){p1.textContent="再聽一次";st.textContent="線上發音暫時連不上，這句改用手機語音（手機靜音時會聽不到）。可以再按一次播放試試。"}};
+  document.addEventListener("say-state",LS.ev);
   $("#hint").onclick=()=>{$("#hintBox").hidden=false};
   $("#dict").onkeydown=e=>{if(e.key==="Enter")check()};$("#chk").onclick=check;
   setTimeout(()=>say(lt.ex),300);
