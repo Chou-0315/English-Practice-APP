@@ -1038,7 +1038,8 @@ header{padding:22px 16px 6px!important}
 .sw.trying .sw-p,.bgi.trying .sw-p{color:var(--accent);font-weight:700}
 @keyframes tryPulse{50%{outline-offset:6px}}
 .btn.pulse{animation:btnPulse 1s ease-in-out infinite}@keyframes btnPulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 30%,transparent)}}
-.rem{display:flex;align-items:center;gap:10px}
+.rem{display:flex;align-items:center;gap:10px}#saveWarn{position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:220;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:20px;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,59,48,.45);box-shadow:0 14px 40px rgba(0,0,0,.25);color:var(--ink)}#saveWarn b{color:#ff3b30}#saveWarn span{font-size:.9rem;line-height:1.5}#saveWarn .sw-row{display:flex;gap:12px;align-items:center;margin-top:4px}#saveWarn .btn{width:auto;min-height:0;padding:8px 14px}
+
 .home .ringcard .cta{grid-column:1/-1;width:100%;margin-top:4px;display:flex;flex-direction:column;align-items:center;gap:1px;padding:13px 16px;min-height:0}
 .home .cta span{font-size:1.06rem;font-weight:700}.home .cta small{font-size:.74rem;opacity:.85;font-weight:500}
 .ringcard.starter{display:block;text-align:left;padding:22px 20px 18px}
@@ -2760,8 +2761,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112002751";
-const APP_NAME="1.15";
+const APP_VER="20261112004409";
+const APP_NAME="1.16";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2931,7 +2932,13 @@ function migrate(){
   if(!S.refund2){const P={indigo:80,wine:120,amber:120,teal:160,slate:160};const back=(S.ownedT||[]).reduce((a,id)=>a+(P[id]||0),0);if(back)S.spent=Math.max(0,(S.spent||0)-back);S.refund2=1;delete S.theme}
 }
 migrate();
-function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let SAVE_FAIL=0;
+function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(S));if(SAVE_FAIL){SAVE_FAIL=0;const b=document.getElementById("saveWarn");if(b)b.remove()}}
+  catch(e){SAVE_FAIL++;if(SAVE_FAIL===1)setTimeout(saveWarn,0)}}
+function saveWarn(){if(document.getElementById("saveWarn"))return;const d=document.createElement("div");d.id="saveWarn";d.setAttribute("role","alert");
+  d.innerHTML=`<b>進度沒有存進手機</b><span>手機的儲存空間不足，或目前是無痕模式。請先到「設定與紀錄 › 自動備份與還原」儲存備份檔，以免進度遺失。</span><div class="sw-row"><button class="btn primary" id="swGo">去存備份檔</button><button class="link" id="swX">知道了</button></div>`;
+  document.body.appendChild(d);d.querySelector("#swX").onclick=()=>d.remove();
+  d.querySelector("#swGo").onclick=()=>{d.remove();if(typeof settingsView==="function"){settingsView();setTimeout(()=>{const s=[...document.querySelectorAll("summary")].find(x=>x.textContent.includes("自動備份"));if(s){s.parentElement.open=true;const m=document.querySelector(".bk-move");if(m)m.open=true;s.scrollIntoView({block:"start"})}},50)}}}
 function save(){S._t=Date.now();saveLocal();cloudQueue();if(typeof bkQueue==="function")bkQueue();if(typeof pushDoneQ==="function")pushDoneQ()}
 
 /* ================= CLOUD SYNC (your Claude account) ================= */
@@ -2989,7 +2996,9 @@ function streak(){let n=0;const d=new Date();if(!S.days[today()])d.setDate(d.get
    recognition (EN→中 choice) → 1, recall choice (中→EN) → 3, cloze/card/listening/sentence → 5
    promotion only happens when the word is actually due, so repeating it the same day doesn't inflate it */
 const INTERVAL=[0,1,3,7,14,30];
-const CAP={rec:1,recall:3,cloze:5,card:5,listen:5,build:5};
+/* how far one success can carry a word: self-rated cards stop at box 3; boxes 4-5 ("mastered") need dictation or sentence building */
+const CAP={rec:1,recall:3,cloze:3,card:3,listen:5,build:5};
+const ACTIVE_KIND={recall:1,cloze:1,listen:1,build:1}; /* answered without self-rating: counts toward leaving the weak list */
 const SKILL_OF={rec:"rec",recall:"recall",cloze:"recall",card:"recall",listen:"listen",build:"build"};
 const SKILLS={rec:"認字",recall:"回想",listen:"聽力",build:"造句"};
 const STAGES=["新字","學習中","記得","已掌握"];
@@ -3003,20 +3012,25 @@ function review(id,res,kind,el){
   const s=srs(id),due=isDue(id),now=Date.now();let box=s.box,next=s.due;
   if(res===0){box=1;next=now+10*60000;markWeak(id,SKILL_OF[kind])}
   else if(res===1){box=Math.max(1,box-1);next=now+INTERVAL[box]*864e5}
-  else{if(due&&box<CAP[kind]){box++;next=now+INTERVAL[box]*864e5}markOk(id);earn(kind==="listen"||kind==="build"?2:1,0)}
+  else{if(due&&box<CAP[kind]){box++;next=now+INTERVAL[box]*864e5}markOk(id,kind);earn(kind==="listen"||kind==="build"?2:1,0)}
   if(box>=4&&s.box<4&&!S.mt[id]){S.mt[id]=today();newCardNotice(id)}
   if(s.box===0&&box>0){S.nd=S.nd||{};S.nd[today()]=(S.nd[today()]||0)+1}
   S.srs[id]={box,due:next};logAcc(SKILL_OF[kind],res===2);save();addAct();
   gainXP(res===0?2:res===1?4:kind==="rec"?6:kind==="recall"?8:10,el);
 }
 /* weak words: need correct answers on 2 different later days to leave */
-function markWeak(id,sk){const w=S.wk[id]||{n:0,s:{},ok:0,d:"",lt:0};w.n++;w.s[sk]=(w.s[sk]||0)+1;w.ok=0;w.d="";w.last=sk;w.lt=Date.now();S.wk[id]=w}
-function markOk(id){const w=S.wk[id];if(!w)return;const t=today();if((w.lt&&dkey(new Date(w.lt))===t)||w.d===t)return;
-  w.ok++;w.d=t;if(w.ok>=2){delete S.wk[id];const x=byId(id);if(x)setTimeout(()=>toast(`「${x.w}」已經離開錯題本`),400)}}
+function markWeak(id,sk){const w=S.wk[id]||{n:0,s:{},ok:0,d:"",lt:0};w.n++;w.s[sk]=(w.s[sk]||0)+1;w.ok=0;w.d="";w.act=0;w.last=sk;w.lt=Date.now();S.wk[id]=w}
+/* a weak word leaves the list after correct answers on two different later days, at least one of them answered actively (quiz / dictation / builder) */
+function markOk(id,kind){const w=S.wk[id];if(!w)return;const t=today(),act=!!ACTIVE_KIND[kind];
+  if((w.lt&&dkey(new Date(w.lt))===t)){return}
+  if(w.d===t){if(act&&!w.act)w.act=1;return}
+  w.ok++;w.d=t;if(act)w.act=1;
+  if(w.ok>=2&&w.act){delete S.wk[id];const x=byId(id);if(x)setTimeout(()=>toast(`「${x.w}」已經離開錯題本`),400)}}
 const weakList=()=>Object.keys(S.wk).map(byId).filter(Boolean).sort((a,b)=>(S.wk[b.id].lt||0)-(S.wk[a.id].lt||0));
 
 /* adaptive picker: 40% due · 30% weak · 20% new · 10% mastered spot-check */
 let recent=[];
+function pickUnused(o,f){const used=(o&&o.used)||new Set();for(let k=0;k<8;k++){const w=pickWord(f);if(!used.has(w.id))return w}return pickWord(f)}
 function pickWord(filter){
   const f=filter||(()=>true);let pool=ACTIVE().filter(f);if(!pool.length)pool=BUILTIN.filter(f);
   const fresh=pool.filter(w=>!recent.includes(w.id));if(fresh.length>=4)pool=fresh;
@@ -3140,18 +3154,38 @@ function trainPlan(){
   return [{k:"cards",n,r,nw,label:r&&nw?`複習 ${r} 個 · 新字 ${nw} 個`:r?`複習到期單字 ${r} 個`:`認識新單字 ${nw||n} 個`},
           {k:"quiz",n:L.quiz,label:`弱點測驗 ${L.quiz} 題`},{k:"listen",n:L.listen,label:`聽寫 ${L.listen} 句`},{k:"build",n:L.build,label:`造句 ${L.build} 句`}]}
 const tdToday=()=>S.td[today()]||{done:[]};
+/* today's target words (chosen once when training starts) */
+const trainTargets=()=>((tdToday().tg)||[]).map(byId).filter(Boolean);
+/* ordered, duplicate-free question list for one training step
+   quiz:   weak words and words missed today -> today's targets -> due words
+   listen / build: today's targets -> weak words -> due words (only words whose example suits the step) */
+function stepQueue(kind,n){const t=today(),act=ACTIVE(),ok=kind==="listen"?(w=>!!w.ex):kind==="build"?(w=>w.ex&&w.ex.split(/\s+/).length>=3):(()=>true);
+  const missed=Object.keys(S.wk).filter(id=>S.wk[id].lt&&dkey(new Date(S.wk[id].lt))===t).map(byId).filter(Boolean);
+  /* order inside each group is shuffled with a seed made from the date and the step, so the same day gives the same questions (repeatable, and stable if you leave and come back) */
+  let h=2166136261;for(const ch of t+kind+(tdToday().bonus?"b":""))h=Math.imul(h^ch.charCodeAt(0),16777619);
+  const rnd=()=>{h|=0;h=h+0x6D2B79F5|0;let x=Math.imul(h^h>>>15,1|h);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296};
+  const sh=a=>{a=a.slice().sort((x,y)=>String(x.id)<String(y.id)?-1:1);for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  const weak=weakList(),tg=trainTargets(),due=sh(dueReviews(act));
+  const groups=kind==="quiz"?[sh(missed),sh(weak),sh(tg),due]:[sh(tg),sh(weak),due];
+  const out=[],seen=new Set();for(const g of groups)for(const w of g){if(out.length>=n)break;if(!seen.has(w.id)&&ok(w)){seen.add(w.id);out.push(w.id)}}
+  return out}
+/* take the next queued word for a step; null means "fall back to the normal picker" */
+function fromQueue(o,okFn){while(o&&o.queue&&o.queue.length){const w=byId(o.queue.shift());if(w&&(!okFn||okFn(w)))return w}return null}
 const minutesOf=p=>Math.max(3,Math.round(p.reduce((a,s)=>a+({cards:.4,quiz:.35,listen:1.2,build:.8}[s.k])*s.n,0)));
 function startTraining(){ROOT=false;
   const plan=trainPlan();let t=tdToday();
   if(plan.every(s=>t.done.includes(s.k))){S.td[today()]={done:[],bonus:t.bonus};save();t=tdToday()}
+  if(!t.tg||!t.done.length){const s=plan[0],act=ACTIVE();
+    let d=shuffle(dueReviews(act)).sort((a,b)=>srs(a.id).box-srs(b.id).box).slice(0,s.r||0);
+    d=d.concat(shuffle(act.filter(w=>srs(w.id).box===0)).slice(0,s.nw||0));if(!d.length)d=shuffle(act).slice(0,s.n);
+    S.td[today()]=Object.assign(tdToday(),{tg:d.map(w=>w.id)});save();t=tdToday()}
   TR={plan,i:plan.findIndex(s=>!t.done.includes(s.k))};enter("home");runStep();
 }
 function runStep(){const s=TR.plan[TR.i],end=stepDone;
-  if(s.k==="cards"){const act=ACTIVE();let d=shuffle(dueReviews(act)).sort((a,b)=>srs(a.id).box-srs(b.id).box).slice(0,s.r||0);
-    d=d.concat(shuffle(act.filter(w=>srs(w.id).box===0)).slice(0,s.nw||0));if(!d.length)d=shuffle(act).slice(0,s.n);runCards(shuffle(d),"單字卡",end)}
-  else if(s.k==="quiz")runQuiz({total:s.n,types:["en","zh","ex"],onEnd:end});
-  else if(s.k==="listen")runListen({n:s.n,onEnd:end});
-  else runBuild({n:s.n,onEnd:end});
+  if(s.k==="cards"){runCards(shuffle(trainTargets()),"單字卡",end)}
+  else if(s.k==="quiz")runQuiz({total:s.n,types:["en","zh","ex"],onEnd:end,queue:stepQueue("quiz",s.n)});
+  else if(s.k==="listen")runListen({n:s.n,onEnd:end,queue:stepQueue("listen",s.n)});
+  else runBuild({n:s.n,onEnd:end,queue:stepQueue("build",s.n)});
 }
 function trainBar(){if(!TR)return"";const done=tdToday().done;
   return `<div class="trainbar"><span>今日訓練 · 第 ${TR.i+1} / ${TR.plan.length} 步</span><button class="link" onclick="go('home')">離開</button></div>
@@ -3386,7 +3420,7 @@ const MODE_LABEL={en:"選出中文意思",zh:"選出對應的英文",ex:"選出�
 const KIND={en:"rec",zh:"recall",ex:"cloze"};
 let QZ=null;
 function runQuiz(o){ROOT=false;const types=o.types||MODES,total=o.total||10;
-  QZ={n:0,score:0,combo:0,total,onEnd:o.onEnd,order:shuffle(Array.from({length:total},(_,i)=>types[i%types.length]))};nextQ()}
+  QZ={n:0,score:0,combo:0,total,onEnd:o.onEnd,queue:(o.queue||[]).slice(),used:new Set(),order:shuffle(Array.from({length:total},(_,i)=>types[i%types.length]))};nextQ()}
 function nextQ(){
   const q=QZ;
   if(q.n>=q.total){
@@ -3397,9 +3431,12 @@ function nextQ(){
     <p class="sub" style="margin:0">${q.score>=9?"非常好，這些你已經很熟了。":q.score>=6?"不錯，答錯的字已經放進錯題本。":"答錯的字已經放進錯題本，先複習再回來挑戰。"}</p>
     <div class="row"><button class="btn primary" onclick="runQuiz({total:10})">再測一次</button><button class="btn" onclick="go('weak')">看弱點</button></div></div>`;return}
   let mode=q.order[q.n],w=null,prompt,opts,correct,explain="",speakFirst=null;
-  if(mode==="ex"){w=pickWord(clozeOK);if(!clozeOK(w))mode="en";else prompt=`<div style="font-size:1.25rem">${esc(w.ex.replace(new RegExp("\\b"+stemOf(w)+"\\w*","i"),"_____"))}</div><div class="note">${esc(w.exZh)}</div>`}
+  const qw=fromQueue(q);
+  if(qw&&(mode==="en"||mode==="zh"||mode==="ex")){if(mode==="ex"&&!clozeOK(qw))mode=Math.random()<.5?"en":"zh";w=qw}
+  if(mode==="ex"&&!w){w=pickUnused(q,clozeOK)}
+  if(mode==="ex"){if(!clozeOK(w))mode="en";else prompt=`<div style="font-size:1.25rem">${esc(w.ex.replace(new RegExp("\\b"+stemOf(w)+"\\w*","i"),"_____"))}</div><div class="note">${esc(w.exZh)}</div>`}
   if(mode==="en"||mode==="zh"||mode==="ex"){
-    if(mode!=="ex")w=pickWord();
+    if(!w)w=pickUnused(q);q.used.add(w.id);
     const others=shuffle(ALL().filter(x=>x.id!==w.id&&x.zh!==w.zh&&x.w!==w.w)),same=others.filter(x=>x.pos===w.pos);
     const o=shuffle([w,...(same.length>=3?same:others).slice(0,3)]);correct=o.indexOf(w);
     if(mode==="en"){prompt=`<div class="row" style="align-items:center;justify-content:space-between;flex-wrap:nowrap"><div class="q">${esc(w.w)}</div>${spkBtn(w.w)}</div><div class="ipa">${esc(w.ipa)}</div>`;opts=o.map(x=>esc(x.zh));speakFirst=w.w}
@@ -3472,10 +3509,15 @@ function endRush(){earn(Math.floor((rush?rush.score:0)/2),0);
 /* ================= DICTATION ================= */
 let LS=null;
 const norm=s=>s.toLowerCase().replace(/[’']/g,"'").replace(/[^a-z0-9' ]/g," ").split(/\s+/).filter(Boolean);
-function runListen(o){ROOT=false;LS={n:o.n||Infinity,i:0,onEnd:o.onEnd};nextListen()}
+/* was the word being practised typed correctly? Accepts the inflected form actually used in the example (e.g. "booked" for "book") */
+function targetHit(w,typed){const got=norm(typed).join(" "),ex=norm(w.ex||""),tw=norm(w.w);if(!tw.length)return true;
+  if(tw.length>1)return (" "+got+" ").includes(" "+tw.join(" ")+" ");
+  const stem=tw[0].slice(0,Math.max(3,tw[0].length-2)),forms=ex.filter(x=>x.startsWith(stem));
+  const ok=forms.length?forms:[tw[0]];return norm(typed).some(x=>ok.includes(x))}
+function runListen(o){ROOT=false;LS={n:o.n||Infinity,i:0,onEnd:o.onEnd,queue:(o.queue||[]).slice(),used:new Set()};nextListen()}
 function nextListen(){
   if(LS.i>=LS.n)return LS.onEnd&&LS.onEnd();
-  const lt=pickWord(w=>w.ex);LS.cur=lt;LS.checked=false;
+  const lt=fromQueue(LS,w=>!!w.ex)||pickUnused(LS,w=>!!w.ex);LS.used.add(lt.id);LS.cur=lt;LS.checked=false;
   view().innerHTML=`${backBtn()}<h2>聽寫</h2><p class="sub">${LS.n<Infinity?`第 ${LS.i+1} / ${LS.n} 句。`:""}聽一句英文，把聽到的打出來。每句只能檢查一次。</p>
   <div class="stack">
     <div class="row"><button class="btn primary" id="p1">播放</button><button class="btn" id="p2">慢速播放</button></div>
@@ -3512,11 +3554,11 @@ function nextListen(){
     while(i<m||j<n){if(i<m&&j<n&&tn[i]===got[j]){out.push(`<span class="ok">${esc(target[i])}</span>`);i++;j++}
       else if(j<n&&(i>=m||L[i][j+1]>=L[i+1][j])){out.push(`<span class="miss">${esc(got[j])}</span>`);j++}
       else{out.push(`<span class="need">${esc(target[i])}</span>`);i++}}
-    const pct=Math.round(L[0][0]/m*100),res=pct>=90?2:pct>=60?1:0;
+    const pct=Math.round(L[0][0]/m*100),hitW=targetHit(lt,$("#dict").value);let res=pct>=90?2:pct>=60?1:0;if(!hitW&&res===2)res=1;
     review(lt.id,res,"listen",$("#chk"));sfx(res===2?"ok":"bad");
     $("#res").innerHTML=`<div class="big" style="font-size:2rem;margin:6px 0">${pct}% <small>${pct===100?"Perfect!":pct>=90?"Great ears!":pct>=60?"Getting there.":"Try again!"}</small></div>
       <div class="diff">${out.join(" ")}</div>
-      <p class="note">紅色底線＝漏掉或聽錯的字　刪除線＝多打的字${res===0?"　這個字已放進錯題本":""}</p>
+      <p class="note">紅色底線＝漏掉或聽錯的字　刪除線＝多打的字${res===0?"　這個字已放進錯題本":""}${!hitW&&pct>=60?`　目標字「${esc(lt.w)}」沒有寫對，這次只算「模糊」`:""}</p>
       <div class="ex"><div>${esc(lt.ex)}</div><div class="zh">${esc(lt.exZh)}</div></div>
       <button class="btn primary" id="nx" style="width:100%;margin-top:16px">${LS.i+1>=LS.n?"完成":"下一句"}</button>`;
     $("#nx").onclick=()=>{LS.i++;nextListen()}}
@@ -3524,10 +3566,10 @@ function nextListen(){
 
 /* ================= SENTENCE BUILDER ================= */
 let BD=null;
-function runBuild(o){ROOT=false;BD={n:o.n||Infinity,i:0,onEnd:o.onEnd};nextBuild()}
+function runBuild(o){ROOT=false;BD={n:o.n||Infinity,i:0,onEnd:o.onEnd,queue:(o.queue||[]).slice(),used:new Set()};nextBuild()}
 function nextBuild(){
   if(BD.i>=BD.n)return BD.onEnd&&BD.onEnd();
-  const w=pickWord(x=>x.ex&&x.ex.split(/\s+/).length>=3),toks=w.ex.split(/\s+/);
+  const okB=x=>x.ex&&x.ex.split(/\s+/).length>=3,w=fromQueue(BD,okB)||pickUnused(BD,okB),toks=w.ex.split(/\s+/);BD.used.add(w.id);
   let bank=shuffle(toks.map((t,i)=>({t,i})));if(bank.every((x,k)=>x.i===k))bank.reverse();
   Object.assign(BD,{w,toks,bank,picked:[],done:false,missed:false});drawBuild();
 }
