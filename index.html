@@ -2657,6 +2657,33 @@ function applyLoud(){const on=LOUD();
 ["touchend","click"].forEach(t=>document.addEventListener(t,()=>{if(LOUD())applyLoud()},{capture:true,passive:true}));
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){if(SIL)SIL.pause()}else if(LOUD())applyLoud()});
 
+
+/* ================= daily reminder push (Cloudflare Worker) ================= */
+const PUSH_API="https://england-push.bws6625wn5.workers.dev";
+const pushOK=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window&&typeof IS_WEB!=="undefined"&&IS_WEB;
+const pushTZ=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||"Asia/Taipei"}catch(e){return "Asia/Taipei"}};
+function pushNoteText(){const on=S.push&&S.push.on,t=(S.push&&S.push.time)||S.remTime||"2000",hm=t.slice(0,2)+":"+t.slice(2);
+  if(typeof IN_CLAUDE!=="undefined"&&IN_CLAUDE)return "通知只能在主畫面的 England 使用；在 Claude 裡可以改用行事曆提醒。";
+  if(!pushOK())return /iPhone|iPad/.test(navigator.userAgent)&&!isInstalled()?"要從主畫面的 England 圖示打開，才能開啟通知（iOS 16.4 以上）。":"這個瀏覽器不支援通知，可以改用行事曆提醒。";
+  if(on&&typeof Notification!=="undefined"&&Notification.permission==="denied")return "通知被關掉了：到 iPhone「設定 › 通知 › England」打開允許通知。";
+  return on?`每天 ${hm} 會跳通知提醒你；當天已經練習過就不會吵你。`:"打開後，每天選定的時間 England 會主動跳通知提醒你練習。"}
+const b64uU8=s=>{s=s.replace(/-/g,"+").replace(/_/g,"/");const r=atob(s+"===".slice((s.length+3)%4));return Uint8Array.from(r,c=>c.charCodeAt(0))};
+const pjson=(path,body)=>fetch(PUSH_API+path,body?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:{}).then(r=>r.ok?r.json():Promise.reject(r.status));
+async function pushSub(create){const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
+  if(!sub&&create){const {key}=await pjson("/vapid");sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uU8(key)})}return sub}
+async function pushSync(){try{const sub=await pushSub(true);await pjson("/subscribe",{sub:sub.toJSON(),time:S.push.time,tz:pushTZ()});S.pushPing=null;save();pushDoneQ();return true}catch(e){return false}}
+async function pushEnable(time){
+  if(!pushOK())return pushNoteText();
+  let perm="default";try{perm=await Notification.requestPermission()}catch(e){}
+  if(perm!=="granted")return "需要允許通知才能提醒你：到 iPhone「設定 › 通知 › England」打開。";
+  S.push={on:true,time:time||"2000"};save();
+  return (await pushSync())?`好了！每天 ${S.push.time.slice(0,2)}:${S.push.time.slice(2)} 會提醒你`:(S.push.on=false,save(),"沒連上提醒伺服器，請確認有網路後再試一次")}
+async function pushDisable(){S.push={on:false,time:(S.push&&S.push.time)||"2000"};save();
+  try{const sub=await pushSub(false);if(sub){await pjson("/unsubscribe",{endpoint:sub.endpoint}).catch(()=>{});await sub.unsubscribe()}}catch(e){}return "已關閉每日提醒"}
+/* tell the server "practised today" so today's reminder is skipped */
+let pushT=null;function pushDoneQ(){clearTimeout(pushT);pushT=setTimeout(pushDone,3000)}
+async function pushDone(){try{if(!(S.push&&S.push.on)||!pushOK()||!S.days[today()]||S.pushPing===today())return;
+  const sub=await pushSub(false);if(!sub)return;await pjson("/done",{endpoint:sub.endpoint,date:today(),streak:streak()});S.pushPing=today();saveLocal()}catch(e){}}
 /* ================= first-run quick tour (coach marks) ================= */
 const TOUR=[
   {q:()=>document.getElementById("petTap")&&document.getElementById("petTap").closest("section"),t:"今日進度",d:"每天完成三個圓環：答題數、今日訓練、新學的字。三圈都滿就是完美的一天。"},
@@ -2694,8 +2721,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261111221835";
-const APP_NAME="1.11";
+const APP_VER="20261111224647";
+const APP_NAME="1.12";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2866,7 +2893,7 @@ function migrate(){
 }
 migrate();
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function save(){S._t=Date.now();saveLocal();cloudQueue();if(typeof bkQueue==="function")bkQueue()}
+function save(){S._t=Date.now();saveLocal();cloudQueue();if(typeof bkQueue==="function")bkQueue();if(typeof pushDoneQ==="function")pushDoneQ()}
 
 /* ================= CLOUD SYNC (your Claude account) ================= */
 const CLOUD={ref:null,status:"wait",at:0,busy:false,dirty:false};let cloudTimer=null,ROOT=true;
@@ -3185,8 +3212,10 @@ function home(){
       <div class="seg"><span class="note">發音速度${canSpeak?"":"（此裝置不支援）"}</span><div class="rate">${[[0.7,"慢"],[0.9,"標準"],[1.1,"快"]].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.rate===r}">${l}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">線上發音</span><div class="rate"><button data-rv="1" aria-pressed="${S.realVoice!==false}">開</button><button data-rv="0" aria-pressed="${S.realVoice===false}">關</button></div></div>
       <p class="note" style="margin:0">有網路時，單字和例句會用同一個線上語音播放，靜音模式也聽得到；沒網路時會自動改用手機語音。</p>
-      <div class="seg"><span class="note">每日提醒</span><span class="rem"><select id="remTime" class="vsel" aria-label="提醒時間"><option value="0600">06:00</option><option value="0630">06:30</option><option value="0700">07:00</option><option value="0730">07:30</option><option value="0800">08:00</option><option value="0830">08:30</option><option value="0900">09:00</option><option value="0930">09:30</option><option value="1000">10:00</option><option value="1030">10:30</option><option value="1100">11:00</option><option value="1130">11:30</option><option value="1200">12:00</option><option value="1230">12:30</option><option value="1300">13:00</option><option value="1330">13:30</option><option value="1400">14:00</option><option value="1430">14:30</option><option value="1500">15:00</option><option value="1530">15:30</option><option value="1600">16:00</option><option value="1630">16:30</option><option value="1700">17:00</option><option value="1730">17:30</option><option value="1800">18:00</option><option value="1830">18:30</option><option value="1900">19:00</option><option value="1930">19:30</option><option value="2000">20:00</option><option value="2030">20:30</option><option value="2100">21:00</option><option value="2130">21:30</option><option value="2200">22:00</option><option value="2230">22:30</option><option value="2300">23:00</option><option value="2330">23:30</option></select><button class="link" id="remAdd">加到行事曆</button></span></div>
-      <p class="note" style="margin:0">會打開 iPhone 行事曆，按「加入全部」或「加入行事曆」。之後每天這個時間會跳通知，點通知裡的連結就能回到 England。想改時間，先到行事曆刪掉舊的「England 英文練習」再加新的。</p>
+      <div class="seg"><span class="note">每日提醒</span><div class="rate"><button data-push="1" aria-pressed="${!!(S.push&&S.push.on)}">開</button><button data-push="0" aria-pressed="${!(S.push&&S.push.on)}">關</button></div></div>
+      <div class="seg"><span class="note">提醒時間</span><span class="rem"><select id="remTime" class="vsel" aria-label="提醒時間"><option value="0600">06:00</option><option value="0630">06:30</option><option value="0700">07:00</option><option value="0730">07:30</option><option value="0800">08:00</option><option value="0830">08:30</option><option value="0900">09:00</option><option value="0930">09:30</option><option value="1000">10:00</option><option value="1030">10:30</option><option value="1100">11:00</option><option value="1130">11:30</option><option value="1200">12:00</option><option value="1230">12:30</option><option value="1300">13:00</option><option value="1330">13:30</option><option value="1400">14:00</option><option value="1430">14:30</option><option value="1500">15:00</option><option value="1530">15:30</option><option value="1600">16:00</option><option value="1630">16:30</option><option value="1700">17:00</option><option value="1730">17:30</option><option value="1800">18:00</option><option value="1830">18:30</option><option value="1900">19:00</option><option value="1930">19:30</option><option value="2000">20:00</option><option value="2030">20:30</option><option value="2100">21:00</option><option value="2130">21:30</option><option value="2200">22:00</option><option value="2230">22:30</option><option value="2300">23:00</option><option value="2330">23:30</option></select></span></div>
+      <p class="note" id="pushNote" style="margin:0">${pushNoteText()}</p>
+      <div class="seg"><span class="note">沒辦法收通知？</span><button class="link" id="remAdd">改用行事曆提醒</button></div>
       <div class="seg"><span class="note">第一次使用的導覽</span><button class="link" id="tourAgain">重看導覽</button></div>
       <div class="seg"><span class="note">練習場景：${S.cats.length} 個</span><button class="link" onclick="go('bank')">到單字庫調整</button></div>
     </div></details>
@@ -3220,8 +3249,11 @@ function home(){
   view().querySelectorAll("[data-snd]").forEach(b=>b.onclick=()=>{S.sound=b.dataset.snd==="1";save();home();sfx("ok")});
   view().querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{S.rate=+b.dataset.rate;save();home();say("This is the new speed.")});
   wireBkFile();wireVoice();
-  {const rs=document.getElementById("remTime"),ra=document.getElementById("remAdd");if(rs&&ra){rs.value=S.remTime||"2000";rs.onchange=()=>{S.remTime=rs.value;save()};
-    ra.onclick=()=>{S.remTime=rs.value;save();const u="https://chou-0315.github.io/English-Practice-APP/reminders/"+rs.value+".ics";const w=window.open(u,"_blank");if(!w)location.href=u;toast(`在行事曆按「加入」，每天 ${rs.value.slice(0,2)}:${rs.value.slice(2)} 會提醒你`)}}}
+  {const rs=document.getElementById("remTime"),ra=document.getElementById("remAdd");if(rs&&ra){rs.value=(S.push&&S.push.time)||S.remTime||"2000";
+    rs.onchange=async()=>{S.remTime=rs.value;if(S.push&&S.push.on){S.push.time=rs.value;save();const ok=await pushSync();toast(ok?`提醒時間改成 ${rs.value.slice(0,2)}:${rs.value.slice(2)}`:"沒連上提醒伺服器，等一下再試")}else save()};
+    ra.onclick=()=>{S.remTime=rs.value;save();const u="https://chou-0315.github.io/English-Practice-APP/reminders/"+rs.value+".ics";const w=window.open(u,"_blank");if(!w)location.href=u;toast(`在行事曆按「加入」，每天 ${rs.value.slice(0,2)}:${rs.value.slice(2)} 會提醒你`)}}
+    view().querySelectorAll("[data-push]").forEach(b=>b.onclick=async()=>{const on=b.dataset.push==="1";b.disabled=true;
+      const r=on?await pushEnable(rs?rs.value:"2000"):await pushDisable();b.disabled=false;if(r)toast(r);home()})}
   view().querySelectorAll("[data-rv]").forEach(b=>b.onclick=()=>{S.realVoice=b.dataset.rv==="1";save();home();say("pronunciation")});
   view().querySelectorAll("[data-loud]").forEach(b=>b.onclick=()=>{S.loud=b.dataset.loud==="1";save();applyLoud();home();toast(S.loud!==false?"靜音模式也會播放聲音":"已恢復：靜音時不出聲")});
   if($("#tourAgain"))$("#tourAgain").onclick=()=>{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0});setTimeout(startTour,250)};
@@ -3587,7 +3619,7 @@ function onboarding(step){ROOT=false;
   }
 }
 
-bkBoot();gateBoot();swBoot();verBoot();applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();if($("#lvBtn"))$("#lvBtn").onclick=()=>{const l=levelOf(S.xp),A=xpFor(l),B=xpFor(l+1);toast(`${S.xp-A} / ${B-A} XP · 再 ${B-S.xp} XP 升到 Lv.${l+1}`)};
+bkBoot();gateBoot();swBoot();verBoot();setTimeout(()=>{if(S.push&&S.push.on&&pushOK()&&S.pushSync!==today()){pushSync().then(ok=>{if(ok){S.pushSync=today();saveLocal()}})}},5000);applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();if($("#lvBtn"))$("#lvBtn").onclick=()=>{const l=levelOf(S.xp),A=xpFor(l),B=xpFor(l+1);toast(`${S.xp-A} / ${B-A} XP · 再 ${B-S.xp} XP 升到 Lv.${l+1}`)};
 renderTabs();renderHeader();
 if(!S.onb)onboarding(1);else home();
 checkAch();cloudInit();
