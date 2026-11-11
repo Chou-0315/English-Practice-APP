@@ -6,7 +6,7 @@
  *
  * Routes (called by the England app):
  *   GET  /vapid        -> { key }            public key for push subscriptions (created on first use)
- *   POST /subscribe    { sub, time, tz }     save or update a phone's reminder time ("2100", "Asia/Taipei")
+ *   POST /subscribe    { sub, times, tz }    save or update a phone's reminder times (["1200","2000"], "Asia/Taipei")
  *   POST /unsubscribe  { endpoint }          stop reminders for that phone
  *   POST /done         { endpoint, date, streak }   "practised today" -> skip today's reminder
  *   GET  /msg?e=...    -> { title, body }    text for the notification (read by the app's service worker)
@@ -108,9 +108,11 @@ async function handle(req, env) {
   if (url.pathname === "/subscribe") {
     const sub = b.sub;
     if (!sub || typeof sub.endpoint !== "string" || !/^https:\/\//.test(sub.endpoint)) return json({ error: "bad subscription" }, origin, 400);
-    if (!/^\d{4}$/.test(b.time || "")) return json({ error: "bad time" }, origin, 400);
+    let times = Array.isArray(b.times) ? b.times : b.time ? [b.time] : [];
+    times = [...new Set(times.filter((t) => /^([01]\d|2[0-3])[0-5]\d$/.test(t)))].sort().slice(0, 6);
+    if (!times.length) return json({ error: "bad time" }, origin, 400);
     const id = await idOf(sub.endpoint), old = (await env.SUBS.get(id, "json")) || {};
-    const rec = { ...old, sub: { endpoint: sub.endpoint }, time: b.time, tz: String(b.tz || "Asia/Taipei").slice(0, 64), at: Date.now() };
+    const rec = { ...old, sub: { endpoint: sub.endpoint }, times, tz: String(b.tz || "Asia/Taipei").slice(0, 64), at: Date.now() };
     await env.SUBS.put(id, JSON.stringify(rec));
     return json({ ok: true }, origin);
   }
@@ -140,12 +142,16 @@ async function tick(env) {
     for (const k of page.keys) {
       const rec = await env.SUBS.get(k.name, "json");
       if (!rec || !rec.sub) continue;
-      const now = localNow(rec.tz), t = +rec.time.slice(0, 2) * 60 + +rec.time.slice(2);
-      const due = now.mins >= t && now.mins < t + 15;
-      if (!due || rec.sent === now.date || rec.done === now.date) continue;
+      const now = localNow(rec.tz);
+      if (rec.done === now.date) continue;
+      const times = rec.times || (rec.time ? [rec.time] : []);
+      const slot = times.find((x) => { const t = +x.slice(0, 2) * 60 + +x.slice(2); return now.mins >= t && now.mins < t + 15; });
+      if (!slot) continue;
+      const sentKey = now.date + "@" + slot;
+      if ((rec.sentSlots || []).includes(sentKey)) continue;
       const status = await sendPush(env, rec.sub);
       if (status === 404 || status === 410) { await env.SUBS.delete(k.name); continue; }
-      if (status < 300) { rec.sent = now.date; sent++; await env.SUBS.put(k.name, JSON.stringify(rec)); }
+      if (status < 300) { rec.sentSlots = [...(rec.sentSlots || []).filter((x) => x.startsWith(now.date)), sentKey]; sent++; await env.SUBS.put(k.name, JSON.stringify(rec)); }
     }
   } while (cursor);
   return sent;
