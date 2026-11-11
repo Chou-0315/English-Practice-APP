@@ -1038,7 +1038,27 @@ header{padding:22px 16px 6px!important}
 .sw.trying .sw-p,.bgi.trying .sw-p{color:var(--accent);font-weight:700}
 @keyframes tryPulse{50%{outline-offset:6px}}
 .btn.pulse{animation:btnPulse 1s ease-in-out infinite}@keyframes btnPulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 30%,transparent)}}
-.rem{display:flex;align-items:center;gap:10px}#pushAsk{position:fixed;inset:0;z-index:170;display:flex;align-items:flex-end;justify-content:center;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));background:rgba(6,8,22,.35);opacity:0;transition:opacity .3s}#pushAsk.show{opacity:1}#pushAsk .pa-card{width:min(420px,100%);text-align:center;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),0 20px 60px rgba(0,0,0,.3);border-radius:28px;padding:22px 20px 14px;color:var(--ink);transform:translateY(40px);transition:transform .4s cubic-bezier(.2,1.3,.4,1)}#pushAsk.show .pa-card{transform:none}#pushAsk .pa-ic{font-size:2.2rem;line-height:1}#pushAsk h3{margin:8px 0 6px;font-size:1.25rem}#pushAsk p{margin:0 0 16px;color:var(--muted);font-size:.95rem;line-height:1.5}#pushAsk p b{color:var(--ink)}#pushAsk .btn{width:100%}#pushAsk .pa-no{display:block;margin:10px auto 0;color:var(--muted)!important}
+.rem{display:flex;align-items:center;gap:10px}
+.home .ringcard .cta{grid-column:1/-1;width:100%;margin-top:4px;display:flex;flex-direction:column;align-items:center;gap:1px;padding:13px 16px;min-height:0}
+.home .cta span{font-size:1.06rem;font-weight:700}.home .cta small{font-size:.74rem;opacity:.85;font-weight:500}
+.ringcard.starter{display:block;text-align:left;padding:22px 20px 18px}
+.starter .st-step{font-size:.75rem;font-weight:800;letter-spacing:.06em;color:var(--accent)}
+.starter h3{margin:4px 0 6px;font-size:1.4rem}.starter p{margin:0 0 16px;color:var(--muted);line-height:1.55;font-size:.95rem}
+.nudges .grow b{font-size:.98rem}
+.tl-pick{font-size:.82rem!important;color:var(--muted)!important;font-weight:500;padding:0}
+#tlRow{margin:-4px 0 4px}
+.wotd-mini{border-radius:20px;background:var(--glass);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);overflow:hidden}
+.wotd-mini>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer}
+.wotd-mini>summary::-webkit-details-marker{display:none}
+.wotd-mini>summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .25s}
+.wotd-mini[open]>summary::after{transform:rotate(225deg)}
+.wotd-mini .tagline{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;color:var(--sc,var(--accent));font-weight:700;white-space:nowrap}
+.wotd-mini .tagline svg{width:15px;height:15px}
+.wotd-mini summary b{font-size:1.1rem;font-family:var(--f-disp)}.wotd-mini summary .pos{color:var(--muted);font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wotd-mini .wm-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+.chip-s.gear svg{width:19px;height:19px;color:var(--ink);opacity:.8}
+#moreRoot .more>details{margin-top:0}
+#pushAsk{position:fixed;inset:0;z-index:170;display:flex;align-items:flex-end;justify-content:center;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));background:rgba(6,8,22,.35);opacity:0;transition:opacity .3s}#pushAsk.show{opacity:1}#pushAsk .pa-card{width:min(420px,100%);text-align:center;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),0 20px 60px rgba(0,0,0,.3);border-radius:28px;padding:22px 20px 14px;color:var(--ink);transform:translateY(40px);transition:transform .4s cubic-bezier(.2,1.3,.4,1)}#pushAsk.show .pa-card{transform:none}#pushAsk .pa-ic{font-size:2.2rem;line-height:1}#pushAsk h3{margin:8px 0 6px;font-size:1.25rem}#pushAsk p{margin:0 0 16px;color:var(--muted);font-size:.95rem;line-height:1.5}#pushAsk p b{color:var(--ink)}#pushAsk .btn{width:100%}#pushAsk .pa-no{display:block;margin:10px auto 0;color:var(--muted)!important}
 .rem .vsel{max-width:none}
 </style>
 <script>
@@ -2595,7 +2615,7 @@ function bkIDB(fn){try{const rq=indexedDB.open("eng-bk",1);rq.onupgradeneeded=()
 function bkStore(L){try{localStorage.setItem(BKEY,JSON.stringify(L))}catch(e){}bkIDB(st=>st.put(L,"list"))}
 function bkNow(){if(isFresh(S))return;const L=bkList().filter(b=>b.day!==today()),s=JSON.stringify(S);
   const days=L.filter(b=>b.day!=="undo").sort((a,b)=>b.day<a.day?-1:1).slice(0,BKEEP-1),undo=L.filter(b=>b.day==="undo");
-  bkStore([{day:today(),sum:bkSum(S),s},...days,...undo]);if(cur==="home")renderBk()}
+  bkStore([{day:today(),sum:bkSum(S),s},...days,...undo]);renderBk()}
 function bkQueue(){clearTimeout(bkTimer);bkTimer=setTimeout(bkNow,2500)}
 function bkBoot(){
   if(isFresh(S)){const b=bkList().find(x=>x.day!=="undo");if(b){try{S=Object.assign(DEF(),JSON.parse(b.s));migrate();saveLocal();setTimeout(()=>toast("已從自動備份恢復進度"),900)}catch(e){}}}
@@ -2706,13 +2726,13 @@ function pushAsk(force){try{
 /* ================= first-run quick tour (coach marks) ================= */
 const TOUR=[
   {q:()=>document.getElementById("petTap")&&document.getElementById("petTap").closest("section"),t:"今日進度",d:"每天完成三個圓環：答題數、今日訓練、新學的字。三圈都滿就是完美的一天。"},
-  {q:()=>{const t=document.querySelector("section.train");return t&&[t.querySelector(".ghead"),t.querySelector(".tlen")].filter(Boolean)},t:"今日訓練",d:"每天照順序做完幾項短練習就好。可以選輕量、標準或加強，到期的單字會優先複習。"},
+  {q:()=>{const t=document.querySelector("section.train");return t&&t.querySelector(".ghead")},t:"今日訓練",d:"每天照順序做完幾項短練習就好。可以選輕量、標準或加強，到期的單字會優先複習。"},
   {q:()=>{const g=document.querySelector(".ic-globe");return g&&(g.closest("button,a,[onclick]")||g.parentElement)},t:"我的小島",d:"答對題目會得到水滴和陽光，拿來種植物、蓋房子，讓小島一級一級慢慢長大。"},
   {q:()=>document.querySelector('[data-tab="practice"]'),t:"練習",d:"想多練就來這裡：單字卡、測驗、聽寫、造句、60 秒挑戰和泡泡遊戲。"},
   {q:()=>document.querySelector('[data-tab="weak"]'),t:"弱點",d:"答錯的字會自動收集在這裡。之後在不同的兩天答對，它就會從弱點畢業。"},
   {q:()=>document.querySelector('[data-tab="bank"]'),t:"單字庫",d:"查看所有單字、調整想練的場景，也可以加入自己的單字。"},
   {q:()=>document.getElementById("musicChip"),t:"背景音樂",d:"點這裡開關音樂。手機切到靜音也會照常播放；不想出聲時，點這裡關掉就好。"},
-  {q:()=>[...document.querySelectorAll("summary")].find(s=>s.textContent.includes("自動備份")),t:"自動備份",d:"進度每天自動備份在手機裡；換手機前，記得在這裡存一份備份檔。"}];
+  {q:()=>document.getElementById("gearBtn"),t:"設定與紀錄",d:"學習紀錄、設定、每日提醒和備份都在這裡。進度每天會自動備份；換手機前，記得在這裡存一份備份檔。"}];
 let TS=null;
 function startTour(){if(TS||document.getElementById("gate"))return;if(cur!=="home")go("home");
   const ov=document.createElement("div");ov.id="tour";ov.innerHTML=`<div class="tr-spot"></div><div class="tr-card" role="dialog" aria-live="polite"><div class="tr-step"></div><h3></h3><p></p><div class="tr-row"><button class="link tr-skip">略過</button><div class="tr-dots"></div><button class="btn primary tr-next">下一步</button></div></div>`;
@@ -2740,8 +2760,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112001455";
-const APP_NAME="1.14";
+const APP_VER="20261112002751";
+const APP_NAME="1.15";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -3173,15 +3193,21 @@ function ring(p){const C=2*Math.PI*44;return `<svg class="ring" viewBox="0 0 104
 function home(){
   enter("home");checkJob();ROOT=true;
   const done=S.days[today()]||0,g=S.goal,act=ACTIVE();
-  const due=dueReviews(act).length,mast=act.filter(w=>isMastered(w.id)).length,nw=weakList().length;
+  const due=dueReviews(act).length,nw=weakList().length;
   const w=BUILTIN[Math.floor(Date.now()/864e5)%BUILTIN.length];
   const plan=trainPlan(),t=tdToday(),dn=plan.filter(s=>t.done.includes(s.k)).length,all=dn===plan.length;
-  const hr=new Date().getHours(),hi=hr<5?"夜深了":hr<11?"早安":hr<14?"午安":hr<18?"午後好":"晚上好";
-  const pm=petLine();
+  const pm=petLine(),total=Object.values(S.days||{}).reduce((a,b)=>a+b,0),first=total===0;
+  const ctaTxt=all?"再練一輪":dn?`繼續 · 第 ${dn+1} 項`:first?"開始第一步":"開始今日訓練";
+  const ctaSub=all?"今日訓練已完成":`約 ${minutesOf(plan)} 分鐘 · ${TL().name}`;
   view().innerHTML=`
   <div class="stack home">
     <div class="ltitle"><span class="eyebrow">${new Date().toLocaleDateString("zh-TW",{month:"long",day:"numeric",weekday:"long"})}</span><h2>今日</h2></div>
-    <section class="ringcard">
+    ${first?`<section class="ringcard starter">
+      <div class="st-step">第一步</div>
+      <h3>先認識 ${TL().nw} 個新單字</h3>
+      <p>翻卡看意思，往右滑是記得、往左滑是忘了。做完第一步，就會出現你的每日進度圓環和小島。</p>
+      <button class="btn primary cta" id="train"><span>開始第一步</span><small>約 ${Math.max(2,Math.round(TL().nw*0.25))} 分鐘</small></button>
+    </section>`:`<section class="ringcard">
       <button class="rc-rings" id="petTap" aria-label="今日進度">${rings(ringVals(),148,"anim")}</button>
       <div class="rc-legend">
         <div class="rl r1"><span>題數</span><b>${done}<small>/${g} 題</small></b></div>
@@ -3189,35 +3215,53 @@ function home(){
         <div class="rl r3"><span>新字</span><b>${newToday()}<small>/${TL().nw} 個</small></b></div>
       </div>
       <div class="rc-tip" id="petSay">${pm[1]}</div>
-      <div class="week">${weekStrip()}</div>
+      <button class="btn primary cta" id="train"><span>${ctaTxt}</span><small>${ctaSub}</small></button>
+    </section>`}
+    ${first?"":nudgesHTML({nw,due,all,done})}
+    <section class="train">
+      <div class="ghead"><span>今日訓練</span><button class="link tl-pick" id="tlPick">${TL().name} · 約 ${minutesOf(plan)} 分鐘 ›</button></div>
+      <div class="rate tlen" id="tlRow" hidden>${Object.entries(TLEN).map(([k,v])=>`<button data-tl="${k}" aria-pressed="${(S.tlen||"std")===k}">${v.name}</button>`).join("")}</div>
+      ${pathHTML(plan,t)}
     </section>
     ${islandCard()}
-    <section class="train">
-      <div class="ghead"><span>今日訓練</span><span>${all?"全部完成":`約 ${minutesOf(plan)} 分鐘`}</span></div>
-      <div class="rate tlen">${Object.entries(TLEN).map(([k,v])=>`<button data-tl="${k}" aria-pressed="${(S.tlen||"std")===k}">${v.name}</button>`).join("")}</div>
-      ${pathHTML(plan,t)}
-      <button class="btn primary cta" id="train">${all?"再練一輪":dn?`繼續 · 第 ${dn+1} 項`:"開始今日訓練"}</button>
-    </section>
-    ${(S.boxes||0)>0?`<button class="boxbanner" id="boxBanner"><span class="bb-ic">${icon("job")}</span><span class="grow-l"><b>你有 ${S.boxes} 個驚喜盒</b><small>點一下，三張卡片選一張</small></span>${icon("chev","chev")}</button>`:""}
+    <details class="wotd-mini" style="--sc:${SC[w.cat]};--sc2:${SC2[w.cat]}"><summary><span class="tagline">${icon(w.cat)}今日單字</span><b>${esc(w.w)}</b><span class="pos">${w.zh}</span></summary>
+      <div class="wm-body"><div class="row" style="align-items:center;gap:8px"><span class="ipa">${w.ipa}</span><span class="pos">${w.pos}</span>${spkBtn(w.w)}</div>
+      <div class="ex2">${esc(w.ex)}<div class="zh">${w.exZh}</div></div></div></details>
     <div class="group"><button class="grow" onclick="album()">${sq("cards","#FF9F0A")}<span class="grow-l"><b>單字卡冊</b><small>已收集 ${collected().length} 張 · 掌握單字就能收集</small></span><span class="grow-r">${icon("chev","chev")}</span></button><button class="grow" onclick="cur='practice';renderTabs();startBubbles()">${sq("target","#30B0C7")}<span class="grow-l"><b>泡泡挑戰</b><small>休息一下，玩一局 · 最佳 ${S.bbBest||0} 顆</small></span><span class="grow-r">${icon("chev","chev")}</span></button></div>
-    <section class="widgets">
-      <div class="wg wg-fire">${icon("flame")}<b>${streak()}</b><span>連續天數</span></div>
-      <button class="wg wg-coin" onclick="shop()">${icon("palette")}<b>${coins()}</b><span>金幣 · 商店</span></button>
-      <button class="wg wg-due" onclick="freeCards();cur='practice';renderTabs()">${icon("cards")}<b>${due}</b><span>待複習 · 已掌握 ${mast}</span></button>
-      <button class="wg wg-weak" onclick="go('weak')">${icon("weak")}<b>${nw}</b><span>錯題</span></button>
-    </section>
-    <section class="wotd2" style="--sc:${SC[w.cat]};--sc2:${SC2[w.cat]}">
-      <div class="seg"><span class="tagline">${icon(w.cat)}今日單字 · ${SCENES[w.cat][1]}</span>${spkBtn(w.w)}</div>
-      <div class="w">${esc(w.w)}</div>
-      <div class="row" style="align-items:baseline;gap:8px"><span class="ipa">${w.ipa}</span><span class="pos">${w.pos}</span><span class="pos">${w.zh}</span></div>
-      <div class="ex2">${esc(w.ex)}<div class="zh">${w.exZh}</div></div>
-    </section>
     <section class="medalsec">${medalStrip()}</section>
+  </div>`;
+  $("#train").onclick=startTraining;drawMini();
+  view().querySelectorAll("[data-nudge]").forEach(b=>b.onclick=()=>nudgeGo(b.dataset.nudge));
+  if(streak()>0&&streak()%7===0&&S.days[today()]&&S.stBox!==today()){S.stBox=today();S.boxes=(S.boxes||0)+1;save();setTimeout(()=>toast(`連續 ${streak()} 天！獲得驚喜盒`,"ach"),800)}wireMedals();setTimeout(()=>{if(cur==="home"&&ROOT)checkRings()},1200);view().querySelectorAll("[data-start]").forEach(b=>b.onclick=startTraining);
+  const TAPS=["外圈是今日題數，中圈是今日訓練，內圈是新學的字。","今日單字：「"+w.w+"」— "+w.zh,"每 4 XP 可以換 1 枚金幣。","連續練習 "+streak()+" 天。","到期的單字會優先出現在今日訓練。"];
+  if($("#petTap"))$("#petTap").onclick=()=>{$("#petSay").textContent=pick(TAPS);const r=$("#petTap .rings");r.classList.remove("anim");void r.getBoundingClientRect();r.classList.add("anim")};
+  $("#tlPick").onclick=()=>{const r=$("#tlRow");r.hidden=!r.hidden};
+  view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{S.tlen=b.dataset.tl;save();home();toast(`今日訓練改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
+}
+/* contextual nudges: only shown when there is something worth doing */
+function nudgesHTML(o){const L=[],st=streak(),todayDone=!!S.days[today()];
+  if((S.boxes||0)>0)L.push(["box","job","#FF9500",`你有 ${S.boxes} 個驚喜盒`,"點一下，三張卡片選一張"]);
+  const MS=[[3,"三天打卡"],[7,"一週不間斷"],[30,"習慣養成"]].find(([n])=>!todayDone&&st+1===n);
+  if(MS)L.push(["train","flame","#FF3B30",`今天練完就能拿到「${MS[1]}」獎章`,`已經連續 ${st} 天，再一天！`]);
+  const I=ISL(),j=I.job;
+  if(j&&Date.now()>=j.end)L.push(["island","home","#34C759","小島的工程完成了","去看看新蓋好的東西"]);
+  else if(!j&&(I.water>=40||I.sun>=40))L.push(["island","home","#34C759",`有 ${I.water} 滴水、${I.sun} 個陽光`,"去小島澆水或蓋新東西"]);
+  if(o.nw>=3)L.push(["weak","weak","#FF2D55",`有 ${o.nw} 個弱點字待複習`,"在不同的兩天答對，就能從弱點畢業"]);
+  if(o.due>=10&&o.all)L.push(["cards","cards","#007AFF",`還有 ${o.due} 個單字到期`,"多複習一輪，記得更牢"]);
+  if(!L.length)return "";
+  return `<div class="group nudges">${L.slice(0,2).map(([k,ic,c,t,s])=>`<button class="grow" data-nudge="${k}">${sq(ic,c)}<span class="grow-l"><b>${t}</b><small>${s}</small></span><span class="grow-r">${icon("chev","chev")}</span></button>`).join("")}</div>`}
+function nudgeGo(k){if(k==="box")return mysteryBox("驚喜盒");if(k==="train")return startTraining();if(k==="island")return go("island");if(k==="weak")return go("weak");if(k==="cards"){freeCards();cur="practice";renderTabs()}}
+/* settings, records and backup live on their own page (gear button in the header) */
+function settingsView(){if(typeof endTry==="function")endTry();clearSheet();TR=null;enter("home");ROOT=false;
+  const g=S.goal,w=BUILTIN[Math.floor(Date.now()/864e5)%BUILTIN.length];
+  view().innerHTML=`<button class="back" onclick="go('home')">${icon("chev","flip")}今日</button><h2>設定與紀錄</h2>
+  <div class="stack" id="moreRoot">
     <section class="more">
     ${IN_CLAUDE?`<div class="syncline"><span class="sdot"></span><span id="syncTxt" class="note sync-${CLOUD.status}">${syncText()}</span></div>`:""}
     <details class="st-wrap"><summary>學習紀錄</summary><div class="body">${statsHTML()}</div></details>
-    <details><summary>設定</summary><div class="body">
+    <details open><summary>設定</summary><div class="body">
       <div class="seg"><span class="note">程度</span><div class="rate">${LEVELS.map(([k,n])=>`<button data-lv="${k}" aria-pressed="${S.lvl===k}">${n}</button>`).join("")}</div></div>
+      <div class="seg"><span class="note">今日訓練長度</span><div class="rate">${Object.entries(TLEN).map(([k,v])=>`<button data-tl="${k}" aria-pressed="${(S.tlen||"std")===k}">${v.name}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">每日目標</span><div class="rate">${[20,40,60,100].map(n=>`<button data-goal="${n}" aria-pressed="${g===n}">${n}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">背景音樂</span><div class="rate"><button data-mon="1" aria-pressed="${MSET().on}">開</button><button data-mon="0" aria-pressed="${!MSET().on}">關</button></div></div>
       <div class="seg"><span class="note">音樂風格</span><div class="rate">${Object.entries(MSTYLES).map(([k,n])=>`<button data-mst="${k}" aria-pressed="${MSET().style===k}">${n.replace(" 鋼琴","")}</button>`).join("")}</div></div>
@@ -3254,19 +3298,18 @@ function home(){
     <p class="appver">England v${APP_NAME}</p>
     </section>
   </div>`;
-  $("#train").onclick=startTraining;drawMini();if($("#boxBanner"))$("#boxBanner").onclick=()=>mysteryBox("驚喜盒");
-  if(streak()>0&&streak()%7===0&&S.days[today()]&&S.stBox!==today()){S.stBox=today();S.boxes=(S.boxes||0)+1;save();setTimeout(()=>toast(`連續 ${streak()} 天！獲得驚喜盒`,"ach"),800)}wireMedals();setTimeout(()=>{if(cur==="home"&&ROOT)checkRings()},1200);view().querySelectorAll("[data-start]").forEach(b=>b.onclick=startTraining);
-  const TAPS=["外圈是今日題數，中圈是今日訓練，內圈是新學的字。","今日單字：「"+w.w+"」— "+w.zh,"每 4 XP 可以換 1 枚金幣。","連續練習 "+streak()+" 天。","到期的單字會優先出現在今日訓練。"];
-  $("#petTap").onclick=()=>{$("#petSay").textContent=pick(TAPS);const r=$("#petTap .rings");r.classList.remove("anim");void r.getBoundingClientRect();r.classList.add("anim")};
+  wireMore()}
+function reMore(){const y=view().scrollTop;settingsView();view().scrollTop=y}
+function wireMore(){
   $("#sndTest").onclick=()=>{soundTest();setTimeout(waDiag,2600)};renderBk();
-  view().querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{S.lvl=b.dataset.lv;save();home();toast(`程度改為「${lvName()}」`)});
-  view().querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{S.goal=+b.dataset.goal;save();home()});
-  view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{S.tlen=b.dataset.tl;save();home();toast(`今日訓練改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
-  view().querySelectorAll("[data-mon]").forEach(b=>b.onclick=()=>{const on=b.dataset.mon==="1";if(MSET().on!==on)musicToggle();home()});
-  view().querySelectorAll("[data-mst]").forEach(b=>b.onclick=()=>{MSET().style=b.dataset.mst;MSET().on=true;save();musicPlay();home()});
-  view().querySelectorAll("[data-mvol]").forEach(b=>b.onclick=()=>{MSET().vol=+b.dataset.mvol;save();musicLevel(.4);home()});
-  view().querySelectorAll("[data-snd]").forEach(b=>b.onclick=()=>{S.sound=b.dataset.snd==="1";save();home();sfx("ok")});
-  view().querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{S.rate=+b.dataset.rate;save();home();say("This is the new speed.")});
+  view().querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{S.lvl=b.dataset.lv;save();reMore();toast(`程度改為「${lvName()}」`)});
+  view().querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{S.goal=+b.dataset.goal;save();reMore()});
+
+  view().querySelectorAll("[data-mon]").forEach(b=>b.onclick=()=>{const on=b.dataset.mon==="1";if(MSET().on!==on)musicToggle();reMore()});
+  view().querySelectorAll("[data-mst]").forEach(b=>b.onclick=()=>{MSET().style=b.dataset.mst;MSET().on=true;save();musicPlay();reMore()});
+  view().querySelectorAll("[data-mvol]").forEach(b=>b.onclick=()=>{MSET().vol=+b.dataset.mvol;save();musicLevel(.4);reMore()});
+  view().querySelectorAll("[data-snd]").forEach(b=>b.onclick=()=>{S.sound=b.dataset.snd==="1";save();reMore();sfx("ok")});
+  view().querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{S.rate=+b.dataset.rate;save();reMore();say("This is the new speed.")});
   wireBkFile();wireVoice();
   {const r1=document.getElementById("remT1"),r2=document.getElementById("remT2"),ra=document.getElementById("remAdd");if(r1&&r2&&ra){const T=pushTimes();r1.value=T[0];r2.value=T[1]||"";
     const pick=()=>[...new Set([r1.value,r2.value].filter(Boolean))].sort();
@@ -3274,10 +3317,11 @@ function home(){
     r1.onchange=onT;r2.onchange=onT;
     ra.onclick=()=>{const u="https://chou-0315.github.io/English-Practice-APP/reminders/"+r1.value+".ics";const w=window.open(u,"_blank");if(!w)location.href=u;toast(`在行事曆按「加入」，每天 ${hmOf(r1.value)} 會提醒你`)}
     view().querySelectorAll("[data-push]").forEach(b=>b.onclick=async()=>{const on=b.dataset.push==="1";b.disabled=true;
-      const r=on?await pushEnable(pick()):await pushDisable();b.disabled=false;if(r)toast(r);home()})}}
-  view().querySelectorAll("[data-rv]").forEach(b=>b.onclick=()=>{S.realVoice=b.dataset.rv==="1";save();home();say("pronunciation")});
-  view().querySelectorAll("[data-loud]").forEach(b=>b.onclick=()=>{S.loud=b.dataset.loud==="1";save();applyLoud();home();toast(S.loud!==false?"靜音模式也會播放聲音":"已恢復：靜音時不出聲")});
+      const r=on?await pushEnable(pick()):await pushDisable();b.disabled=false;if(r)toast(r);reMore()})}}
+  view().querySelectorAll("[data-rv]").forEach(b=>b.onclick=()=>{S.realVoice=b.dataset.rv==="1";save();reMore();say("pronunciation")});
+  view().querySelectorAll("[data-loud]").forEach(b=>b.onclick=()=>{S.loud=b.dataset.loud==="1";save();applyLoud();reMore();toast(S.loud!==false?"靜音模式也會播放聲音":"已恢復：靜音時不出聲")});
   if($("#tourAgain"))$("#tourAgain").onclick=()=>{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0});setTimeout(startTour,250)};
+  view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{S.tlen=b.dataset.tl;save();reMore();toast(`今日訓練改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
 }
 
 /* ================= PRACTICE MENU ================= */
@@ -3640,7 +3684,7 @@ function onboarding(step){ROOT=false;
   }
 }
 
-bkBoot();gateBoot();swBoot();verBoot();setTimeout(()=>pushAsk(false),2500);setTimeout(()=>{if(S.push&&S.push.on&&pushOK()&&S.pushSync!==today()){pushSync().then(ok=>{if(ok){S.pushSync=today();saveLocal()}})}},5000);applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();if($("#lvBtn"))$("#lvBtn").onclick=()=>{const l=levelOf(S.xp),A=xpFor(l),B=xpFor(l+1);toast(`${S.xp-A} / ${B-A} XP · 再 ${B-S.xp} XP 升到 Lv.${l+1}`)};
+bkBoot();gateBoot();swBoot();verBoot();(()=>{const ch=document.querySelector(".hbar .chips");if(ch&&!document.getElementById("gearBtn")){const b=document.createElement("button");b.id="gearBtn";b.className="chip-s gear";b.setAttribute("aria-label","設定與紀錄");b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';b.onclick=settingsView;ch.appendChild(b)}})();setTimeout(()=>pushAsk(false),2500);setTimeout(()=>{if(S.push&&S.push.on&&pushOK()&&S.pushSync!==today()){pushSync().then(ok=>{if(ok){S.pushSync=today();saveLocal()}})}},5000);applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();if($("#lvBtn"))$("#lvBtn").onclick=()=>{const l=levelOf(S.xp),A=xpFor(l),B=xpFor(l+1);toast(`${S.xp-A} / ${B-A} XP · 再 ${B-S.xp} XP 升到 Lv.${l+1}`)};
 renderTabs();renderHeader();
 if(!S.onb)onboarding(1);else home();
 checkAch();cloudInit();
