@@ -1038,7 +1038,8 @@ header{padding:22px 16px 6px!important}
 .sw.trying .sw-p,.bgi.trying .sw-p{color:var(--accent);font-weight:700}
 @keyframes tryPulse{50%{outline-offset:6px}}
 .btn.pulse{animation:btnPulse 1s ease-in-out infinite}@keyframes btnPulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 30%,transparent)}}
-.rem{display:flex;align-items:center;gap:10px}.rem .vsel{max-width:none}
+.rem{display:flex;align-items:center;gap:10px}#pushAsk{position:fixed;inset:0;z-index:170;display:flex;align-items:flex-end;justify-content:center;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));background:rgba(6,8,22,.35);opacity:0;transition:opacity .3s}#pushAsk.show{opacity:1}#pushAsk .pa-card{width:min(420px,100%);text-align:center;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),0 20px 60px rgba(0,0,0,.3);border-radius:28px;padding:22px 20px 14px;color:var(--ink);transform:translateY(40px);transition:transform .4s cubic-bezier(.2,1.3,.4,1)}#pushAsk.show .pa-card{transform:none}#pushAsk .pa-ic{font-size:2.2rem;line-height:1}#pushAsk h3{margin:8px 0 6px;font-size:1.25rem}#pushAsk p{margin:0 0 16px;color:var(--muted);font-size:.95rem;line-height:1.5}#pushAsk p b{color:var(--ink)}#pushAsk .btn{width:100%}#pushAsk .pa-no{display:block;margin:10px auto 0;color:var(--muted)!important}
+.rem .vsel{max-width:none}
 </style>
 <script>
 const ORIG=[
@@ -2686,6 +2687,22 @@ async function pushDisable(){S.push={on:false,times:pushTimes()};save();
 let pushT=null;function pushDoneQ(){clearTimeout(pushT);pushT=setTimeout(pushDone,3000)}
 async function pushDone(){try{if(!(S.push&&S.push.on)||!pushOK()||!S.days[today()]||S.pushPing===today())return;
   const sub=await pushSub(false);if(!sub)return;await pjson("/done",{endpoint:sub.endpoint,date:today(),streak:streak()});S.pushPing=today();saveLocal()}catch(e){}}
+
+/* ask once (then at most every 3 days) to turn on the daily reminder, right inside the app */
+function pushAsk(force){try{
+  if(!pushOK()||(S.push&&S.push.on)||document.getElementById("pushAsk")||document.getElementById("tour")||document.getElementById("gate"))return;
+  if(typeof Notification!=="undefined"&&Notification.permission==="denied")return;
+  if(!force&&S.pushAskAt&&Date.now()-S.pushAskAt<3*864e5)return;
+  if(!S.onb)return;
+  const T=pushTimes(),d=document.createElement("div");d.id="pushAsk";d.setAttribute("role","dialog");d.setAttribute("aria-label","開啟每日提醒");
+  d.innerHTML=`<div class="pa-card"><div class="pa-ic">🔔</div><h3>開啟每日提醒？</h3>
+    <p>每天 <b>${T.map(hmOf).join("</b> 和 <b>")}</b> 提醒你練英文。當天練過就不會吵你，時間可以在設定裡改。</p>
+    <button class="btn primary" id="paYes">開啟提醒</button><button class="link pa-no" id="paNo">之後再說</button></div>`;
+  document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add("show"));
+  const close=()=>{S.pushAskAt=Date.now();save();d.classList.remove("show");setTimeout(()=>d.remove(),300)};
+  d.querySelector("#paNo").onclick=close;d.addEventListener("click",e=>{if(e.target===d)close()});
+  d.querySelector("#paYes").onclick=async()=>{const b=d.querySelector("#paYes");b.disabled=true;b.textContent="設定中…";const r=await pushEnable(T);close();if(r)toast(r);if(cur==="home")home()};
+}catch(e){}}
 /* ================= first-run quick tour (coach marks) ================= */
 const TOUR=[
   {q:()=>document.getElementById("petTap")&&document.getElementById("petTap").closest("section"),t:"今日進度",d:"每天完成三個圓環：答題數、今日訓練、新學的字。三圈都滿就是完美的一天。"},
@@ -2720,11 +2737,11 @@ function tourPlace(){if(!TS||!TS.el)return;const r=tourRect(TS.el),p=8,sp=TS.ov.
   const ch=cd.offsetHeight||170,below=y+h+14,above=y-14-ch;let top=(r.top+r.height/2<innerHeight*.52)?below:above;
   if(top+ch>innerHeight-12)top=above;if(top<12)top=below;top=Math.max(12,Math.min(innerHeight-ch-12,top));cd.style.top=top+"px"}
 function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize",TS.re);document.removeEventListener("scroll",TS.re,true);(TS.ts||[]).forEach(clearTimeout);TS=null;S.tour=1;save();ov.classList.remove("show");setTimeout(()=>ov.remove(),300);
-  try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！")}
+  try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261111225544";
-const APP_NAME="1.13";
+const APP_VER="20261112001455";
+const APP_NAME="1.14";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -3623,7 +3640,7 @@ function onboarding(step){ROOT=false;
   }
 }
 
-bkBoot();gateBoot();swBoot();verBoot();setTimeout(()=>{if(S.push&&S.push.on&&pushOK()&&S.pushSync!==today()){pushSync().then(ok=>{if(ok){S.pushSync=today();saveLocal()}})}},5000);applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();if($("#lvBtn"))$("#lvBtn").onclick=()=>{const l=levelOf(S.xp),A=xpFor(l),B=xpFor(l+1);toast(`${S.xp-A} / ${B-A} XP · 再 ${B-S.xp} XP 升到 Lv.${l+1}`)};
+bkBoot();gateBoot();swBoot();verBoot();setTimeout(()=>pushAsk(false),2500);setTimeout(()=>{if(S.push&&S.push.on&&pushOK()&&S.pushSync!==today()){pushSync().then(ok=>{if(ok){S.pushSync=today();saveLocal()}})}},5000);applyTheme();mountAura();musicSetup();applyBg();useFreezes();setInterval(()=>renderHeader(),30000);$("#flameI").innerHTML=FLAME;$("#coinI").innerHTML=COIN;$("#coinChip").onclick=()=>shop();if($("#lvBtn"))$("#lvBtn").onclick=()=>{const l=levelOf(S.xp),A=xpFor(l),B=xpFor(l+1);toast(`${S.xp-A} / ${B-A} XP · 再 ${B-S.xp} XP 升到 Lv.${l+1}`)};
 renderTabs();renderHeader();
 if(!S.onb)onboarding(1);else home();
 checkAch();cloudInit();
