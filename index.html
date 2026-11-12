@@ -1384,6 +1384,96 @@ nav button svg{width:22px!important;height:22px!important}
 .scene-tog{background:transparent!important;border:1.5px solid var(--glass-brd)!important;color:transparent!important;width:22px;height:22px}
 .scene-tog[aria-pressed="true"]{background:var(--fill)!important;border-color:transparent!important;color:var(--ink)!important}
 .scene:not(.on){opacity:.5}
+
+/* ===== v1.35 common: local glass, tighter type scale, no music chip ===== */
+#musicChip{display:none!important}
+:root{--gl:rgba(255,255,255,.62);--gl-brd:rgba(255,255,255,.7);--gl-blur:saturate(160%) blur(22px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--gl:rgba(28,28,30,.6);--gl-brd:rgba(255,255,255,.1)}}
+:root[data-theme="dark"]{--gl:rgba(28,28,30,.6);--gl-brd:rgba(255,255,255,.1)}
+header{background:var(--gl)!important;backdrop-filter:var(--gl-blur);-webkit-backdrop-filter:var(--gl-blur);border-bottom:1px solid var(--gl-brd)!important}
+.hbar .chip-s{background:var(--gl)!important;backdrop-filter:var(--gl-blur);-webkit-backdrop-filter:var(--gl-blur);border:1px solid var(--gl-brd)!important}
+nav{background:var(--gl)!important;backdrop-filter:var(--gl-blur)!important;-webkit-backdrop-filter:var(--gl-blur)!important;border:1px solid var(--gl-brd)!important;box-shadow:0 10px 30px -12px rgba(0,0,0,.28)!important}
+.sheet,.toast,#updBar{background:var(--gl)!important;backdrop-filter:var(--gl-blur)!important;-webkit-backdrop-filter:var(--gl-blur)!important;border-color:var(--gl-brd)!important}
+.row.act{background:transparent!important}
+/* type scale: 3 levels */
+h2{font-size:1.75rem!important;margin:16px 0 12px!important}
+.sub{font-size:.88rem;margin:-6px 0 14px!important}
+.ghead,.sec-h{font-size:1rem!important}
+.seg .label,.scene-n,.note,.foot,.grow-l small,.mode-d,.h-tile small,.tc-eyebrow{font-size:.78rem!important}
+.h-date{font-size:.78rem!important}
+/* spacing */
+.stack{gap:12px}.home{gap:12px!important}.pr .ghead,.ghead{margin-top:12px!important}
+.group,.modes,.list,.h-tile,.islcard,.card,.taskcard,details,.scene,.medals,.skil,.advice,.pr-games .mode{border-radius:14px!important}
+/* bank: tighter tiles */
+.scene-main{padding:12px 10px 12px!important}
+.scene-ic{width:32px!important;height:32px!important;margin-bottom:4px!important}.scene-ic .ic{width:18px!important;height:18px!important}
+.scene-zh{font-size:.9rem!important}.scenes{gap:10px!important}
+
+#aura::after{display:none}
+#aura{background:#FBFAFD!important}
+#aura i{display:block!important;filter:blur(55px)!important}
+#aura .b1,#aura .b2,#aura .b3{background:radial-gradient(circle,var(--c) 0%,transparent 60%)!important}
+#aura .b4{display:none!important}
+#aura .b1{--c:#B9D6FF;opacity:.95!important}#aura .b2{--c:#FFC0D4;opacity:.9!important}#aura .b3{--c:#FFDCBC;opacity:.85!important}
+
+:root{--lg:rgba(255,255,255,0.55);--lg-f:saturate(170%) blur(30px);--rim:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),inset 1px 0 0 rgba(255,255,255,.45),inset -1px 0 0 rgba(255,255,255,.2);
+  --sheen:linear-gradient(135deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.12) 38%,rgba(255,255,255,0) 55%,rgba(255,255,255,.18) 100%)}
+.group,.modes,.h-tile,.scene,.pr-games .mode,.card,.list,details,.advice,.islcard,.medals,.skil,.taskcard,.hero,.opt,.res-bar span{
+  background:var(--sheen),var(--lg)!important;backdrop-filter:var(--lg-f)!important;-webkit-backdrop-filter:var(--lg-f)!important;
+  border:.5px solid rgba(255,255,255,.7)!important;box-shadow:var(--rim),0 1px 2px rgba(0,0,0,.04),0 12px 32px -14px rgba(60,40,90,.22)!important;border-radius:24px!important}
+.hero{border-radius:30px!important}.hero::after,.hero::before{display:none}
+.grow+.grow::before,.mode+.mode::before{background:rgba(60,60,67,.12)!important;height:.5px}
+header{background:rgba(255,255,255,.35)!important;backdrop-filter:var(--lg-f)!important;-webkit-backdrop-filter:var(--lg-f)!important;border-bottom:.5px solid rgba(255,255,255,.6)!important}
+.hbar .chip-s{background:var(--sheen),var(--lg)!important;backdrop-filter:var(--lg-f)!important;-webkit-backdrop-filter:var(--lg-f)!important;border:.5px solid rgba(255,255,255,.75)!important;box-shadow:var(--rim),0 4px 12px -6px rgba(60,40,90,.25)!important}
+nav{background:var(--sheen),rgba(255,255,255,0.45000000000000007)!important;backdrop-filter:var(--lg-f)!important;-webkit-backdrop-filter:var(--lg-f)!important;border:.5px solid rgba(255,255,255,.75)!important;box-shadow:var(--rim),0 16px 40px -14px rgba(60,40,90,.35)!important;border-radius:999px!important}
+nav button[aria-current="true"]{background:rgba(255,255,255,.7)!important;box-shadow:var(--rim),0 2px 8px -2px rgba(60,40,90,.25)!important;color:var(--ink)!important}
+.sheet,.toast,#updBar{background:var(--sheen),var(--lg)!important;backdrop-filter:var(--lg-f)!important;-webkit-backdrop-filter:var(--lg-f)!important;border:.5px solid rgba(255,255,255,.75)!important;box-shadow:var(--rim),0 -10px 40px -16px rgba(60,40,90,.3)!important}
+.sheet{border-radius:32px 32px 0 0!important}
+.btn{background:var(--sheen),rgba(255,255,255,.55)!important;backdrop-filter:var(--lg-f)!important;-webkit-backdrop-filter:var(--lg-f)!important;border:.5px solid rgba(255,255,255,.8)!important;box-shadow:var(--rim),0 4px 12px -6px rgba(60,40,90,.2)!important}
+.btn.primary,.taskcard .cta{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),linear-gradient(135deg,#6AA8FF,#B48CFF 60%,#FF8DB5)!important;color:#fff!important;border:.5px solid rgba(255,255,255,.55)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 24px -10px rgba(120,90,220,.6)!important;text-shadow:0 1px 1px rgba(0,0,0,.12)}
+.hero.done .cta{background:var(--sheen),rgba(255,255,255,.7)!important;color:var(--ink)!important;text-shadow:none}
+.rate{background:rgba(120,120,128,.12)!important}.rate button[aria-pressed="true"]{background:rgba(255,255,255,.9)!important;box-shadow:var(--rim),0 2px 6px rgba(0,0,0,.08)!important}
+.scene-tog[aria-pressed="true"]{background:rgba(255,255,255,.85)!important;box-shadow:var(--rim)!important}
+.sq,.scene-ic,.mode-ic{background:var(--sheen),color-mix(in srgb,var(--c) 18%,rgba(255,255,255,.6))!important;box-shadow:var(--rim),0 3px 8px -3px color-mix(in srgb,var(--c) 40%,transparent)!important}
+.sq .ic,.scene-ic .ic,.mode-ic .ic{filter:none!important}
+h2{font-weight:700!important;letter-spacing:-.02em!important;font-size:2rem!important}
+.hbar .lv b{background:rgba(255,255,255,.5)!important}
+
+/* v1.35 Liquid Glass (O) + flowing primary button */
+@property --fl{syntax:"<angle>";inherits:false;initial-value:0deg}
+.btn.primary,.taskcard .cta{position:relative;overflow:hidden;isolation:isolate;
+  background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),linear-gradient(110deg,#6AA8FF 0%,#B48CFF 25%,#FF8DB5 50%,#B48CFF 75%,#6AA8FF 100%)!important;
+  background-size:100% 100%,250% 100%!important;animation:flowbg 6s ease-in-out infinite}
+.btn.primary::after,.taskcard .cta::after{content:"";position:absolute;inset:-40% -20%;z-index:-1;pointer-events:none;
+  background:radial-gradient(40% 60% at 30% 50%,rgba(255,255,255,.45),transparent 70%),radial-gradient(35% 55% at 75% 60%,rgba(140,200,255,.45),transparent 70%);
+  filter:blur(10px);animation:flowblob 7s ease-in-out infinite alternate;mix-blend-mode:soft-light}
+.btn.primary::before,.taskcard .cta::before{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;z-index:1;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-18deg);animation:flowshine 4.5s ease-in-out infinite}
+@keyframes flowbg{0%,100%{background-position:0 0,0% 50%}50%{background-position:0 0,100% 50%}}
+@keyframes flowblob{0%{transform:translate(-8%,4%) scale(1)}50%{transform:translate(6%,-6%) scale(1.15)}100%{transform:translate(10%,6%) scale(.95)}}
+@keyframes flowshine{0%,55%{left:-60%}85%,100%{left:130%}}
+.hero.done .cta{animation:none!important}.hero.done .cta::before,.hero.done .cta::after{display:none}
+.btn.primary:disabled{animation:none}.btn.primary:disabled::before,.btn.primary:disabled::after{display:none}
+@media (prefers-reduced-motion:reduce){.btn.primary,.taskcard .cta,.btn.primary::before,.btn.primary::after,.taskcard .cta::before,.taskcard .cta::after{animation:none!important}}
+/* dark mode glass */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lg:rgba(36,36,44,.5);--rim:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(255,255,255,.05),inset 1px 0 0 rgba(255,255,255,.08);
+  --sheen:linear-gradient(135deg,rgba(255,255,255,.1) 0%,rgba(255,255,255,.02) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,.05) 100%)}
+ :root:not([data-theme="light"]) #aura{background:#0D0C12!important}
+ :root:not([data-theme="light"]) #aura .b1{--c:#2C4F8C;opacity:.8!important}:root:not([data-theme="light"]) #aura .b2{--c:#7A2E57;opacity:.7!important}:root:not([data-theme="light"]) #aura .b3{--c:#6B4A2A;opacity:.6!important}
+ :root:not([data-theme="light"]) .group,:root:not([data-theme="light"]) .modes,:root:not([data-theme="light"]) .h-tile,:root:not([data-theme="light"]) .scene,:root:not([data-theme="light"]) .pr-games .mode,:root:not([data-theme="light"]) .card,:root:not([data-theme="light"]) .list,:root:not([data-theme="light"]) details,:root:not([data-theme="light"]) .advice,:root:not([data-theme="light"]) .islcard,:root:not([data-theme="light"]) .medals,:root:not([data-theme="light"]) .skil,:root:not([data-theme="light"]) .taskcard,:root:not([data-theme="light"]) .hero,:root:not([data-theme="light"]) .opt,:root:not([data-theme="light"]) .hbar .chip-s,:root:not([data-theme="light"]) .sheet,:root:not([data-theme="light"]) .toast{border-color:rgba(255,255,255,.12)!important}
+ :root:not([data-theme="light"]) header{background:rgba(20,20,26,.45)!important;border-bottom-color:rgba(255,255,255,.08)!important}
+ :root:not([data-theme="light"]) nav{background:var(--sheen),rgba(30,30,38,.55)!important;border-color:rgba(255,255,255,.12)!important}
+ :root:not([data-theme="light"]) nav button[aria-current="true"]{background:rgba(255,255,255,.14)!important;color:#fff!important}
+ :root:not([data-theme="light"]) .btn{background:var(--sheen),rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.14)!important;color:var(--ink)!important}
+ :root:not([data-theme="light"]) .rate button[aria-pressed="true"],:root:not([data-theme="light"]) .scene-tog[aria-pressed="true"]{background:rgba(255,255,255,.18)!important;color:#fff!important}
+ :root:not([data-theme="light"]) .hbar .lv b{background:rgba(255,255,255,.1)!important}
+ :root:not([data-theme="light"]) .sq,:root:not([data-theme="light"]) .scene-ic,:root:not([data-theme="light"]) .mode-ic{background:var(--sheen),color-mix(in srgb,var(--c) 28%,rgba(30,30,36,.6))!important}
+ :root:not([data-theme="light"]) .hero.done .cta{background:rgba(255,255,255,.12)!important;color:#fff!important}}
+
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero:not(.done) .cta,:root:not([data-theme="light"]) .btn.primary{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),linear-gradient(110deg,#6AA8FF 0%,#B48CFF 25%,#FF8DB5 50%,#B48CFF 75%,#6AA8FF 100%)!important;background-size:100% 100%,250% 100%!important;color:#fff!important;border:.5px solid rgba(255,255,255,.4)!important}
+ :root:not([data-theme="light"]) .hero{background:var(--sheen),var(--lg)!important}}
+:root[data-theme="dark"] .hero:not(.done) .cta,:root[data-theme="dark"] .btn.primary{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%),linear-gradient(110deg,#6AA8FF 0%,#B48CFF 25%,#FF8DB5 50%,#B48CFF 75%,#6AA8FF 100%)!important;background-size:100% 100%,250% 100%!important;color:#fff!important;border:.5px solid rgba(255,255,255,.4)!important}
+:root[data-theme="dark"] .hero{background:var(--sheen),var(--lg)!important}
 </style>
 <script>
 const ORIG=[
@@ -3594,7 +3684,7 @@ function medalStrip(){const got=ACH.filter(a=>S.ach[a[0]]),lock=ACH.filter(a=>!S
   <div class="medals">${list.map(([k,n])=>`<button class="md" data-md="${k}">${medal(k,64,!S.ach[k])}<span>${n}</span></button>`).join("")}</div>`}
 function awards(){ROOT=false;clearSheet();enter("home");
   view().innerHTML=`<h2>獎章</h2>
-  <p class="sub">已獲得 ${Object.keys(S.ach).length} / ${ACH.length} · 點獎章看條件</p>
+  <p class="sub">已獲得 ${Object.keys(S.ach).length} / ${ACH.length}</p>
   <div class="medals all">${ACH.map(([k,n])=>`<button class="md" data-md="${k}">${medal(k,84,!S.ach[k])}<span>${n}</span></button>`).join("")}</div>`;
   wireMedals()}
 function wireMedals(){view().querySelectorAll("[data-md]").forEach(b=>b.onclick=()=>medalInfo(b.dataset.md))}
@@ -3803,7 +3893,7 @@ let albumCat="all";
 function album(){ROOT=false;clearSheet();enter("home");const all=ALL(),col=collected(),cnt={N:0,R:0,SR:0,SSR:0};col.forEach(w=>cnt[rarityOf(w)]++);
   const list=col.filter(w=>albumCat==="all"||w.cat===albumCat).sort((a,b)=>["SSR","SR","R","N"].indexOf(rarityOf(a))-["SSR","SR","R","N"].indexOf(rarityOf(b)));
   view().innerHTML=`<h2>單字卡冊</h2>
-  <p class="sub">掌握的字會收進卡冊，程度越高越稀有</p>
+  
   <div class="group"><div class="grow"><span class="grow-l"><b>已收集</b></span><span class="grow-r"><b style="color:var(--ink)">${col.length}</b> / ${all.length}</span></div>
     <div class="grow rarity">${Object.entries(RAR).map(([k,[n,c]])=>`<span style="--rc:${c}"><i></i>${n} <b>${cnt[k]}</b></span>`).join("")}</div></div>
   <div class="filters" id="acat" style="margin-top:16px">${[["all","全部"],...Object.entries(CATS)].map(([k,l])=>`<button data-ac="${k}" aria-pressed="${albumCat===k}">${l}</button>`).join("")}</div>
@@ -4396,7 +4486,6 @@ const TOUR=[
   {q:()=>document.querySelector('[data-tab="practice"]'),t:"練習",d:"想多練就來這裡"},
   {q:()=>document.querySelector('[data-tab="weak"]'),t:"弱點",d:"答錯的字收在這裡，不同兩天答對就畢業。"},
   {q:()=>document.querySelector('[data-tab="bank"]'),t:"單字庫",d:"查看所有單字、調整想練的場景，也可以加入自己的單字。"},
-  {q:()=>document.getElementById("musicChip"),t:"背景音樂",d:"點這裡開關音樂"},
   {q:()=>document.getElementById("gearBtn"),t:"設定與紀錄",d:"設定、提醒、備份都在這裡"}];
 let TS=null;
 function startTour(){if(TS||document.getElementById("gate"))return;if(cur!=="home")go("home");
@@ -4425,8 +4514,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112151341";
-const APP_NAME="1.34";
+const APP_VER="20261112192607";
+const APP_NAME="1.35";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -5002,6 +5091,7 @@ function settingsView(){if(typeof endTry==="function")endTry();clearSheet();TR=n
       <div class="seg"><span class="note">程度</span><div class="rate">${LEVELS.map(([k,n])=>`<button data-lv="${k}" aria-pressed="${S.lvl===k}">${n}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">今日練習長度</span><div class="rate">${Object.entries(TLEN).map(([k,v])=>`<button data-tl="${k}" aria-pressed="${(S.tlen||"std")===k}">${v.name}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">每日目標</span><div class="rate">${[20,40,60,100].map(n=>`<button data-goal="${n}" aria-pressed="${g===n}">${n}</button>`).join("")}</div></div>
+      <div class="seg"><span class="note">背景音樂</span><div class="rate"><button data-mon="1" aria-pressed="${MSET().on}">開</button><button data-mon="0" aria-pressed="${!MSET().on}">關</button></div></div>
       <div class="seg"><span class="note">音樂風格</span><div class="rate">${Object.entries(MSTYLES).map(([k,n])=>`<button data-mst="${k}" aria-pressed="${MSET().style===k}">${n.replace(" 鋼琴","")}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">音樂音量</span><div class="rate">${[[1,"小"],[2,"中"],[3,"大"]].map(([v,n])=>`<button data-mvol="${v}" aria-pressed="${MSET().vol===v}">${n}</button>`).join("")}</div></div>
       <p class="note" style="margin:0">自動：小島放自然音，練習放專注音樂</p>
@@ -5043,6 +5133,7 @@ function wireMore(){
   view().querySelectorAll("[data-goal]").forEach(b=>b.onclick=()=>{S.goal=+b.dataset.goal;save();reMore()});
 
   view().querySelectorAll("[data-mon]").forEach(b=>b.onclick=()=>{const on=b.dataset.mon==="1";if(MSET().on!==on)musicToggle();reMore()});
+  view().querySelectorAll("[data-mon]").forEach(b=>b.onclick=()=>{if((b.dataset.mon==="1")!==MSET().on)musicToggle();reMore()});
   view().querySelectorAll("[data-mst]").forEach(b=>b.onclick=()=>{MSET().style=b.dataset.mst;MSET().on=true;save();musicPlay();reMore()});
   view().querySelectorAll("[data-mvol]").forEach(b=>b.onclick=()=>{MSET().vol=+b.dataset.mvol;save();musicLevel(.4);reMore()});
   view().querySelectorAll("[data-snd]").forEach(b=>b.onclick=()=>{S.sound=b.dataset.snd==="1";save();reMore();sfx("ok")});
@@ -5384,7 +5475,7 @@ function weak(){
     if(worstScene)parts.push(`錯題最多的是「${SCENES[worstScene[0]][0]}」，可以先做錯題特訓`);
     advice=parts.length?parts.join("。")+"。":"表現很穩定，可以到設定調高程度。"}
   const pct=n=>act.length?n/act.length*100:0;
-  view().innerHTML=`<h2>弱點分析</h2><p class="sub">哪些字真的會，哪些只是眼熟</p>
+  view().innerHTML=`<h2>弱點分析</h2>
   <div class="stack">
     ${total<10?"":`<section class="advice"><div><div class="label">下一步建議</div><div>${advice}</div></div></section>`}
     <section>
@@ -5418,9 +5509,9 @@ function bank(){
   const sceneTiles=Object.entries(SCENES).map(([k,[zh,en]])=>{const ws=ALL().filter(w=>w.cat===k),m=ws.filter(w=>isMastered(w.id)).length;
     return `<div class="scene ${S.cats.includes(k)?"on":""}" data-sc="${k}" style="--sc:${SC[k]}">
       <button class="scene-main" data-open="${k}" aria-label="查看${zh}的單字"><span class="scene-ic">${icon(k)}</span><span class="scene-en">${en}</span><span class="scene-zh">${zh}</span>
-      <span class="scene-n">${ws.length} 字${ws.length?` · 掌握 ${m}`:""}</span><span class="scene-bar"><i style="width:${ws.length?m/ws.length*100:0}%"></i></span></button>
+      <span class="scene-n">${ws.length} 字${m?` · 掌握 ${m}`:""}</span><span class="scene-bar"><i style="width:${ws.length?m/ws.length*100:0}%"></i></span></button>
       <button class="scene-tog" data-cat="${k}" aria-pressed="${S.cats.includes(k)}" aria-label="${zh}加入練習">${icon("check")}</button></div>`}).join("");
-  view().innerHTML=`<h2>單字庫</h2><p class="sub">點場景看單字</p>
+  view().innerHTML=`<h2>單字庫</h2>
   <div class="stack">
     <div class="seg"><span class="label" id="scLabel">練習範圍 · ${S.cats.length} 個場景</span><button class="link" id="allOn">全選</button></div>
     <div class="scenes" id="cats">${sceneTiles}</div>
