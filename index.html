@@ -2760,8 +2760,8 @@ function pushAsk(force){try{
 /* ================= first-run quick tour (coach marks) ================= */
 const TOUR=[
   {q:()=>document.querySelector(".taskcard"),t:"今日練習",d:"每天打開按這顆大按鈕就好：會告訴你今天要複習幾個字、學幾個新字、大概幾分鐘。中途離開，下次按「繼續」會回到同一題。"},
-  {q:()=>document.querySelector(".tc-route>summary"),t:"四步路線",d:"點開可以看單字卡、測驗、聽寫、造句四個步驟，也能切換輕量、標準、加強。右上的小圓環是今天的題數和新字。"},
-  {q:()=>{const g=document.querySelector(".ic-globe");return g&&(g.closest("button,a,[onclick]")||g.parentElement)},t:"我的小島",d:"答對題目會得到水滴和陽光，拿來種植物、蓋房子，讓小島一級一級慢慢長大。"},
+  {q:()=>document.querySelector(".tc-route>summary"),t:"四步路線",d:"點開可以看單字卡、測驗、聽寫、造句四個步驟。練習長度（輕量／標準／加強）在右上角齒輪裡設定。右上的小圓環是今天的題數和新字。"},
+  {q:()=>document.querySelector('[data-tab="island"]'),t:"我的小島",d:"答對題目會得到水滴和陽光，拿來種植物、蓋房子，讓小島一級一級慢慢長大。"},
   {q:()=>document.querySelector('[data-tab="practice"]'),t:"練習",d:"想多練就來這裡：單字卡、測驗、聽寫、造句、60 秒挑戰和泡泡遊戲。"},
   {q:()=>document.querySelector('[data-tab="weak"]'),t:"弱點",d:"答錯的字會自動收集在這裡。之後在不同的兩天答對，它就會從弱點畢業。"},
   {q:()=>document.querySelector('[data-tab="bank"]'),t:"單字庫",d:"查看所有單字、調整想練的場景，也可以加入自己的單字。"},
@@ -2794,8 +2794,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112120905";
-const APP_NAME="1.18";
+const APP_VER="20261112121600";
+const APP_NAME="1.19";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -3328,27 +3328,23 @@ function home(){
       <button class="btn ${T.all?"":"primary"} cta" id="train">${btn}</button>
       <span id="petSay" hidden></span>
       <details class="tc-route"><summary>四步路線 · ${TL().name} ›</summary>
-        <div class="rate tlen" id="tlRow">${Object.entries(TLEN).map(([k,v])=>`<button data-tl="${k}" aria-pressed="${(S.tlen||"std")===k}">${v.name}</button>`).join("")}</div>
         ${pathHTML(T.plan,T.t)}</details>
     </section>
     ${first?"":nudgesHTML({nw,due,all:T.all})}
-    ${islandCard()}
         <div class="group">
       <button class="grow" onclick="album()">${sq("cards","#FF9F0A")}<span class="grow-l"><b>單字卡冊</b></span><span class="grow-v">${collected().length}</span><span class="grow-r">${icon("chev","chev")}</span></button>
-      <button class="grow" onclick="cur='practice';renderTabs();startBubbles()">${sq("target","#30B0C7")}<span class="grow-l"><b>泡泡挑戰</b></span><span class="grow-r">${icon("chev","chev")}</span></button>
       <button class="grow" onclick="awards()">${sq("crown","#FF9500")}<span class="grow-l"><b>獎章</b></span><span class="grow-v">${Object.keys(S.ach||{}).length}/${ACH.length}</span><span class="grow-r">${icon("chev","chev")}</span></button>
       <details class="grow wotd-row"><summary>${sq(w.cat,SC[w.cat]||"#5856D6")}<span class="grow-l"><b>今日單字 · ${esc(w.w)}</b></span><span class="grow-r">${icon("chev","chev")}</span></summary>
         <div class="wm-body"><div class="row" style="align-items:center;gap:8px"><span class="ipa">${w.ipa}</span><span class="pos">${w.pos}</span>${spkBtn(w.w)}</div><div class="ex2">${esc(w.ex)}<div class="zh">${w.exZh}</div></div></div></details>
     </div>
   </div>`;
-  $("#train").onclick=startTraining;drawMini();
+  $("#train").onclick=startTraining;
   view().querySelectorAll("[data-nudge]").forEach(b=>b.onclick=()=>nudgeGo(b.dataset.nudge));
   if(streak()>0&&streak()%7===0&&S.days[today()]&&S.stBox!==today()){S.stBox=today();S.boxes=(S.boxes||0)+1;save();setTimeout(()=>toast(`連續 ${streak()} 天！獲得驚喜盒`,"ach"),800)}
   setTimeout(()=>{if(cur==="home"&&ROOT)checkRings()},1200);view().querySelectorAll("[data-start]").forEach(b=>b.onclick=startTraining);
   const TAPS=["外圈是今日題數，中圈是今日練習，內圈是新學的字。","今日單字：「"+w.w+"」— "+w.zh,"每 4 XP 可以換 1 枚金幣。","連續練習 "+streak()+" 天。","到期的單字會優先出現在今日練習。"];
   $("#petTap").onclick=()=>{toast(pick(TAPS));const r=$("#petTap .rings");r.classList.remove("anim");void r.getBoundingClientRect();r.classList.add("anim")};
-  view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{const live=sessLive();S.tlen=b.dataset.tl;save();home();const d=view().querySelector(".tc-route");if(d)d.open=true;
-    toast(live?`改為「${TL().name}」：正在做的${STEP_NAME[live.k]}維持原題數，下一步開始套用`:`今日練習改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
+
 }
 
 /* contextual nudges: due reviews and weak words first, then rewards and the island */
@@ -3374,9 +3370,8 @@ function settingsView(){if(typeof endTry==="function")endTry();clearSheet();TR=n
     <details class="st-wrap"><summary>學習紀錄</summary><div class="body">${statsHTML()}</div></details>
     <details open><summary>設定</summary><div class="body">
       <div class="seg"><span class="note">程度</span><div class="rate">${LEVELS.map(([k,n])=>`<button data-lv="${k}" aria-pressed="${S.lvl===k}">${n}</button>`).join("")}</div></div>
-      <div class="seg"><span class="note">今日訓練長度</span><div class="rate">${Object.entries(TLEN).map(([k,v])=>`<button data-tl="${k}" aria-pressed="${(S.tlen||"std")===k}">${v.name}</button>`).join("")}</div></div>
+      <div class="seg"><span class="note">今日練習長度</span><div class="rate">${Object.entries(TLEN).map(([k,v])=>`<button data-tl="${k}" aria-pressed="${(S.tlen||"std")===k}">${v.name}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">每日目標</span><div class="rate">${[20,40,60,100].map(n=>`<button data-goal="${n}" aria-pressed="${g===n}">${n}</button>`).join("")}</div></div>
-      <div class="seg"><span class="note">背景音樂</span><div class="rate"><button data-mon="1" aria-pressed="${MSET().on}">開</button><button data-mon="0" aria-pressed="${!MSET().on}">關</button></div></div>
       <div class="seg"><span class="note">音樂風格</span><div class="rate">${Object.entries(MSTYLES).map(([k,n])=>`<button data-mst="${k}" aria-pressed="${MSET().style===k}">${n.replace(" 鋼琴","")}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">音樂音量</span><div class="rate">${[[1,"小"],[2,"中"],[3,"大"]].map(([v,n])=>`<button data-mvol="${v}" aria-pressed="${MSET().vol===v}">${n}</button>`).join("")}</div></div>
       <p class="note" style="margin:0">「自動」會依畫面切換：小島放自然音，練習時放專注音樂，其他時候放 Lo-fi。唸單字時音樂會自動變小聲。</p>
@@ -3393,8 +3388,7 @@ function settingsView(){if(typeof endTry==="function")endTry();clearSheet();TR=n
       <p class="note" id="pushNote" style="margin:0">${pushNoteText()}</p>
       <div class="seg"><span class="note">沒辦法收通知？</span><button class="link" id="remAdd">改用行事曆提醒</button></div>
       <div class="seg"><span class="note">第一次使用的導覽</span><button class="link" id="tourAgain">重看導覽</button></div>
-      <div class="seg"><span class="note">練習場景：${S.cats.length} 個</span><button class="link" onclick="go('bank')">到單字庫調整</button></div>
-    </div></details>
+          </div></details>
     <details><summary>自動備份與還原</summary><div class="body">
       <div class="note" id="bkStat"></div>
       <div class="bk-h">還原進度</div>
@@ -3434,7 +3428,7 @@ function wireMore(){
   view().querySelectorAll("[data-rv]").forEach(b=>b.onclick=()=>{S.realVoice=b.dataset.rv==="1";save();reMore();say("pronunciation")});
   view().querySelectorAll("[data-loud]").forEach(b=>b.onclick=()=>{S.loud=b.dataset.loud==="1";save();applyLoud();reMore();toast(S.loud!==false?"靜音模式也會播放聲音":"已恢復：靜音時不出聲")});
   if($("#tourAgain"))$("#tourAgain").onclick=()=>{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0});setTimeout(startTour,250)};
-  view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{S.tlen=b.dataset.tl;save();reMore();toast(`今日訓練改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
+  view().querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{const live=sessLive();S.tlen=b.dataset.tl;save();reMore();toast(live?`改為「${TL().name}」：正在做的${STEP_NAME[live.k]}維持原題數，下一步開始套用`:`今日練習改為「${TL().name}」，約 ${minutesOf(trainPlan())} 分鐘`)});
 }
 
 /* ================= PRACTICE MENU ================= */
@@ -3449,7 +3443,6 @@ function practice(){
     <button class="mode" data-m="bubble" style="--sc:#30B0C7"><span class="mode-ic">${icon("target")}</span><span class="mode-t">泡泡挑戰</span><span class="mode-d">點破正確單字的泡泡，三條命</span><span class="mode-best">最佳 ${S.bbBest||0}</span></button>
     <button class="mode" data-m="listen" style="--sc:#12B3A6"><span class="mode-ic">${icon("listen")}</span><span class="mode-t">聽寫</span><span class="mode-d">聽句子，把它打出來</span></button>
     <button class="mode" data-m="build" style="--sc:#FFB020"><span class="mode-ic">${icon("build")}</span><span class="mode-t">造句</span><span class="mode-d">把字塊排成正確句子</span></button>
-    <button class="mode ${wl?"warn":""}" data-m="weak" ${wl?"":"disabled"} style="--sc:#F2545B"><span class="mode-ic">${icon("weak")}</span><span class="mode-t">錯題特訓</span><span class="mode-d">${wl?`${wl} 個常錯的字`:"目前沒有錯題"}</span></button>
   </div>`;
   view().querySelector(".modes").onclick=e=>{const b=e.target.closest("[data-m]");if(!b||b.disabled)return;
     ({cards:freeCards,quiz:()=>runQuiz({total:10}),rush:startRush,bubble:startBubbles,listen:()=>runListen({}),build:()=>runBuild({}),weak:weakDrill})[b.dataset.m]()};
@@ -3790,7 +3783,7 @@ function bank(){
       <button class="scene-main" data-open="${k}" aria-label="查看${zh}的單字"><span class="scene-ic">${icon(k)}</span><span class="scene-en">${en}</span><span class="scene-zh">${zh}</span>
       <span class="scene-n">${ws.length} 字${ws.length?` · 掌握 ${m}`:""}</span><span class="scene-bar"><i style="width:${ws.length?m/ws.length*100:0}%"></i></span></button>
       <button class="scene-tog" data-cat="${k}" aria-pressed="${S.cats.includes(k)}" aria-label="${zh}加入練習">${S.cats.includes(k)?"練習中":"未選"}</button></div>`}).join("");
-  view().innerHTML=`<h2>單字庫</h2><p class="sub">共 ${ALL().length} 個字，依使用場景分類。點場景看單字，右下角切換要不要放進練習。目前程度：${lvName()}，超出程度的字會先跳過。</p>
+  view().innerHTML=`<h2>單字庫</h2><p class="sub">點場景看單字，右下角切換要不要練。</p>
   <div class="stack">
     <div class="seg"><span class="label" id="scLabel">練習範圍 · ${S.cats.length} 個場景</span><button class="link" id="allOn">全選</button></div>
     <div class="scenes" id="cats">${sceneTiles}</div>
@@ -3807,10 +3800,10 @@ function bank(){
     </div></details>
     <div class="hr"></div>
     <div id="listHead" class="field"><label for="search">搜尋單字</label><input type="text" id="search" value="${esc(q)}" placeholder="英文或中文" autocomplete="off" autocapitalize="off"></div>
-    <div class="filters" id="lcat">${[["all","全部"],...Object.entries(CATS)].map(([k,l])=>`<button data-l="${k}" aria-pressed="${listCat===k}">${l}</button>`).join("")}</div>
+    <div class="seg" id="lcat"><span class="note" id="lcatTxt"></span><button class="link" data-l="all">看全部</button></div>
     <div class="list" id="wl"></div>
   </div>`;
-  const syncL=()=>view().querySelectorAll("#lcat button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.l===listCat));
+  const syncL=()=>{const t=$("#lcatTxt"),b=view().querySelector("#lcat [data-l]");if(t)t.textContent=listCat==="all"?"全部單字":`只看：${(SCENES[listCat]||[CATS[listCat]||listCat])[0]}`;if(b)b.hidden=listCat==="all"};
   $("#cats").onclick=e=>{const o=e.target.closest("[data-open]");
     if(o){listCat=o.dataset.open;q="";$("#search").value="";syncL();drawList();$("#listHead").scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});return}
     const b=e.target.closest("[data-cat]");if(!b)return;const k=b.dataset.cat;
@@ -3818,7 +3811,7 @@ function bank(){
     const on=S.cats.includes(k);b.setAttribute("aria-pressed",on);b.textContent=on?"練習中":"未選";b.parentElement.classList.toggle("on",on);
     $("#scLabel").textContent=`練習範圍 · ${S.cats.length} 個場景`};
   $("#allOn").onclick=()=>{S.cats=Object.keys(SCENES);save();bank()};
-  $("#lcat").onclick=e=>{const b=e.target.closest("[data-l]");if(!b)return;listCat=b.dataset.l;syncL();drawList()};
+  $("#lcat").onclick=e=>{const b=e.target.closest("[data-l]");if(!b)return;listCat=b.dataset.l;syncL();drawList()};syncL();
   $("#search").oninput=e=>{q=e.target.value;drawList()};
   $("#addForm").onsubmit=e=>{e.preventDefault();const w=$("#nw").value.trim(),z=$("#nz").value.trim();
     if(!w||!z){$("#addMsg").textContent="請填寫英文和中文。";return}
