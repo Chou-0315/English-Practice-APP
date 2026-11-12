@@ -4425,8 +4425,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112151038";
-const APP_NAME="1.33";
+const APP_VER="20261112151341";
+const APP_NAME="1.34";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -5445,7 +5445,7 @@ function bank(){
     if(o){listCat=o.dataset.open;q="";$("#search").value="";syncL();drawList();$("#listHead").scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});return}
     const b=e.target.closest("[data-cat]");if(!b)return;const k=b.dataset.cat;
     if(S.cats.includes(k)){if(S.cats.length>1)S.cats=S.cats.filter(x=>x!==k);else{toast("至少要選一個場景");return}}else S.cats.push(k);save();
-    const on=S.cats.includes(k);b.setAttribute("aria-pressed",on);b.textContent=on?"練習中":"未選";b.parentElement.classList.toggle("on",on);
+    const on=S.cats.includes(k);b.setAttribute("aria-pressed",on);b.innerHTML=icon("check");b.parentElement.classList.toggle("on",on);
     $("#scLabel").textContent=`練習範圍 · ${S.cats.length} 個場景`};
   $("#allOn").onclick=()=>{S.cats=Object.keys(SCENES);save();bank()};
   $("#lcat").onclick=e=>{const b=e.target.closest("[data-l]");if(!b)return;listCat=b.dataset.l;syncL();drawList()};syncL();
