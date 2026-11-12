@@ -1286,6 +1286,15 @@ h2{font-size:1.9rem!important}
 nav{border-radius:999px!important;padding:5px 6px calc(5px + env(safe-area-inset-bottom,0px))!important}
 nav button{border-radius:999px!important;font-size:.66rem}
 nav button svg{width:22px!important;height:22px!important}
+
+/* v1.27 fixes */
+.row.act .btn{padding:12px 8px!important;font-size:.95rem!important;white-space:nowrap;letter-spacing:-.02em}
+.row.act{gap:8px;padding:8px 0;background:linear-gradient(to top,var(--bg) 70%,transparent);border-radius:0}
+.toast{top:calc(64px + env(safe-area-inset-top,0px))!important}
+#updBar{top:calc(64px + env(safe-area-inset-top,0px))!important}
+.btn:disabled{opacity:.45}
+.scene-tog:active{transform:translateX(50%) scale(.96)}
+.hero .tc-rings{display:block}
 </style>
 <script>
 const ORIG=[
@@ -4325,8 +4334,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112142546";
-const APP_NAME="1.26";
+const APP_VER="20261112143522";
+const APP_NAME="1.27";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
