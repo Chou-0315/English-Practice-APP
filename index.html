@@ -941,7 +941,7 @@ nav .in{grid-template-columns:repeat(5,1fr)!important}
 
 <div class="app">
   <header>
-    <div class="hbar"><button class="lv" id="lvBtn" aria-label="等級與經驗值"><span class="wordmark">England</span><b id="lvName">Lv.1</b><div class="lvtrack"><i id="lvBar" style="width:0"></i></div><span id="lvXp" hidden>0 / 50 XP</span></button><div class="chips"><span class="chip-s" title="連續天數"><span id="flameI"></span><b id="streakN">0</b></span><button class="chip-s" id="coinChip" aria-label="金幣與主題顏色"><span id="coinI"></span><b id="coinN">0</b></button></div></div>
+    <div class="hbar"><button class="lv" id="lvBtn" aria-label="等級與經驗值"><span class="wordmark">England</span><b id="lvName">Lv.1</b><div class="lvtrack" hidden><i id="lvBar" style="width:0"></i></div><span id="lvXp" hidden>0 / 50 XP</span></button><div class="chips"><span class="chip-s" title="連續天數"><span id="flameI"></span><b id="streakN">0</b></span><button class="chip-s" id="coinChip" aria-label="金幣與主題顏色"><span id="coinI"></span><b id="coinN">0</b></button></div></div>
   </header>
   <main id="view"></main>
 </div>
@@ -1325,6 +1325,44 @@ nav button svg{width:22px!important;height:22px!important}
 .game-best{margin-top:auto;padding-top:10px;display:flex;align-items:baseline;gap:6px;line-height:1}
 .game-best b{font-family:var(--f-disp);font-size:1.6rem;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .game-best small{font-size:.72rem;color:var(--muted)}
+
+/* ===== v1.32 ===== */
+/* light mode re-tune: deeper page grey, crisp white cards, dark hero (mirrors dark mode) */
+:root{--bg:#E9E9EB;--aura-base:#E9E9EB;--glass-brd:rgba(0,0,0,.06);--glass-sh:0 1px 2px rgba(0,0,0,.04),0 6px 16px -10px rgba(0,0,0,.18);--fill:#E3E3E6}
+#aura::after{opacity:.6}
+.hero{background:radial-gradient(120% 90% at 85% -10%,rgba(255,255,255,.12) 0%,rgba(255,255,255,0) 55%),linear-gradient(160deg,#2C2C2E 0%,#1A1A1C 55%,#232325 100%)!important;border-color:rgba(0,0,0,.4)!important;color:#fff}
+.hero .h-big,.hero .tc-eyebrow{color:#fff!important}.hero .h-meta{color:rgba(255,255,255,.62)!important}
+.hero .cta{background:linear-gradient(180deg,#FFFFFF,#E9E9EB 60%,#D9D9DC)!important;color:#111!important;border:1px solid rgba(0,0,0,.5)!important;box-shadow:inset 0 1px 0 #fff,0 2px 6px rgba(0,0,0,.35)!important}
+.hero.done .cta{background:linear-gradient(180deg,#3A3A3E,#2A2A2E)!important;color:#fff!important;border-color:rgba(255,255,255,.14)!important}
+.hero .tc-bar{background:rgba(255,255,255,.18)!important}.hero .tc-bar i{background:#fff!important}
+.hero::after{opacity:.22;filter:invert(1)}
+.hero .tc-rings{filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C0C0C;--aura-base:#0C0C0C;--glass-brd:rgba(255,255,255,.08);--fill:#242424}
+ :root:not([data-theme="light"]) .hero{border-color:rgba(255,255,255,.1)!important}}
+:root[data-theme="dark"]{--bg:#0C0C0C;--aura-base:#0C0C0C;--glass-brd:rgba(255,255,255,.08);--fill:#242424}
+:root[data-theme="dark"] .hero{border-color:rgba(255,255,255,.1)!important}
+/* header: no xp bar */
+.hbar .lvtrack{display:none!important}
+/* island */
+.isl-more{margin-top:10px}.isl-more>summary{font-size:.9rem;color:var(--muted);padding:10px 16px;list-style:none;cursor:pointer}
+.isl-more>summary::-webkit-details-marker{display:none}.isl-more[open]>summary{color:var(--ink)}
+.isl-more .group{margin:0 0 4px}
+/* bank: compact tiles with a check in the corner */
+.scene-main{padding:14px 12px 14px!important;gap:2px}
+.scene-ic{width:36px!important;height:36px!important;margin-bottom:6px!important}
+.scene-ic .ic{width:20px!important;height:20px!important}
+.scene-en{display:none!important}
+.scene-n{margin-top:4px!important}.scene-bar{display:none!important}
+.scene-tog{right:8px!important;top:8px;bottom:auto!important;transform:none!important;width:24px;height:24px;padding:0!important;display:grid;place-items:center;background:var(--fill)!important;color:transparent!important}
+.scene-tog .ic{width:14px;height:14px;stroke-width:2.6}
+.scene-tog[aria-pressed="true"]{background:var(--ink)!important;color:var(--bg)!important}
+.scene-tog:active{transform:scale(.92)!important}
+.scene:not(.on){opacity:.55}
+/* settings: notes closer to their option */
+.more .body .note:not(.seg .note){font-size:.74rem!important;margin:-6px 0 10px!important;line-height:1.4}
+/* listen spinner */
+.spin{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 <script>
 const ORIG=[
@@ -3483,7 +3521,7 @@ function clearSheet(){const s=document.querySelector(".sheet");if(s)s.remove()}
 let shopArmed=null;
 function shop(){
   ROOT=false;clearSheet();enter("home");const own=S.ownedT2||(S.ownedT2=["blue"]);
-  view().innerHTML=`<button class="back" onclick="go('home')">${icon("chev","flip")}今日</button>
+  view().innerHTML=`
   <h2>主題顏色</h2>
   <div class="group"><div class="grow"><span class="grow-l">金幣</span><span class="grow-r">${COIN}<b>${coins()}</b></span></div>
     <div class="grow"><span class="grow-l">等級</span><span class="grow-r">Lv.${levelOf(S.xp)} ${rankOf(levelOf(S.xp))}</span></div></div>
@@ -3534,7 +3572,7 @@ function medalStrip(){const got=ACH.filter(a=>S.ach[a[0]]),lock=ACH.filter(a=>!S
   return `<div class="ghead"><span>獎章</span><button class="link" onclick="awards()">全部 ${got.length}/${ACH.length}</button></div>
   <div class="medals">${list.map(([k,n])=>`<button class="md" data-md="${k}">${medal(k,64,!S.ach[k])}<span>${n}</span></button>`).join("")}</div>`}
 function awards(){ROOT=false;clearSheet();enter("home");
-  view().innerHTML=`<button class="back" onclick="go('home')">${icon("chev","flip")}今日</button><h2>獎章</h2>
+  view().innerHTML=`<h2>獎章</h2>
   <p class="sub">已獲得 ${Object.keys(S.ach).length} / ${ACH.length} · 點獎章看條件</p>
   <div class="medals all">${ACH.map(([k,n])=>`<button class="md" data-md="${k}">${medal(k,84,!S.ach[k])}<span>${n}</span></button>`).join("")}</div>`;
   wireMedals()}
@@ -3743,7 +3781,7 @@ function holo(w,big){const r=rarityOf(w);return `<div class="holo r-${r} ${big?"
 let albumCat="all";
 function album(){ROOT=false;clearSheet();enter("home");const all=ALL(),col=collected(),cnt={N:0,R:0,SR:0,SSR:0};col.forEach(w=>cnt[rarityOf(w)]++);
   const list=col.filter(w=>albumCat==="all"||w.cat===albumCat).sort((a,b)=>["SSR","SR","R","N"].indexOf(rarityOf(a))-["SSR","SR","R","N"].indexOf(rarityOf(b)));
-  view().innerHTML=`<button class="back" onclick="go('home')">${icon("chev","flip")}今日</button><h2>單字卡冊</h2>
+  view().innerHTML=`<h2>單字卡冊</h2>
   <p class="sub">掌握的字會收進卡冊，程度越高越稀有</p>
   <div class="group"><div class="grow"><span class="grow-l"><b>已收集</b></span><span class="grow-r"><b style="color:var(--ink)">${col.length}</b> / ${all.length}</span></div>
     <div class="grow rarity">${Object.entries(RAR).map(([k,[n,c]])=>`<span style="--rc:${c}"><i></i>${n} <b>${cnt[k]}</b></span>`).join("")}</div></div>
@@ -3799,7 +3837,7 @@ function shop(){
   if(shopTab==="item"){const IT=[["freeze","連勝保護","錯過一天時自動使用，連續天數不會歸零。",60,`擁有 ${I.freeze} 個`,"flame","#FF9500"],["boost","雙倍經驗 15 分鐘","期間內獲得的 XP 加倍。",40,boostLeft()?`剩 ${Math.ceil(boostLeft()/60000)} 分鐘`:"未啟用","bolt","#AF52DE"],["box","驚喜盒","三選一，可能開出金幣、道具或背景。",80,`擁有 ${S.boxes||0} 個`,"gift","#FF2D55"]];
     body=`<div class="group">${IT.map(([k,n,d,p,st,ic,col])=>`<button class="grow" data-buy="${k}">${sq(ic,col)}<span class="grow-l"><b>${n}</b><small>${d}<br>${st}</small></span><span class="grow-r ${shopArmed==="it_"+k?"armed-t":""}">${shopArmed==="it_"+k?"確定購買":`${COIN}${p}`}</span></button>`).join("")}</div>
     ${(S.boxes||0)>0?`<button class="btn primary cta" id="openBox" style="width:100%;margin-top:14px">打開驚喜盒（${S.boxes}）</button>`:""}`}
-  view().innerHTML=`<button class="back" onclick="go('home')">${icon("chev","flip")}今日</button><h2>商店</h2>
+  view().innerHTML=`<h2>商店</h2>
   <div class="group"><div class="grow"><span class="grow-l"><b>金幣</b><small>每 4 XP 換 1 枚 · 獎章另送 20</small></span><span class="grow-r">${COIN}<b style="color:var(--ink);font-weight:600">${coins()}</b></span></div></div>
   <div style="margin:16px 0 12px">${tabs}</div>${body}`;
   view().querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{shopTab=b.dataset.st;shopArmed=null;endTry();shop()});
@@ -4090,12 +4128,14 @@ function islPanel(){const I=ISL(),lv=islLevel(),pts=islPoints(),need=lvNeed(lv),
   const ha=harvestAmt(),ct=careLeft("tree"),cf=careLeft("flower"),ts=treeStage(),fs=flowerStage();
   $("#islHead").innerHTML=`<div class="isl-lv"><div><b>Lv.${lv} ${islName()}</b><small>${lv>=20?"已達最高等級":`再 ${need-pts} 點升到 Lv.${lv+1}`}</small></div><span class="lvbar"><i style="width:${lv>=20?100:Math.min(100,(pts-prev)/(need-prev)*100)}%"></i></span></div>
     <div class="res-bar"><span>${WATER}<b>${I.water}</b><small>水滴</small></span><span>${SUN}<b>${I.sun}</b><small>陽光</small></span><span>${COIN}<b>${coins()}</b><small>金幣</small></span></div>`;
-  const rows=ORDER3.map(id=>{const it=ITEMS3[id],d=nextDef(id),cl=lvOf(id),max=it.lv.length+(id==="land"?1:0),lock=lockReason(id),busy=!!j,mine=j&&j.id===id;
+  const rowsNow=[],rowsLater=[];ORDER3.forEach(id=>{const it=ITEMS3[id],d=nextDef(id),cl=lvOf(id),max=it.lv.length+(id==="land"?1:0),lock=lockReason(id),busy=!!j,mine=j&&j.id===id;
     const lvTxt=id==="land"?`${cl}/${max}`:`${cl}/${it.lv.length}`;
-    if(!d)return `<div class="grow bld done"><span class="grow-l"><b>${it.name} <em>${lvTxt}</em></b><small>已滿級</small></span><span class="grow-r"><span class="okc">${icon("check")}</span></span></div>`;
-    return `<button class="grow bld ${lock?"locked":""}" data-bd="${id}" ${lock||busy?"disabled":""}>
+    if(!d){rowsLater.push(`<div class="grow bld done"><span class="grow-l"><b>${it.name} <em>${lvTxt}</em></b><small>已滿級</small></span><span class="grow-r"><span class="okc">${icon("check")}</span></span></div>`);return}
+    const html=`<button class="grow bld ${lock?"locked":""}" data-bd="${id}" ${lock||busy?"disabled":""}>
       <span class="grow-l"><b>${d.n} <em>${lvTxt}</em></b><small>${mine?"施工中…":lock?lock:`${d.d} · 施工 ${fmtT(d.t)}`}</small></span>
-      <span class="grow-r cost ${!lock&&!canPay(d)?"short":""}">${lock?icon("weak","lk"):costHTML(d)}</span></button>`}).join("");
+      <span class="grow-r cost ${!lock&&!canPay(d)?"short":""}">${lock?icon("weak","lk"):costHTML(d)}</span></button>`;
+    (lock?rowsLater:rowsNow).push(html)});
+  if(rowsLater.length&&rowsLater[0].includes("locked"))rowsNow.push(rowsLater.shift());
   $("#islPanel").innerHTML=`${j?`<div class="jobstrip" id="jobStrip"><span>施工中：${nextDefName(j.id,j.to)}</span><b>${fmtLeft(j.end-Date.now())}</b><span class="jbar"><i style="width:${Math.min(100,(Date.now()-j.start)/(j.end-j.start)*100)}%"></i></span></div>`:""}
   <div class="care">
     ${has("tree")?`<button class="btn care-b" id="wTree" ${ct<=0||ts>=4?"disabled":""}>${WATER}<span>澆樹<small>${TREE_NAME[ts]}${ts<4?` · ${I.tree}/${TREE_ST[ts+1]} · 今天 ${ct}/3`:""}</small></span></button>`:""}
@@ -4104,9 +4144,9 @@ function islPanel(){const I=ISL(),lv=islLevel(),pts=islPoints(),need=lvNeed(lv),
   </div>
   <p class="foot">答對 +1 水滴，聽寫、造句 +2 · 完成一步 +5 陽光</p>
   <div class="ghead"><span>建造與升級</span><span>${j?"施工中":"選一項開工"}</span></div>
-  <div class="group">${rows}</div>
-  <div class="ghead" style="margin-top:20px"><span>居民</span><span>${Object.keys(I.visitors).length} / ${VISITORS.length}</span></div>
-  <div class="group">${VISITORS.map(v=>{const got=I.visitors[v.id];return `<div class="grow"><span class="grow-l"><b>${got?v.name:"？？？"}</b><small>${got?`${v.d} · ${got} 搬來`:"尚未搬來"}</small></span></div>`}).join("")}</div>`;
+  <div class="group">${rowsNow.join("")||`<div class="grow"><span class="grow-l"><small>目前沒有可以蓋的東西，先去練習收集水滴和陽光</small></span></div>`}</div>
+  ${rowsLater.length?`<details class="isl-more"><summary>之後會解鎖 · ${rowsLater.length} 項</summary><div class="group">${rowsLater.join("")}</div></details>`:""}
+  ${(()=>{const got=VISITORS.filter(v=>I.visitors[v.id]);return `<details class="isl-more"><summary>居民 ${got.length} / ${VISITORS.length}${got.length?` · ${got.map(v=>v.name).join("、")}`:""}</summary><div class="group">${VISITORS.map(v=>{const g=I.visitors[v.id];return `<div class="grow"><span class="grow-l"><b>${g?v.name:"？？？"}</b><small>${g?`${v.d} · ${g} 搬來`:"尚未搬來"}</small></span></div>`}).join("")}</div></details>`})()}`;
   view().querySelectorAll("[data-bd]").forEach(b=>b.onclick=()=>startBuild(b.dataset.bd,b));
   if($("#wTree"))$("#wTree").onclick=()=>water("tree");
   if($("#wFlower"))$("#wFlower").onclick=()=>water("flower");
@@ -4364,8 +4404,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112145706";
-const APP_NAME="1.31";
+const APP_VER="20261112150508";
+const APP_NAME="1.32";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -4885,10 +4925,10 @@ function home(){
   const g=S.goal,done=S.days[today()]||0,act=ACTIVE(),due=dueReviews(act).length,nw=weakList().length;
   const w=BUILTIN[Math.floor(Date.now()/864e5)%BUILTIN.length];
   const T=taskState(),first=Object.values(S.days||{}).reduce((a,b)=>a+b,0)===0&&!T.started;
-  const btn=T.all?"再練一輪":T.started?"繼續":"開始今日練習";
+  const btn=T.all?(due>0?`複習到期的 ${due} 個字`:"再練一輪"):T.started?"繼續":"開始今日練習";
   const head=T.all?"今日練習":T.started?"進行中":first?"第一次練習":"今日練習";
   const big=T.all?"完成 ✓":T.started?`剩 ${T.mins} 分鐘`:`約 ${T.mins} 分鐘`;
-  const meta=T.all?"想多練可以再來一輪"
+  const meta=T.all?(due>0?"今天四步完成了，還有到期的字可以順手複習":"想多練可以再來一輪")
     :T.started?T.stepTxt.replace(/^接著完成/,"下一步：").replace(/，已完成 /," ").replace(/（第 .*）$/,"")
     :`新字 ${T.nwc}${T.rv?` · 複習 ${T.rv}`:""}`;
   view().innerHTML=`
@@ -4901,13 +4941,13 @@ function home(){
       <button class="btn ${T.all?"":"primary"} cta" id="train">${btn}</button>
       <span id="petSay" hidden></span>
     </section>
-    ${first?"":nudgesHTML({nw,due,all:T.all})}
+    ${first||T.all?"":nudgesHTML({nw,due,all:T.all})}
     <div class="h-tiles">
       <button class="h-tile" onclick="album()">${sq("cards","#FF9F0A")}<span><b>${collected().length}</b><small>單字卡冊</small></span></button>
       <button class="h-tile" onclick="awards()">${sq("crown","#FF9500")}<span><b>${Object.keys(S.ach||{}).length}<i>/${ACH.length}</i></b><small>獎章</small></span></button>
     </div>
   </div>`;
-  $("#train").onclick=startTraining;
+  $("#train").onclick=(T.all&&due>0)?()=>{freeCards();cur="practice";renderTabs()}:startTraining;
   view().querySelectorAll("[data-nudge]").forEach(b=>b.onclick=()=>nudgeGo(b.dataset.nudge));
   if(streak()>0&&streak()%7===0&&S.days[today()]&&S.stBox!==today()){S.stBox=today();S.boxes=(S.boxes||0)+1;save();setTimeout(()=>toast(`連續 ${streak()} 天！獲得驚喜盒`,"ach"),800)}
   setTimeout(()=>{if(cur==="home"&&ROOT)checkRings()},1200);view().querySelectorAll("[data-start]").forEach(b=>b.onclick=startTraining);
@@ -5047,7 +5087,7 @@ function drawCard(){
     <div class="row" style="align-items:center;gap:8px"><span class="ipa">${esc(w.ipa)}</span><span class="pos">${esc(w.pos)}</span></div>
     ${c.flipped?`<div class="meaning">${esc(w.zh)}</div>
       ${w.ex?`<div class="ex"><div class="row" style="align-items:center;gap:8px;flex-wrap:nowrap"><div style="min-width:0">${esc(w.ex)}</div>${spkBtn(w.ex,"播放例句")}</div><div class="zh">${esc(w.exZh)}</div></div>`:""}`
-      :`<div class="hint">點卡片看意思</div>`}
+      :""}
   </div>
   <div class="row" style="margin-top:12px">${c.flipped?`
     <button class="btn bad" data-g="0">忘了</button><button class="btn meh" data-g="1">模糊</button><button class="btn good" data-g="2">記得</button>`
@@ -5218,7 +5258,7 @@ function nextListen(){
   if(LS.ev)document.removeEventListener("say-state",LS.ev);clearTimeout(LS.slow);
   LS.ev=e=>{if(!document.body.contains(p1)){document.removeEventListener("say-state",LS.ev);return}const s2=e.detail.st;
     p1.classList.remove("pulse");clearTimeout(LS.slow);
-    if(s2==="loading"){p1.textContent="載入中…";LS.slow=setTimeout(()=>{if(document.body.contains(p1)&&p1.textContent==="載入中…"){st.textContent="載入較慢，可以重播或跳過";p1.textContent="重新播放";showSkip()}},7000)}
+    if(s2==="loading"){p1.innerHTML='<span class="spin"></span>';LS.slow=setTimeout(()=>{if(document.body.contains(p1)&&p1.querySelector(".spin")){st.textContent="載入較慢，可以重播或跳過";p1.textContent="重新播放";showSkip()}},7000)}
     else if(s2==="playing"){p1.textContent="播放中"}
     else if(s2==="ended"){p1.textContent="再聽一次"}
     else if(s2==="blocked"){p1.textContent="點我播放";p1.classList.add("pulse")}
@@ -5325,19 +5365,19 @@ function weak(){
   const pct=n=>act.length?n/act.length*100:0;
   view().innerHTML=`<h2>弱點分析</h2><p class="sub">哪些字真的會，哪些只是眼熟</p>
   <div class="stack">
-    <section class="advice"><div><div class="label">下一步建議</div><div>${advice}</div></div></section>
+    ${total<10?"":`<section class="advice"><div><div class="label">下一步建議</div><div>${advice}</div></div></section>`}
     <section>
       <div class="sec-h"><span>單字掌握</span><span class="note">本週新掌握 +${wk7}</span></div>
       <div class="stagebar">${st.map((n,i)=>n?`<i class="s${i}" style="width:${pct(n)}%"></i>`:"").join("")}</div>
       <div class="legend">${STAGES.map((s,i)=>`<span><i class="s${i}"></i>${s} <b>${st[i]}</b></span>`).join("")}</div>
       <p class="note">已掌握＝隔 7 天以上仍記得</p>
     </section>
-    <section>
+    ${total<10?`<p class="note" style="margin:-6px 4px 0">再答 ${10-total} 題，就會看到能力分析和建議。</p>`:`<section>
       <div class="sec-h"><span>能力表現</span><span class="note">最近 14 天</span></div>
       <div class="skills">${Object.entries(SKILLS).map(([k,n])=>{const [o,t]=acc[k],p=t?Math.round(o/t*100):0;
         return `<div class="skill"><span class="sk-n">${n}</span><span class="sk-bar"><i class="${t>=5&&p<70?"low":""}" style="width:${t>=5?p:0}%"></i></span><span class="sk-v">${t>=5?p+"%":t?"資料不足":"—"}</span></div>`}).join("")}</div>
       <p class="note">認字 英→中 · 回想 中→英、填空 · 聽力 聽寫 · 造句 排句子</p>
-    </section>
+    </section>`}
     <section>
       <div class="sec-h"><span>錯題本 · ${wl.length}</span>${wl.length?`<button class="link" onclick="weakDrill()">錯題特訓</button>`:""}</div>
       ${wl.length?`<div class="list">${wl.slice(0,30).map(w=>{const k=S.wk[w.id];
@@ -5358,7 +5398,7 @@ function bank(){
     return `<div class="scene ${S.cats.includes(k)?"on":""}" data-sc="${k}" style="--sc:${SC[k]}">
       <button class="scene-main" data-open="${k}" aria-label="查看${zh}的單字"><span class="scene-ic">${icon(k)}</span><span class="scene-en">${en}</span><span class="scene-zh">${zh}</span>
       <span class="scene-n">${ws.length} 字${ws.length?` · 掌握 ${m}`:""}</span><span class="scene-bar"><i style="width:${ws.length?m/ws.length*100:0}%"></i></span></button>
-      <button class="scene-tog" data-cat="${k}" aria-pressed="${S.cats.includes(k)}" aria-label="${zh}加入練習">${S.cats.includes(k)?"練習中":"未選"}</button></div>`}).join("");
+      <button class="scene-tog" data-cat="${k}" aria-pressed="${S.cats.includes(k)}" aria-label="${zh}加入練習">${icon("check")}</button></div>`}).join("");
   view().innerHTML=`<h2>單字庫</h2><p class="sub">點場景看單字</p>
   <div class="stack">
     <div class="seg"><span class="label" id="scLabel">練習範圍 · ${S.cats.length} 個場景</span><button class="link" id="allOn">全選</button></div>
