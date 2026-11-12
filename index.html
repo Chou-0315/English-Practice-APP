@@ -1312,6 +1312,19 @@ nav button svg{width:22px!important;height:22px!important}
 .hbar .chip-s.mus svg{width:19px!important;height:19px!important}
 .hbar .chip-s.gear svg{width:19px!important;height:19px!important}
 .hbar .chip-s .flame,.hbar .chip-s .coin{width:17px;height:17px}
+
+/* v1.31 practice layout */
+.pr{gap:6px}.pr .ghead{margin-top:14px}.pr .ghead:first-child{margin-top:0}
+.pr-games{display:grid!important;grid-template-columns:1fr 1fr;gap:12px;background:none!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+.mode.game{display:flex!important;flex-direction:column;align-items:flex-start;gap:2px;padding:16px 16px 14px!important;background:var(--glass-strong)!important;border:1px solid var(--glass-brd)!important;border-radius:14px!important;box-shadow:var(--glass-sh)!important;min-height:150px}
+.mode.game::before,.mode.game::after{display:none!important}
+.mode.game .mode-ic{margin-bottom:10px!important;width:36px!important;height:36px!important}
+.mode.game .mode-ic .ic{width:20px!important;height:20px!important}
+.mode.game .mode-t{font-size:1rem}
+.mode.game .mode-d{font-size:.76rem}
+.game-best{margin-top:auto;padding-top:10px;display:flex;align-items:baseline;gap:6px;line-height:1}
+.game-best b{font-family:var(--f-disp);font-size:1.6rem;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.game-best small{font-size:.72rem;color:var(--muted)}
 </style>
 <script>
 const ORIG=[
@@ -4351,8 +4364,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112144824";
-const APP_NAME="1.30";
+const APP_VER="20261112145706";
+const APP_NAME="1.31";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -4991,16 +5004,23 @@ function wireMore(){
 function practice(){
   enter("practice");ROOT=true;
   const act=ACTIVE(),due=dueReviews(act).length,nn=act.filter(w=>srs(w.id).box===0).length,wl=weakList().length;
+  const tile=(m,sc,ic,t,d)=>`<button class="mode" data-m="${m}" style="--sc:${sc}"><span class="mode-ic">${icon(ic)}</span><span class="mode-t">${t}</span><span class="mode-d">${d}</span></button>`;
   view().innerHTML=`<h2>練習</h2><p class="sub">${S.cats.length} 個場景 · ${lvName()}</p>
-  <div class="modes">
-    <button class="mode" data-m="cards" style="--sc:#3D9BFF"><span class="mode-ic">${icon("cards")}</span><span class="mode-t">單字卡</span><span class="mode-d">${due} 個到期${nn?` · 加 ${Math.min(nn,5)} 個新字`:""}</span></button>
-    <button class="mode" data-m="quiz" style="--sc:#8B5CF6"><span class="mode-ic">${icon("quiz")}</span><span class="mode-t">測驗</span><span class="mode-d">10 題 · 先考弱點</span></button>
-    <button class="mode" data-m="rush" style="--sc:#FF7A1A"><span class="mode-ic">${icon("rush")}</span><span class="mode-t">60 秒挑戰</span><span class="mode-d">答錯扣 3 秒</span><span class="mode-best">最佳 ${S.best} 題</span></button>
-    <button class="mode" data-m="bubble" style="--sc:#30B0C7"><span class="mode-ic">${icon("target")}</span><span class="mode-t">泡泡挑戰</span><span class="mode-d">點破正確的泡泡 · 三條命</span><span class="mode-best">最佳 ${S.bbBest||0} 顆</span></button>
-    <button class="mode" data-m="listen" style="--sc:#12B3A6"><span class="mode-ic">${icon("listen")}</span><span class="mode-t">聽寫</span><span class="mode-d">聽句子打出來</span></button>
-    <button class="mode" data-m="build" style="--sc:#FFB020"><span class="mode-ic">${icon("build")}</span><span class="mode-t">造句</span><span class="mode-d">排出正確句子</span></button>
+  <div class="stack pr">
+    <div class="ghead"><span>基本練習</span><span>依今日進度出題</span></div>
+    <div class="modes pr-list">
+      ${tile("cards","#3D9BFF","cards","單字卡",`${due} 個到期${nn?` · 加 ${Math.min(nn,5)} 個新字`:""}`)}
+      ${tile("quiz","#8B5CF6","quiz","測驗","10 題 · 先考弱點")}
+      ${tile("listen","#12B3A6","listen","聽寫","聽句子打出來")}
+      ${tile("build","#FFB020","build","造句","排出正確句子")}
+    </div>
+    <div class="ghead"><span>挑戰</span><span>練反應，不影響單字進度</span></div>
+    <div class="modes pr-games">
+      <button class="mode game" data-m="rush" style="--sc:#FF7A1A"><span class="mode-ic">${icon("rush")}</span><span class="mode-t">60 秒挑戰</span><span class="mode-d">答錯扣 3 秒</span><span class="game-best"><b>${S.best}</b><small>最佳 · 題</small></span></button>
+      <button class="mode game" data-m="bubble" style="--sc:#30B0C7"><span class="mode-ic">${icon("target")}</span><span class="mode-t">泡泡挑戰</span><span class="mode-d">三條命</span><span class="game-best"><b>${S.bbBest||0}</b><small>最佳 · 顆</small></span></button>
+    </div>
   </div>`;
-  view().querySelector(".modes").onclick=e=>{const b=e.target.closest("[data-m]");if(!b||b.disabled)return;
+  view().querySelector(".pr").onclick=e=>{const b=e.target.closest("[data-m]");if(!b||b.disabled)return;
     ({cards:freeCards,quiz:()=>runQuiz({total:10}),rush:startRush,bubble:startBubbles,listen:()=>runListen({}),build:()=>runBuild({}),weak:weakDrill})[b.dataset.m]()};
 }
 function freeCards(){const act=ACTIVE(),rv=shuffle(dueReviews(act)).sort((a,b)=>srs(a.id).box-srs(b.id).box).slice(0,15);
