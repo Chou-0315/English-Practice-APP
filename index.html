@@ -1299,6 +1299,12 @@ nav button svg{width:22px!important;height:22px!important}
 /* v1.28: practice rows with a "best" score show the score instead of a chevron */
 .mode:has(.mode-best)::after{display:none}
 .mode-best{margin:0!important;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* v1.29: align icon column across home rows and tiles */
+.h-tile{padding:14px 16px!important}
+.grow{padding-left:16px;padding-right:16px}
+.sq,.mode-ic,.scene-ic{display:grid!important;place-items:center!important}
+.sq .ic,.mode-ic .ic{display:block;margin:0}
 </style>
 <script>
 const ORIG=[
@@ -4338,8 +4344,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112144049";
-const APP_NAME="1.28";
+const APP_VER="20261112144425";
+const APP_NAME="1.29";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -4983,7 +4989,7 @@ function practice(){
     <button class="mode" data-m="cards" style="--sc:#3D9BFF"><span class="mode-ic">${icon("cards")}</span><span class="mode-t">單字卡</span><span class="mode-d">${due} 個到期${nn?` · 加 ${Math.min(nn,5)} 個新字`:""}</span></button>
     <button class="mode" data-m="quiz" style="--sc:#8B5CF6"><span class="mode-ic">${icon("quiz")}</span><span class="mode-t">測驗</span><span class="mode-d">10 題 · 先考弱點</span></button>
     <button class="mode" data-m="rush" style="--sc:#FF7A1A"><span class="mode-ic">${icon("rush")}</span><span class="mode-t">60 秒挑戰</span><span class="mode-d">答錯扣 3 秒</span><span class="mode-best">最佳 ${S.best} 題</span></button>
-    <button class="mode" data-m="bubble" style="--sc:#30B0C7"><span class="mode-ic">${icon("target")}</span><span class="mode-t">泡泡挑戰</span><span class="mode-d">點破正確的泡泡 · 三條命</span><span class="mode-best">最佳 ${S.bbBest||0}</span></button>
+    <button class="mode" data-m="bubble" style="--sc:#30B0C7"><span class="mode-ic">${icon("target")}</span><span class="mode-t">泡泡挑戰</span><span class="mode-d">點破正確的泡泡 · 三條命</span><span class="mode-best">最佳 ${S.bbBest||0} 顆</span></button>
     <button class="mode" data-m="listen" style="--sc:#12B3A6"><span class="mode-ic">${icon("listen")}</span><span class="mode-t">聽寫</span><span class="mode-d">聽句子打出來</span></button>
     <button class="mode" data-m="build" style="--sc:#FFB020"><span class="mode-ic">${icon("build")}</span><span class="mode-t">造句</span><span class="mode-d">排出正確句子</span></button>
   </div>`;
