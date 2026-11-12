@@ -1099,6 +1099,19 @@ body.kb .row.act{bottom:8px}
 #moreRoot .more>details{margin-top:0}
 #pushAsk{position:fixed;inset:0;z-index:170;display:flex;align-items:flex-end;justify-content:center;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));background:rgba(6,8,22,.35);opacity:0;transition:opacity .3s}#pushAsk.show{opacity:1}#pushAsk .pa-card{width:min(420px,100%);text-align:center;background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),0 20px 60px rgba(0,0,0,.3);border-radius:28px;padding:22px 20px 14px;color:var(--ink);transform:translateY(40px);transition:transform .4s cubic-bezier(.2,1.3,.4,1)}#pushAsk.show .pa-card{transform:none}#pushAsk .pa-ic{font-size:2.2rem;line-height:1}#pushAsk h3{margin:8px 0 6px;font-size:1.25rem}#pushAsk p{margin:0 0 16px;color:var(--muted);font-size:.95rem;line-height:1.5}#pushAsk p b{color:var(--ink)}#pushAsk .btn{width:100%}#pushAsk .pa-no{display:block;margin:10px auto 0;color:var(--muted)!important}
 .rem .vsel{max-width:none}
+
+.h-date{font-size:.82rem;font-weight:600;color:var(--muted);letter-spacing:.02em;margin:6px 4px -10px}
+.hero{padding:20px 20px 16px;gap:16px;align-items:stretch}
+.hero .tc-top{align-self:stretch;width:100%}
+.hero .tc-eyebrow{font-size:.8rem;letter-spacing:.06em}
+.h-big{font-family:var(--f-disp);font-size:2.6rem;font-weight:700;line-height:1.05;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.h-meta{font-size:.95rem;color:var(--muted);margin-top:6px}
+.h-tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.h-tile{display:flex;align-items:center;gap:12px;padding:14px;border-radius:20px;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 var(--glass-hi),var(--glass-sh);color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.h-tile span{display:flex;flex-direction:column;line-height:1.15}
+.h-tile b{font-size:1.25rem;font-weight:700;font-variant-numeric:tabular-nums}
+.h-tile b i{font-style:normal;font-size:.85rem;color:var(--muted);font-weight:500}
+.h-tile small{font-size:.78rem;color:var(--muted)}
 </style>
 <script>
 const ORIG=[
@@ -4104,8 +4117,7 @@ function pushAsk(force){try{
 }catch(e){}}
 /* ================= first-run quick tour (coach marks) ================= */
 const TOUR=[
-  {q:()=>document.querySelector(".taskcard"),t:"今日練習",d:"每天按這顆就好。中途離開，下次會接著做。"},
-  {q:()=>document.querySelector(".tc-route>summary"),t:"四步路線",d:"單字卡 → 測驗 → 聽寫 → 造句。長度在右上角齒輪設定。"},
+  {q:()=>document.querySelector(".taskcard"),t:"今日練習",d:"每天按這顆就好：單字卡 → 測驗 → 聽寫 → 造句。中途離開會接著做。"},
   {q:()=>document.querySelector('[data-tab="island"]'),t:"我的小島",d:"答對得水滴和陽光，拿來種樹、蓋房子。"},
   {q:()=>document.querySelector('[data-tab="practice"]'),t:"練習",d:"想多練就來這裡"},
   {q:()=>document.querySelector('[data-tab="weak"]'),t:"弱點",d:"答錯的字收在這裡，不同兩天答對就畢業。"},
@@ -4139,8 +4151,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112135650";
-const APP_NAME="1.22";
+const APP_VER="20261112140038";
+const APP_NAME="1.23";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -4660,30 +4672,26 @@ function home(){
   const g=S.goal,done=S.days[today()]||0,act=ACTIVE(),due=dueReviews(act).length,nw=weakList().length;
   const w=BUILTIN[Math.floor(Date.now()/864e5)%BUILTIN.length];
   const T=taskState(),first=Object.values(S.days||{}).reduce((a,b)=>a+b,0)===0&&!T.started;
-  const btn=T.all?"再練一輪":T.started?"繼續今日練習":"開始今日練習";
-  const head=T.all?"今日練習完成 ✓":first?"第一次練習":"今日練習";
-  const body=T.all?`今天的四個步驟都完成了`
-    :T.started?`${T.stepTxt.replace(/^接著完成/,"接著：").replace(/，已完成 /," ")}`
-    :`${T.rv?`複習 <b>${T.rv}</b> 個 · `:""}新字 <b>${T.nwc}</b> 個 · 約 <b>${T.mins}</b> 分鐘`;
-  const sub=T.started&&!T.all?`剩約 ${T.mins} 分鐘`:"";
+  const btn=T.all?"再練一輪":T.started?"繼續":"開始今日練習";
+  const head=T.all?"今日練習":T.started?"進行中":first?"第一次練習":"今日練習";
+  const big=T.all?"完成 ✓":T.started?`剩 ${T.mins} 分鐘`:`約 ${T.mins} 分鐘`;
+  const meta=T.all?"想多練可以再來一輪"
+    :T.started?T.stepTxt.replace(/^接著完成/,"下一步：").replace(/，已完成 /," ").replace(/（第 .*）$/,"")
+    :`新字 ${T.nwc}${T.rv?` · 複習 ${T.rv}`:""}`;
   view().innerHTML=`
   <div class="stack home">
-    <div class="ltitle"><span class="eyebrow">${new Date().toLocaleDateString("zh-TW",{month:"long",day:"numeric",weekday:"long"})}</span><h2>今日</h2></div>
-    <section class="taskcard ${T.all?"done":""}">
-      <div class="tc-top"><div class="tc-main"><div class="tc-eyebrow">${head}</div><div class="tc-body">${body}</div>${sub?`<div class="tc-sub">${sub}</div>`:""}</div>
-        <button class="tc-rings" id="petTap" aria-label="今日圓環：題數 ${done}/${g}，新字 ${newToday()}/${TL().nw}">${rings(ringVals(),64,"anim")}</button></div>
+    <div class="h-date">${new Date().toLocaleDateString("zh-TW",{month:"long",day:"numeric",weekday:"long"})}</div>
+    <section class="taskcard hero ${T.all?"done":""}">
+      <div class="tc-top"><div class="tc-main"><div class="tc-eyebrow">${head}</div><div class="h-big">${big}</div><div class="h-meta">${meta}</div></div>
+        <button class="tc-rings" id="petTap" aria-label="今日圓環：題數 ${done}/${g}，新字 ${newToday()}/${TL().nw}">${rings(ringVals(),60,"anim")}</button></div>
       ${T.started&&!T.all?`<div class="tc-bar" role="progressbar" aria-valuenow="${T.pct}" aria-valuemin="0" aria-valuemax="100" aria-label="今日練習進度"><i style="width:${T.pct}%"></i></div>`:""}
       <button class="btn ${T.all?"":"primary"} cta" id="train">${btn}</button>
       <span id="petSay" hidden></span>
-      <details class="tc-route"><summary>四步路線 · ${TL().name} ›</summary>
-        ${pathHTML(T.plan,T.t)}</details>
     </section>
     ${first?"":nudgesHTML({nw,due,all:T.all})}
-        <div class="group">
-      <button class="grow" onclick="album()">${sq("cards","#FF9F0A")}<span class="grow-l"><b>單字卡冊</b></span><span class="grow-v">${collected().length}</span><span class="grow-r">${icon("chev","chev")}</span></button>
-      <button class="grow" onclick="awards()">${sq("crown","#FF9500")}<span class="grow-l"><b>獎章</b></span><span class="grow-v">${Object.keys(S.ach||{}).length}/${ACH.length}</span><span class="grow-r">${icon("chev","chev")}</span></button>
-      <details class="grow wotd-row"><summary>${sq(w.cat,SC[w.cat]||"#5856D6")}<span class="grow-l"><b>今日單字 · ${esc(w.w)}</b></span><span class="grow-r">${icon("chev","chev")}</span></summary>
-        <div class="wm-body"><div class="row" style="align-items:center;gap:8px"><span class="ipa">${w.ipa}</span><span class="pos">${w.pos}</span>${spkBtn(w.w)}</div><div class="ex2">${esc(w.ex)}<div class="zh">${w.exZh}</div></div></div></details>
+    <div class="h-tiles">
+      <button class="h-tile" onclick="album()">${sq("cards","#FF9F0A")}<span><b>${collected().length}</b><small>單字卡冊</small></span></button>
+      <button class="h-tile" onclick="awards()">${sq("crown","#FF9500")}<span><b>${Object.keys(S.ach||{}).length}<i>/${ACH.length}</i></b><small>獎章</small></span></button>
     </div>
   </div>`;
   $("#train").onclick=startTraining;
@@ -4706,7 +4714,7 @@ function nudgesHTML(o){const L=[],st=streak(),todayDone=!!S.days[today()];
   const MS=[[3,"三天打卡"],[7,"一週不間斷"],[30,"習慣養成"]].find(([n])=>!todayDone&&st+1===n);
   if(MS)L.push(["train","flame","#FF3B30",`今天練完就能拿到「${MS[1]}」獎章`,`已經連續 ${st} 天，再一天！`]);
   if(!L.length)return "";
-  return `<div class="group nudges">${L.slice(0,2).map(([k,ic,c,t,s])=>`<button class="grow" data-nudge="${k}">${sq(ic,c)}<span class="grow-l"><b>${t}</b></span><span class="grow-r">${icon("chev","chev")}</span></button>`).join("")}</div>`}
+  return `<div class="group nudges">${L.slice(0,1).map(([k,ic,c,t,s])=>`<button class="grow" data-nudge="${k}">${sq(ic,c)}<span class="grow-l"><b>${t}</b></span><span class="grow-r">${icon("chev","chev")}</span></button>`).join("")}</div>`}
 function nudgeGo(k){if(k==="box")return mysteryBox("驚喜盒");if(k==="train")return startTraining();if(k==="island")return go("island");if(k==="weak")return go("weak");if(k==="cards"){freeCards();cur="practice";renderTabs()}}
 /* settings, records and backup live on their own page (gear button in the header) */
 function settingsView(){if(typeof endTry==="function")endTry();clearSheet();TR=null;enter("home");ROOT=false;
