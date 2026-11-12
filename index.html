@@ -1300,6 +1300,1339 @@ const SYN=[["buy","purchase","買"],["help","assist","幫助"],["enough","suffic
 const ANT=[["increase","decrease","增加↔減少"],["accept","reject","接受↔拒絕"],["ancient","modern","古老↔現代"],["generous","stingy","大方↔小氣"],["temporary","permanent","暫時↔永久"],["include","exclude","包含↔排除"],["maximum","minimum","最大↔最小"],["expand","shrink","擴大↔縮小"],["optimistic","pessimistic","樂觀↔悲觀"],["artificial","natural","人造↔天然"],["borrow","lend","借入↔借出"],["rude","polite","無禮↔有禮"],["shallow","deep","淺↔深"],["guilty","innocent","有罪↔無辜"],["profit","loss","獲利↔虧損"],["import","export","進口↔出口"],["arrive","depart","抵達↔出發"],["majority","minority","多數↔少數"],["strengthen","weaken","加強↔削弱"],["voluntary","compulsory","自願↔強制"]];
 const COL=[["___ a decision","make",["make","do","take","keep"],"做決定"],["___ your homework","do",["do","make","take","play"],"做功課"],["___ a photo","take",["take","make","do","catch"],"拍照"],["___ a mistake","make",["make","do","take","keep"],"犯錯"],["pay ___","attention",["attention","care","focus","notice"],"注意"],["___ a shower","take",["take","make","do","catch"],"洗澡"],["___ a break","take",["take","make","do","keep"],"休息一下"],["___ a cold","catch",["catch","make","do","keep"],"感冒"],["___ a secret","keep",["keep","make","do","take"],"保守秘密"],["___ a living","make",["make","do","take","keep"],"謀生"],["___ the laundry","do",["do","make","take","keep"],"洗衣服"],["___ an effort","make",["make","do","take","keep"],"努力"],["heavy ___","rain",["rain","sun","breeze","sky"],"大雨"],["___ coffee","strong",["strong","powerful","heavy","hard"],"濃咖啡"],["___ a risk","take",["take","make","do","keep"],"冒險"],["___ sense","make",["make","do","take","keep"],"合理；說得通"],["___ someone a favor","do",["do","make","take","keep"],"幫某人忙"],["___ a noise","make",["make","do","take","keep"],"發出噪音"],["___ business","do",["do","make","take","keep"],"做生意"],["fast ___","food",["food","dish","cook","meal"],"速食"]];
 
+const RAW4={
+verb:`be|/biː/|v|A1|是；在|I want to be a teacher.|我想當老師。
+have|/hæv/|v|A1|有；吃|We have two cats at home.|我們家有兩隻貓。
+do|/duː/|v|A1|做|What do you do on weekends?|你週末都做什麼？
+say|/seɪ/|v|A1|說|What did you say?|你剛剛說什麼？
+go|/ɡoʊ/|v|A1|去|Let's go home.|我們回家吧。
+get|/ɡet/|v|A1|得到；變得|I need to get some sleep.|我需要睡一下。
+make|/meɪk/|v|A1|做；製作|Can you make me a cup of tea?|你可以幫我泡杯茶嗎？
+know|/noʊ/|v|A1|知道|I know what you mean.|我懂你的意思。
+think|/θɪŋk/|v|A1|想；認為|I think it will rain today.|我覺得今天會下雨。
+take|/teɪk/|v|A1|拿；花（時間）|It takes ten minutes to walk there.|走路過去要十分鐘。
+see|/siː/|v|A1|看見|Can you see the sign over there?|你看得到那邊的牌子嗎？
+come|/kʌm/|v|A1|來|Can you come to my party?|你能來我的派對嗎？
+want|/wɑːnt/|v|A1|想要|I want a glass of water.|我想要一杯水。
+look|/lʊk/|v|A1|看；看起來|You look tired today.|你今天看起來很累。
+use|/juːz/|v|A1|使用|Can I use your phone?|我可以用你的手機嗎？
+find|/faɪnd/|v|A1|找到|I can't find my keys.|我找不到我的鑰匙。
+give|/ɡɪv/|v|A1|給|Please give me a minute.|請給我一分鐘。
+tell|/tel/|v|A1|告訴|Can you tell me the way to the station?|你可以告訴我去車站怎麼走嗎？
+work|/wɝːk/|v|A1|工作；運作|My computer doesn't work.|我的電腦不能用了。
+call|/kɔːl/|v|A1|打電話；叫|I'll call you tonight.|我今晚打給你。
+try|/traɪ/|v|A1|嘗試|Let me try again.|讓我再試一次。
+ask|/æsk/|v|A1|問；請求|Can I ask you a question?|我可以問你一個問題嗎？
+need|/niːd/|v|A1|需要|I need some help.|我需要一點幫忙。
+feel|/fiːl/|v|A1|感覺|I feel much better now.|我現在感覺好多了。
+become|/bɪˈkʌm/|v|A2|變成|She wants to become a doctor.|她想成為醫生。
+leave|/liːv/|v|A1|離開；留下|What time do you leave work?|你幾點下班？
+put|/pʊt/|v|A1|放|Put your bag on the chair.|把你的包包放在椅子上。
+mean|/miːn/|v|A2|意思是|What does this word mean?|這個字是什麼意思？
+keep|/kiːp/|v|A2|保持；保留|Please keep the door closed.|請讓門保持關著。
+let|/let/|v|A1|讓|Let me help you.|讓我幫你。
+begin|/bɪˈɡɪn/|v|A2|開始|The movie will begin at eight.|電影八點開始。
+seem|/siːm/|v|B1|似乎|He seems a little nervous.|他好像有點緊張。
+help|/help/|v|A1|幫助|Can you help me with this box?|你可以幫我搬這個箱子嗎？
+talk|/tɔːk/|v|A1|說話；聊天|We talked for hours.|我們聊了好幾個小時。
+turn|/tɝːn/|v|A2|轉；轉彎|Turn left at the corner.|在轉角左轉。
+start|/stɑːrt/|v|A1|開始|Let's start the meeting.|我們開始開會吧。
+show|/ʃoʊ/|v|A1|給…看；顯示|Can you show me your ticket?|可以給我看你的票嗎？
+hear|/hɪr/|v|A1|聽到|Can you hear me?|你聽得到我嗎？
+play|/pleɪ/|v|A1|玩；演奏|My kids play in the park every day.|我的小孩每天在公園玩。
+run|/rʌn/|v|A1|跑；經營|I run every morning.|我每天早上跑步。
+move|/muːv/|v|A2|移動；搬家|Can you move your car, please?|可以麻煩你移一下車嗎？
+like|/laɪk/|v|A1|喜歡|I like this song.|我喜歡這首歌。
+live|/lɪv/|v|A1|住；生活|Where do you live?|你住在哪裡？
+believe|/bɪˈliːv/|v|A2|相信|I can't believe it's already Friday.|真不敢相信已經星期五了。
+hold|/hoʊld/|v|A2|拿著；舉行|Can you hold my coffee for a second?|可以幫我拿一下咖啡嗎？
+bring|/brɪŋ/|v|A1|帶來|Don't forget to bring your umbrella.|別忘了帶傘。
+happen|/ˈhæpən/|v|A2|發生|What happened to your hand?|你的手怎麼了？
+write|/raɪt/|v|A1|寫|Please write your name here.|請在這裡寫你的名字。
+provide|/prəˈvaɪd/|v|B1|提供|The hotel provides free breakfast.|飯店提供免費早餐。
+sit|/sɪt/|v|A1|坐|Please sit down.|請坐。
+stand|/stænd/|v|A1|站|We had to stand on the train.|我們在火車上只能站著。
+lose|/luːz/|v|A2|失去；遺失|I always lose my umbrella.|我老是弄丟雨傘。
+pay|/peɪ/|v|A1|付錢|Can I pay by card?|我可以刷卡嗎？
+meet|/miːt/|v|A1|見面；認識|Nice to meet you.|很高興認識你。
+include|/ɪnˈkluːd/|v|B1|包括|Does the price include tax?|這個價格有含稅嗎？
+continue|/kənˈtɪnjuː/|v|A2|繼續|Let's continue tomorrow.|我們明天繼續吧。
+set|/set/|v|A2|設定；放置|I set my alarm for six.|我把鬧鐘設在六點。
+learn|/lɝːn/|v|A1|學習|I'm learning to cook.|我正在學做菜。
+lead|/liːd/|v|B1|帶領；導致|This road leads to the beach.|這條路通往海灘。
+understand|/ˌʌndərˈstænd/|v|A1|了解|I don't understand this question.|我不懂這個問題。
+watch|/wɑːtʃ/|v|A1|觀看|We watched a movie last night.|我們昨晚看了一部電影。
+follow|/ˈfɑːloʊ/|v|A2|跟隨；遵守|Please follow me.|請跟我來。
+stop|/stɑːp/|v|A1|停止|Please stop talking.|請不要再說話了。
+create|/kriˈeɪt/|v|B1|創造|She created her own website.|她自己架了一個網站。
+speak|/spiːk/|v|A1|說（語言）|Do you speak English?|你會說英文嗎？
+read|/riːd/|v|A1|閱讀|I read before bed every night.|我每天睡前都會看書。
+allow|/əˈlaʊ/|v|B1|允許|Pets are not allowed here.|這裡不准帶寵物。
+add|/æd/|v|A2|加上|Add a little salt.|加一點鹽。
+grow|/ɡroʊ/|v|A2|成長；種植|My dad grows tomatoes in the garden.|我爸在花園種番茄。
+open|/ˈoʊpən/|v|A1|打開|Can you open the window?|你可以開窗嗎？
+walk|/wɔːk/|v|A1|走路|I walk to work every day.|我每天走路上班。
+win|/wɪn/|v|A2|贏|I hope our team wins today.|希望我們隊今天會贏。
+offer|/ˈɔːfər/|v|B1|提供；主動提出|He offered to drive me home.|他主動說要載我回家。
+remember|/rɪˈmembər/|v|A1|記得|Do you remember his name?|你記得他的名字嗎？
+love|/lʌv/|v|A1|愛；很喜歡|I love this place.|我超愛這個地方。
+consider|/kənˈsɪdər/|v|B1|考慮|I'm considering a new job.|我在考慮換新工作。
+appear|/əˈpɪr/|v|B1|出現；似乎|A message appeared on the screen.|螢幕上跳出一則訊息。
+buy|/baɪ/|v|A1|買|I want to buy a new phone.|我想買一支新手機。
+wait|/weɪt/|v|A1|等待|Please wait here.|請在這裡等。
+serve|/sɝːv/|v|B1|供應；服務|Breakfast is served until ten.|早餐供應到十點。
+die|/daɪ/|v|A2|死亡|My plant died while I was away.|我不在的時候植物死掉了。
+send|/send/|v|A1|寄；傳送|I'll send you the photos.|我會把照片傳給你。
+expect|/ɪkˈspekt/|v|B1|預期|I didn't expect so many people.|我沒料到會有這麼多人。
+build|/bɪld/|v|A2|建造|They're building a new mall.|他們正在蓋一間新商場。
+stay|/steɪ/|v|A1|停留；待|We stayed at a small hotel.|我們住在一間小飯店。
+fall|/fɔːl/|v|A2|落下；跌倒|Be careful not to fall.|小心不要跌倒。
+cut|/kʌt/|v|A2|切；剪|I need to cut my hair.|我需要剪頭髮了。
+reach|/riːtʃ/|v|B1|到達；搆到|I can't reach the top shelf.|我搆不到最上層的架子。
+kill|/kɪl/|v|A2|殺死|Too much sun can kill this plant.|太多陽光會讓這株植物死掉。
+remain|/rɪˈmeɪn/|v|B1|保持；仍然|Please remain seated.|請留在座位上。
+pass|/pæs/|v|A2|通過；傳遞|Could you pass the salt?|可以把鹽遞給我嗎？
+sell|/sel/|v|A1|賣|They sell fresh fruit here.|這裡有賣新鮮水果。
+require|/rɪˈkwaɪər/|v|B2|需要；要求|This job requires a lot of patience.|這份工作需要很多耐心。
+decide|/dɪˈsaɪd/|v|A2|決定|I can't decide what to eat.|我決定不了要吃什麼。
+pull|/pʊl/|v|A2|拉|Pull the door to open it.|拉門才能打開。
+explain|/ɪkˈspleɪn/|v|A2|解釋|Can you explain that again?|你可以再解釋一次嗎？
+hope|/hoʊp/|v|A1|希望|I hope you feel better soon.|希望你早日康復。
+develop|/dɪˈveləp/|v|B1|發展；開發|The company develops mobile games.|這家公司開發手機遊戲。
+carry|/ˈkæri/|v|A2|攜帶；搬|Let me carry that for you.|我幫你拿。
+break|/breɪk/|v|A2|打破；弄壞|Be careful, don't break the glass.|小心，別打破杯子。
+receive|/rɪˈsiːv/|v|B1|收到|Did you receive my email?|你有收到我的信嗎？
+join|/dʒɔɪn/|v|A2|加入|Would you like to join us for dinner?|要不要跟我們一起吃晚餐？
+pick|/pɪk/|v|A2|挑選；摘|Pick any color you like.|挑一個你喜歡的顏色。
+wear|/wer/|v|A1|穿；戴|What should I wear tonight?|我今晚該穿什麼？
+choose|/tʃuːz/|v|A2|選擇|You can choose any seat.|你可以選任何一個位子。
+enjoy|/ɪnˈdʒɔɪ/|v|A1|享受|Enjoy your meal!|請慢用！
+sleep|/sliːp/|v|A1|睡覺|I couldn't sleep last night.|我昨晚睡不著。
+eat|/iːt/|v|A1|吃|What do you want to eat?|你想吃什麼？
+drink|/drɪŋk/|v|A1|喝|I drink a lot of water.|我喝很多水。
+drive|/draɪv/|v|A1|開車|Can you drive me to the station?|你可以載我去車站嗎？
+close|/kloʊz/|v|A1|關閉|What time does the store close?|這家店幾點關門？
+wash|/wɑːʃ/|v|A1|洗|Wash your hands before dinner.|吃飯前要洗手。
+clean|/kliːn/|v|A1|清潔|I clean my room every Sunday.|我每個星期天打掃房間。
+cook|/kʊk/|v|A1|煮飯|My husband cooks dinner every night.|我先生每晚都煮晚餐。
+study|/ˈstʌdi/|v|A1|讀書；研究|I study English every morning.|我每天早上讀英文。
+teach|/tiːtʃ/|v|A1|教|Can you teach me how to swim?|你可以教我游泳嗎？
+answer|/ˈænsər/|v|A1|回答；接（電話）|Nobody answered the phone.|沒有人接電話。
+travel|/ˈtrævəl/|v|A1|旅行|I love to travel alone.|我喜歡一個人旅行。
+visit|/ˈvɪzɪt/|v|A1|拜訪；參觀|We visited my grandparents last weekend.|我們上週末去看爺爺奶奶。
+dance|/dæns/|v|A1|跳舞|Do you want to dance?|你想跳舞嗎？
+sing|/sɪŋ/|v|A1|唱歌|She sings in the shower.|她在洗澡時唱歌。
+swim|/swɪm/|v|A1|游泳|I swim twice a week.|我一週游泳兩次。
+fly|/flaɪ/|v|A2|飛；搭飛機|We're flying to Tokyo tomorrow.|我們明天飛東京。
+laugh|/læf/|v|A2|笑|His jokes always make me laugh.|他的笑話總是讓我笑出來。
+cry|/kraɪ/|v|A2|哭|Babies cry when they're hungry.|嬰兒餓了會哭。
+smile|/smaɪl/|v|A2|微笑|She smiled at me.|她對我笑了一下。
+worry|/ˈwɝːi/|v|A2|擔心|Don't worry about it.|別擔心。
+hate|/heɪt/|v|A2|討厭|I hate waiting in line.|我討厭排隊。
+prefer|/prɪˈfɝː/|v|A2|比較喜歡|I prefer tea to coffee.|比起咖啡我比較喜歡茶。
+imagine|/ɪˈmædʒɪn/|v|B1|想像|I can't imagine life without my phone.|我無法想像沒有手機的生活。
+guess|/ɡes/|v|A2|猜|Guess what happened today!|猜猜今天發生了什麼事！
+wonder|/ˈwʌndər/|v|B1|想知道；納悶|I wonder if it will snow.|不知道會不會下雪。
+forget|/fərˈɡet/|v|A2|忘記|I forgot to bring my wallet.|我忘了帶錢包。
+check|/tʃek/|v|A1|檢查；確認|Let me check my calendar.|讓我看一下我的行事曆。
+plan|/plæn/|v|A2|計畫|We're planning a trip to Japan.|我們正在計畫去日本玩。
+prepare|/prɪˈper/|v|A2|準備|I need to prepare for my exam.|我需要準備考試。
+finish|/ˈfɪnɪʃ/|v|A1|完成|Did you finish your homework?|你功課寫完了嗎？
+fill|/fɪl/|v|A2|裝滿；填寫|Please fill the glass with water.|請把杯子裝滿水。
+save|/seɪv/|v|A2|存（錢）；節省|I save some money every month.|我每個月存一點錢。
+share|/ʃer/|v|A2|分享|Let's share a pizza.|我們分一個披薩吧。
+improve|/ɪmˈpruːv/|v|B1|改善；進步|I want to improve my English.|我想提升我的英文。
+practice|/ˈpræktɪs/|v|A2|練習|I practice the piano every day.|我每天練鋼琴。
+repeat|/rɪˈpiːt/|v|A2|重複|Could you repeat that, please?|可以請你再說一次嗎？
+describe|/dɪˈskraɪb/|v|A2|描述|Can you describe the man you saw?|你能描述你看到的那個男人嗎？
+discuss|/dɪˈskʌs/|v|B1|討論|Let's discuss this tomorrow.|我們明天再討論這件事。
+compare|/kəmˈper/|v|B1|比較|Don't compare yourself to others.|不要拿自己跟別人比。
+contain|/kənˈteɪn/|v|B1|包含|This drink contains a lot of sugar.|這杯飲料含很多糖。
+fail|/feɪl/|v|B1|失敗；不及格|He failed his driving test.|他駕照考試沒過。
+succeed|/səkˈsiːd/|v|B1|成功|If you work hard, you will succeed.|努力就會成功。
+manage|/ˈmænɪdʒ/|v|B1|管理；設法做到|She manages a team of ten.|她管理一個十人的團隊。
+protect|/prəˈtekt/|v|B1|保護|Wear sunscreen to protect your skin.|擦防曬保護皮膚。
+prevent|/prɪˈvent/|v|B1|預防|Washing your hands helps prevent colds.|洗手有助於預防感冒。
+produce|/prəˈduːs/|v|B1|生產|This factory produces car parts.|這間工廠生產汽車零件。
+apply|/əˈplaɪ/|v|B1|申請；塗抹|Apply the cream twice a day.|這個乳膏一天擦兩次。
+avoid|/əˈvɔɪd/|v|B1|避免|I try to avoid sugar.|我盡量避免吃糖。
+fight|/faɪt/|v|A2|打架；爭吵|My brothers always fight over the TV.|我哥哥們老是為了電視吵架。
+throw|/θroʊ/|v|A2|丟|Don't throw your trash on the street.|不要把垃圾丟在街上。
+catch|/kætʃ/|v|A2|接住；趕上|I need to catch the last bus.|我得趕上最後一班公車。
+hit|/hɪt/|v|A2|打；撞|The ball hit the window.|球打到窗戶了。
+push|/pʊʃ/|v|A2|推|Push the button to start.|按這個按鈕開始。
+drop|/drɑːp/|v|A2|掉落；放下|I dropped my phone again.|我又把手機摔到了。
+shut|/ʃʌt/|v|B1|關上|Shut the door, please.|請把門關上。
+hide|/haɪd/|v|A2|躲藏；隱藏|Where did you hide the cookies?|你把餅乾藏在哪裡？
+touch|/tʌtʃ/|v|A2|碰觸|Please don't touch the paintings.|請不要觸摸畫作。
+smell|/smel/|v|A2|聞；有…味道|Something smells good!|有東西好香！
+taste|/teɪst/|v|A2|嚐；有…味道|This soup tastes amazing.|這個湯好好喝。
+listen|/ˈlɪsən/|v|A1|聽|Listen to me carefully.|仔細聽我說。
+point|/pɔɪnt/|v|A2|指|It's rude to point at people.|用手指別人很沒禮貌。
+count|/kaʊnt/|v|A2|數；計算|Count to ten and calm down.|數到十，冷靜一下。
+measure|/ˈmeʒər/|v|B1|測量|Let me measure the table first.|讓我先量一下桌子。
+mix|/mɪks/|v|A2|混合|Mix the eggs and the milk.|把蛋跟牛奶混在一起。
+pour|/pɔːr/|v|B1|倒（液體）|Can you pour me some water?|可以幫我倒點水嗎？
+shake|/ʃeɪk/|v|B1|搖晃；握（手）|Shake the bottle before you drink.|喝之前先搖一搖瓶子。
+hang|/hæŋ/|v|B1|掛|Hang your coat by the door.|把外套掛在門邊。
+lie|/laɪ/|v|A2|躺；說謊|I just want to lie on the sofa.|我只想躺在沙發上。
+rise|/raɪz/|v|B1|上升|Prices rise every year.|物價每年都在漲。
+shine|/ʃaɪn/|v|B1|發光；照耀|The sun is shining today.|今天出大太陽。
+burn|/bɝːn/|v|B1|燒；燙傷|I burned my hand on the pan.|我被鍋子燙到手。
+melt|/melt/|v|B1|融化|The ice cream is melting fast.|冰淇淋融化得很快。
+freeze|/friːz/|v|B1|結冰；冷凍|You can freeze the leftovers.|剩菜可以拿去冷凍。
+belong|/bɪˈlɔːŋ/|v|B1|屬於|Does this bag belong to you?|這個包包是你的嗎？
+depend|/dɪˈpend/|v|B1|取決於|It depends on the weather.|要看天氣。
+exist|/ɪɡˈzɪst/|v|B1|存在|Do you think ghosts exist?|你覺得鬼存在嗎？
+matter|/ˈmætər/|v|B1|要緊；有關係|It doesn't matter.|沒關係。
+mind|/maɪnd/|v|B1|介意|Do you mind if I sit here?|你介意我坐這裡嗎？
+own|/oʊn/|v|B1|擁有|They own a small coffee shop.|他們開了一家小咖啡店。
+cost|/kɔːst/|v|A2|花費（金額）|How much does this cost?|這個多少錢？
+owe|/oʊ/|v|B1|欠|I owe you ten dollars.|我欠你十塊。
+earn|/ɝːn/|v|B1|賺|She earns a good salary.|她薪水不錯。
+waste|/weɪst/|v|B1|浪費|Don't waste your time.|不要浪費時間。
+arrive|/əˈraɪv/|v|A1|抵達|What time does the train arrive?|火車幾點到？
+enter|/ˈentər/|v|A2|進入；輸入|Enter your password here.|在這裡輸入密碼。
+climb|/klaɪm/|v|A2|爬|We climbed to the top of the hill.|我們爬到山頂。
+jump|/dʒʌmp/|v|A2|跳|The kids are jumping on the bed.|小孩在床上跳來跳去。
+park|/pɑːrk/|v|A2|停車|Where can I park my car?|我可以把車停在哪裡？
+cross|/krɔːs/|v|A2|穿越；橫過|Look both ways before you cross the street.|過馬路前左右看。
+marry|/ˈmæri/|v|A2|結婚|They got married last year.|他們去年結婚了。
+born|/bɔːrn/|adj|A1|出生的|I was born in Taipei.|我在台北出生。
+kiss|/kɪs/|v|A2|親吻|She kissed her baby goodnight.|她親了寶寶說晚安。
+hug|/hʌɡ/|v|A2|擁抱|Come here and give me a hug.|過來給我一個抱抱。
+thank|/θæŋk/|v|A1|感謝|Thank you for your help.|謝謝你的幫忙。
+welcome|/ˈwelkəm/|v|A2|歡迎|Welcome to our home.|歡迎來我們家。
+accept|/əkˈsept/|v|B1|接受|We accept credit cards.|我們接受信用卡。
+refuse|/rɪˈfjuːz/|v|B1|拒絕|He refused to answer.|他拒絕回答。
+deny|/dɪˈnaɪ/|v|B2|否認|She didn't deny it.|她沒有否認。
+admit|/ədˈmɪt/|v|B1|承認|I admit I was wrong.|我承認我錯了。
+warn|/wɔːrn/|v|B1|警告|I warned you about the traffic.|我有警告過你會塞車。
+shout|/ʃaʊt/|v|A2|大叫|Please don't shout.|請不要大吼。
+whisper|/ˈwɪspər/|v|B1|小聲說|She whispered something in my ear.|她在我耳邊說了些悄悄話。
+chat|/tʃæt/|v|A2|聊天|We chatted over coffee.|我們邊喝咖啡邊聊天。
+discover|/dɪˈskʌvər/|v|B1|發現|I discovered a great café near my office.|我在公司附近發現一家很棒的咖啡店。
+recognize|/ˈrekəɡnaɪz/|v|B1|認出|I didn't recognize you with short hair.|你剪短頭髮我都認不出來了。
+realize|/ˈriːəlaɪz/|v|B1|意識到|I realized I left my phone at home.|我發現我把手機忘在家裡了。
+solve|/sɑːlv/|v|B1|解決|We need to solve this problem.|我們需要解決這個問題。
+repair|/rɪˈper/|v|B1|修理|They're repairing the road.|他們正在修路。
+search|/sɝːtʃ/|v|A2|搜尋|I searched everywhere for my glasses.|我到處找我的眼鏡。
+collect|/kəˈlekt/|v|A2|收集|He collects old coins.|他收集舊硬幣。
+gather|/ˈɡæðər/|v|B1|聚集；收集|The family gathered for dinner.|家人聚在一起吃晚餐。
+divide|/dɪˈvaɪd/|v|B1|分開；劃分|Divide the cake into eight pieces.|把蛋糕切成八塊。
+separate|/ˈsepəreɪt/|v|B1|分開|Separate the whites from the yolks.|把蛋白跟蛋黃分開。
+connect|/kəˈnekt/|v|B1|連接|I can't connect to the Wi-Fi.|我連不上 Wi-Fi。
+cover|/ˈkʌvər/|v|A2|覆蓋|Cover the pot with a lid.|把鍋子蓋上蓋子。
+wrap|/ræp/|v|B1|包裝|Can you wrap this as a gift?|可以幫我包成禮物嗎？
+tie|/taɪ/|v|B1|綁|Tie your shoes before you trip.|在絆倒前先把鞋帶綁好。
+knock|/nɑːk/|v|B1|敲|Please knock before you come in.|進來前請先敲門。
+ring|/rɪŋ/|v|A2|（鈴）響；打電話|Your phone is ringing.|你的手機在響。
+print|/prɪnt/|v|A2|列印|Can you print this for me?|你可以幫我印這個嗎？
+copy|/ˈkɑːpi/|v|A2|複製；抄|Copy this file to your desktop.|把這個檔案複製到桌面。
+type|/taɪp/|v|A2|打字|She types really fast.|她打字很快。
+delete|/dɪˈliːt/|v|B1|刪除|I accidentally deleted the file.|我不小心把檔案刪掉了。
+download|/ˈdaʊnloʊd/|v|A2|下載|Download the app to order.|下載這個 app 就可以點餐。
+upload|/ˌʌpˈloʊd/|v|B1|上傳|I'll upload the photos tonight.|我今晚會上傳照片。
+install|/ɪnˈstɔːl/|v|B1|安裝|I need to install the new update.|我需要安裝新的更新。
+record|/rɪˈkɔːrd/|v|B1|錄音；記錄|Can I record this meeting?|我可以錄下這次會議嗎？
+film|/fɪlm/|v|B1|拍攝|They filmed the wedding.|他們拍下了婚禮。
+draw|/drɔː/|v|A1|畫|My son loves to draw animals.|我兒子很愛畫動物。
+paint|/peɪnt/|v|A2|油漆；畫畫|We painted the bedroom blue.|我們把臥室漆成藍色。
+design|/dɪˈzaɪn/|v|B1|設計|She designs clothes for a living.|她以設計衣服為業。
+invent|/ɪnˈvent/|v|B1|發明|Who invented the telephone?|電話是誰發明的？
+test|/test/|v|A2|測試|We need to test the new system.|我們需要測試新系統。
+prove|/pruːv/|v|B1|證明|Can you prove it?|你能證明嗎？
+judge|/dʒʌdʒ/|v|B1|評判|Don't judge people by their looks.|不要以貌取人。
+doubt|/daʊt/|v|B1|懷疑|I doubt he will come.|我懷疑他會來。
+fear|/fɪr/|v|B1|害怕|Many people fear the dentist.|很多人怕看牙醫。
+deserve|/dɪˈzɝːv/|v|B2|應得|You deserve a break.|你值得休息一下。
+achieve|/əˈtʃiːv/|v|B1|達成|She achieved all her goals this year.|她今年達成了所有目標。
+attempt|/əˈtempt/|v|B1|嘗試|He attempted to fix it himself.|他試著自己修理。
+manage to|/ˈmænɪdʒ tuː/|phr|B1|設法做到|I managed to finish on time.|我設法準時完成了。
+gain|/ɡeɪn/|v|B1|獲得；增加|I gained two kilos on vacation.|我度假胖了兩公斤。
+lack|/læk/|v|B2|缺乏|He lacks experience.|他缺乏經驗。
+remove|/rɪˈmuːv/|v|B1|移除|Please remove your shoes.|請脫鞋。
+reply|/rɪˈplaɪ/|v|A2|回覆|Sorry I didn't reply sooner.|抱歉沒有早點回覆。
+respond|/rɪˈspɑːnd/|v|B1|回應|He hasn't responded to my message.|他還沒回我訊息。
+announce|/əˈnaʊns/|v|B1|宣布|They announced the winner.|他們宣布了得獎者。
+inform|/ɪnˈfɔːrm/|v|B1|通知|Please inform us of any changes.|有任何變動請通知我們。
+advise|/ədˈvaɪz/|v|B1|建議；勸告|The doctor advised me to rest.|醫生建議我休息。
+force|/fɔːrs/|v|B1|強迫|Nobody forced you to come.|沒人逼你來。
+treat|/triːt/|v|B1|對待；請客|Let me treat you to lunch.|我請你吃午餐。
+relax|/rɪˈlæks/|v|A2|放鬆|I just want to relax this weekend.|我這週末只想放鬆。
+exercise|/ˈeksərsaɪz/|v|A2|運動|I try to exercise three times a week.|我盡量一週運動三次。
+breathe|/briːð/|v|B1|呼吸|Breathe in slowly.|慢慢吸氣。
+wake|/weɪk/|v|A2|醒來；叫醒|Please wake me at seven.|請七點叫我起床。
+dream|/driːm/|v|A2|做夢；夢想|I dreamed about you last night.|我昨晚夢到你。
+shop|/ʃɑːp/|v|A1|購物|I like to shop online.|我喜歡網購。
+look for|/ˈlʊk fɔːr/|phr|A1|尋找|I'm looking for my phone.|我在找我的手機。
+look after|/lʊk ˈæftər/|phr|A2|照顧|Can you look after my cat this weekend?|你這週末可以幫我照顧貓嗎？
+look up|/lʊk ˈʌp/|phr|A2|查（資料）|Look up the word in a dictionary.|在字典裡查這個字。
+find out|/faɪnd ˈaʊt/|phr|A2|查明；發現|I need to find out what happened.|我需要查清楚發生了什麼事。
+go out|/ɡoʊ ˈaʊt/|phr|A1|出去|Do you want to go out tonight?|你今晚想出去嗎？
+come back|/kʌm ˈbæk/|phr|A1|回來|When will you come back?|你什麼時候回來？
+go back|/ɡoʊ ˈbæk/|phr|A1|回去|I want to go back to Japan.|我想再回日本。
+sit down|/sɪt ˈdaʊn/|phr|A1|坐下|Please sit down and relax.|請坐下放輕鬆。
+stand up|/stænd ˈʌp/|phr|A1|站起來|Stand up, please.|請站起來。
+put on|/pʊt ˈɑːn/|phr|A1|穿上|Put on your jacket.|穿上你的外套。
+fill in|/fɪl ˈɪn/|phr|A2|填寫|Please fill in this form.|請填寫這張表格。
+write down|/raɪt ˈdaʊn/|phr|A2|寫下|Write down your phone number.|寫下你的電話號碼。
+think about|/ˈθɪŋk əˌbaʊt/|phr|A1|考慮；想著|I'll think about it.|我會考慮看看。
+talk about|/ˈtɔːk əˌbaʊt/|phr|A1|談論|What are you talking about?|你在說什麼？
+listen to|/ˈlɪsən tuː/|phr|A1|聽|I listen to music on the bus.|我在公車上聽音樂。
+wait for|/ˈweɪt fɔːr/|phr|A1|等待|I'm waiting for the bus.|我在等公車。
+pay for|/ˈpeɪ fɔːr/|phr|A2|支付|Let me pay for dinner.|晚餐讓我付。
+belong to|/bɪˈlɔːŋ tuː/|phr|B1|屬於|This phone belongs to my sister.|這支手機是我姊的。
+depend on|/dɪˈpend ɑːn/|phr|B1|依靠；取決於|It depends on the price.|要看價錢。
+take place|/teɪk ˈpleɪs/|phr|B1|舉行；發生|The wedding will take place in May.|婚禮將在五月舉行。
+take part in|/teɪk ˈpɑːrt ɪn/|phr|B1|參加|I took part in a running race.|我參加了一場路跑。
+take a break|/teɪk ə ˈbreɪk/|phr|A2|休息一下|Let's take a break for ten minutes.|我們休息十分鐘吧。
+make sure|/meɪk ˈʃʊr/|phr|B1|確定|Make sure you lock the door.|確定你有鎖門。
+make a decision|/meɪk ə dɪˈsɪʒən/|phr|B1|做決定|I need to make a decision today.|我今天需要做決定。
+make money|/meɪk ˈmʌni/|phr|A2|賺錢|He makes money by selling art.|他靠賣藝術品賺錢。
+pay attention|/peɪ əˈtenʃən/|phr|B1|注意|Pay attention in class.|上課要專心。
+change my mind|/tʃeɪndʒ maɪ ˈmaɪnd/|phr|B1|改變主意|I changed my mind about the trip.|我對這趟旅行改變主意了。
+keep going|/kiːp ˈɡoʊɪŋ/|phr|B1|繼續下去|Don't give up, keep going!|別放棄，繼續加油！
+hurry|/ˈhɝːi/|v|A2|趕快|Hurry up, we're late!|快點，我們遲到了！
+rush|/rʌʃ/|v|B1|趕；匆忙|There's no need to rush.|不用急。
+graduate|/ˈɡrædʒueɪt/|v|B1|畢業|I graduated from university in 2019.|我 2019 年大學畢業。
+happen to|/ˈhæpən tuː/|phr|B1|碰巧|Do you happen to know his number?|你剛好知道他的電話嗎？
+used to|/ˈjuːst tuː/|phr|A2|過去常常|I used to live in Tainan.|我以前住在台南。
+have to|/ˈhæv tuː/|phr|A1|必須|I have to work this weekend.|我這週末得上班。
+be able to|/bi ˈeɪbəl tuː/|phr|A2|能夠|Will you be able to come?|你能來嗎？
+would like|/wʊd ˈlaɪk/|phr|A1|想要|I would like a cup of tea.|我想要一杯茶。
+feel like|/ˈfiːl laɪk/|phr|B1|想要（做）|I feel like eating noodles.|我想吃麵。
+cheer|/tʃɪr/|v|B1|歡呼|The fans cheered loudly.|球迷大聲歡呼。
+behave|/bɪˈheɪv/|v|B1|守規矩；表現|Please behave yourself.|請守規矩。
+arrange|/əˈreɪndʒ/|v|B1|安排|I'll arrange a meeting for Monday.|我會安排星期一開會。
+organize|/ˈɔːrɡənaɪz/|v|B1|整理；籌辦|She organized a party for him.|她為他辦了一場派對。
+control|/kənˈtroʊl/|v|B1|控制|Try to control your anger.|試著控制你的脾氣。
+wish|/wɪʃ/|v|A2|希望；但願|I wish I could fly.|真希望我會飛。
+greet|/ɡriːt/|v|B1|打招呼|She greeted us at the door.|她在門口迎接我們。
+attend|/əˈtend/|v|B1|參加；出席|I can't attend the meeting today.|我今天無法出席會議。`,
+adj:`good|/ɡʊd/|adj|A1|好的|This is a good idea.|這是個好主意。
+new|/nuː/|adj|A1|新的|I like your new shoes.|我喜歡你的新鞋。
+old|/oʊld/|adj|A1|老的；舊的|This is a very old building.|這是一棟很老的建築。
+great|/ɡreɪt/|adj|A1|很棒的|We had a great time.|我們玩得很開心。
+big|/bɪɡ/|adj|A1|大的|They live in a big house.|他們住在一間大房子。
+small|/smɔːl/|adj|A1|小的|Can I have a small coffee?|我可以要一杯小杯咖啡嗎？
+long|/lɔːŋ/|adj|A1|長的|It was a long day.|今天真漫長。
+short|/ʃɔːrt/|adj|A1|短的；矮的|I'm going on a short trip.|我要去一趟短程旅行。
+high|/haɪ/|adj|A1|高的|The rent here is very high.|這裡的房租很高。
+low|/loʊ/|adj|A2|低的|My phone battery is low.|我手機快沒電了。
+young|/jʌŋ/|adj|A1|年輕的|She looks young for her age.|她看起來比實際年齡年輕。
+important|/ɪmˈpɔːrtənt/|adj|A1|重要的|This is an important meeting.|這是一場重要的會議。
+different|/ˈdɪfərənt/|adj|A1|不同的|We have different opinions.|我們意見不同。
+same|/seɪm/|adj|A1|相同的|We went to the same school.|我們讀同一間學校。
+right|/raɪt/|adj|A1|對的；右邊的|You're right.|你說得對。
+wrong|/rɔːŋ/|adj|A1|錯的|Sorry, I called the wrong number.|抱歉，我打錯電話了。
+easy|/ˈiːzi/|adj|A1|簡單的|The test was really easy.|考試真的很簡單。
+hard|/hɑːrd/|adj|A1|困難的；硬的|This question is too hard.|這題太難了。
+difficult|/ˈdɪfɪkəlt/|adj|A1|困難的|It's difficult to say no.|很難拒絕。
+possible|/ˈpɑːsəbəl/|adj|A2|可能的|Is it possible to change my seat?|可以換座位嗎？
+impossible|/ɪmˈpɑːsəbəl/|adj|A2|不可能的|It's impossible to finish today.|今天不可能做完。
+free|/friː/|adj|A1|免費的；有空的|Are you free tonight?|你今晚有空嗎？
+busy|/ˈbɪzi/|adj|A1|忙碌的|I'm really busy this week.|我這週真的很忙。
+ready|/ˈredi/|adj|A1|準備好的|Are you ready to go?|你準備好要走了嗎？
+sure|/ʃʊr/|adj|A1|確定的|Are you sure?|你確定嗎？
+happy|/ˈhæpi/|adj|A1|快樂的|I'm so happy for you.|我真為你高興。
+sad|/sæd/|adj|A1|難過的|The ending of the movie was sad.|那部電影的結局很悲傷。
+angry|/ˈæŋɡri/|adj|A1|生氣的|Why are you angry with me?|你為什麼生我的氣？
+tired|/ˈtaɪərd/|adj|A1|累的|I'm too tired to cook.|我累到不想煮飯。
+hungry|/ˈhʌŋɡri/|adj|A1|餓的|I'm so hungry.|我好餓。
+sick|/sɪk/|adj|A1|生病的|I feel sick today.|我今天覺得不舒服。
+hot|/hɑːt/|adj|A1|熱的；辣的|It's really hot outside.|外面真的很熱。
+cold|/koʊld/|adj|A1|冷的|The water is too cold.|水太冰了。
+warm|/wɔːrm/|adj|A1|溫暖的|Wear something warm.|穿暖一點。
+cool|/kuːl/|adj|A1|涼爽的；很酷的|That's a cool jacket.|那件外套好酷。
+nice|/naɪs/|adj|A1|好的；親切的|Have a nice day!|祝你有美好的一天！
+beautiful|/ˈbjuːtəfəl/|adj|A1|美麗的|What a beautiful view!|風景好美！
+pretty|/ˈprɪti/|adj|A1|漂亮的|That's a pretty dress.|那件洋裝很漂亮。
+ugly|/ˈʌɡli/|adj|A2|醜的|I think this sweater is ugly.|我覺得這件毛衣很醜。
+dirty|/ˈdɝːti/|adj|A1|髒的|My car is so dirty.|我的車好髒。
+fast|/fæst/|adj|A1|快的|This train is very fast.|這班火車很快。
+slow|/sloʊ/|adj|A1|慢的|The Wi-Fi is slow today.|今天網路很慢。
+quick|/kwɪk/|adj|A2|快速的|Can I ask a quick question?|我可以快速問一個問題嗎？
+early|/ˈɝːli/|adj|A1|早的|I have an early meeting.|我有一個很早的會議。
+late|/leɪt/|adj|A1|晚的；遲到的|Sorry I'm late.|抱歉我遲到了。
+quiet|/ˈkwaɪət/|adj|A1|安靜的|Is there a quiet place to work?|有安靜的地方可以工作嗎？
+loud|/laʊd/|adj|A2|大聲的|The music is too loud.|音樂太大聲了。
+bright|/braɪt/|adj|A2|明亮的；聰明的|The room is bright and sunny.|房間明亮又有陽光。
+dark|/dɑːrk/|adj|A1|黑暗的；深色的|It gets dark early in winter.|冬天天黑得早。
+heavy|/ˈhevi/|adj|A2|重的|This box is too heavy.|這個箱子太重了。
+light|/laɪt/|adj|A2|輕的；淺色的|I'd like something light for lunch.|我午餐想吃清淡一點的。
+soft|/sɔːft/|adj|A2|柔軟的|This pillow is so soft.|這個枕頭好軟。
+strong|/strɔːŋ/|adj|A2|強壯的；濃的|I need a strong coffee.|我需要一杯濃咖啡。
+weak|/wiːk/|adj|A2|虛弱的；淡的|I feel weak after the flu.|得了流感之後我覺得很虛弱。
+safe|/seɪf/|adj|A2|安全的|Is it safe to walk here at night?|晚上在這裡走路安全嗎？
+dangerous|/ˈdeɪndʒərəs/|adj|A2|危險的|It's dangerous to swim here.|在這裡游泳很危險。
+rich|/rɪtʃ/|adj|A2|有錢的；濃郁的|This cake is very rich.|這個蛋糕很濃郁。
+poor|/pʊr/|adj|A2|貧窮的；可憐的|The poor dog was wet and cold.|那隻可憐的狗又濕又冷。
+empty|/ˈempti/|adj|A2|空的|The fridge is empty.|冰箱空空的。
+real|/ˈriːəl/|adj|A2|真的；真實的|Is that a real diamond?|那是真的鑽石嗎？
+true|/truː/|adj|A1|真實的|Is it true that you're moving?|你要搬家是真的嗎？
+false|/fɔːls/|adj|A2|錯誤的；假的|That information is false.|那個資訊是錯的。
+simple|/ˈsɪmpəl/|adj|A2|簡單的|The instructions are simple.|說明很簡單。
+special|/ˈspeʃəl/|adj|A2|特別的|Today is a special day.|今天是特別的日子。
+main|/meɪn/|adj|A2|主要的|What's the main problem?|主要的問題是什麼？
+whole|/hoʊl/|adj|A2|整個的|I slept the whole day.|我睡了一整天。
+general|/ˈdʒenərəl/|adj|B1|一般的；總體的|In general, I prefer cities.|大致上我比較喜歡城市。
+common|/ˈkɑːmən/|adj|A2|常見的|It's a common mistake.|這是常見的錯誤。
+usual|/ˈjuːʒuəl/|adj|A2|平常的|Let's meet at the usual place.|我們在老地方見。
+normal|/ˈnɔːrməl/|adj|A2|正常的|Is it normal to feel this tired?|覺得這麼累正常嗎？
+strange|/streɪndʒ/|adj|A2|奇怪的|I heard a strange noise.|我聽到奇怪的聲音。
+weird|/wɪrd/|adj|B1|怪怪的|That's a weird question.|那是個怪問題。
+famous|/ˈfeɪməs/|adj|A2|有名的|This street is famous for its food.|這條街以美食聞名。
+popular|/ˈpɑːpjələr/|adj|A2|受歡迎的|This café is very popular.|這間咖啡店很受歡迎。
+modern|/ˈmɑːdərn/|adj|A2|現代的|The office has a modern design.|辦公室是現代風格的設計。
+traditional|/trəˈdɪʃənəl/|adj|B1|傳統的|We had a traditional Taiwanese breakfast.|我們吃了傳統台式早餐。
+public|/ˈpʌblɪk/|adj|A2|公共的|Is there a public toilet nearby?|附近有公廁嗎？
+private|/ˈpraɪvət/|adj|B1|私人的|This is a private beach.|這是私人海灘。
+international|/ˌɪntərˈnæʃənəl/|adj|A2|國際的|She works for an international company.|她在一家國際公司工作。
+national|/ˈnæʃənəl/|adj|B1|國家的|Today is a national holiday.|今天是國定假日。
+social|/ˈsoʊʃəl/|adj|B1|社會的；社交的|I'm not very active on social media.|我不太常用社群媒體。
+personal|/ˈpɝːsənəl/|adj|B1|個人的|Can I ask you a personal question?|我可以問你一個私人問題嗎？
+available|/əˈveɪləbəl/|adj|A2|有空的；可取得的|Is this seat available?|這個位子有人坐嗎？
+necessary|/ˈnesəseri/|adj|B1|必要的|Is it necessary to book in advance?|需要事先預約嗎？
+useful|/ˈjuːsfəl/|adj|A2|有用的|This app is really useful.|這個 app 很好用。
+useless|/ˈjuːsləs/|adj|B1|沒用的|This old charger is useless.|這個舊充電器沒用了。
+interesting|/ˈɪntrəstɪŋ/|adj|A1|有趣的|That's an interesting idea.|這是個有趣的想法。
+boring|/ˈbɔːrɪŋ/|adj|A1|無聊的|The movie was boring.|那部電影很無聊。
+exciting|/ɪkˈsaɪtɪŋ/|adj|A2|令人興奮的|What an exciting game!|好刺激的比賽！
+amazing|/əˈmeɪzɪŋ/|adj|A2|驚人的；很棒的|The view is amazing.|風景太美了。
+terrible|/ˈterəbəl/|adj|A2|糟糕的|The weather was terrible.|天氣糟透了。
+awful|/ˈɔːfəl/|adj|B1|很糟的|I feel awful today.|我今天覺得糟透了。
+perfect|/ˈpɝːfɪkt/|adj|A2|完美的|The timing is perfect.|時機剛剛好。
+wonderful|/ˈwʌndərfəl/|adj|A2|美好的|We had a wonderful trip.|我們的旅行很棒。
+excellent|/ˈeksələnt/|adj|A2|極好的|The food here is excellent.|這裡的菜很棒。
+fine|/faɪn/|adj|A1|好的；沒問題|I'm fine, thank you.|我很好，謝謝。
+okay|/oʊˈkeɪ/|adj|A1|還可以；沒問題|Is it okay if I leave early?|我早點走可以嗎？
+bad|/bæd/|adj|A1|不好的|I have some bad news.|我有個壞消息。
+worse|/wɝːs/|adj|A2|更糟的|The traffic is worse than yesterday.|交通比昨天還糟。
+best|/best/|adj|A1|最好的|This is the best pizza in town.|這是城裡最好吃的披薩。
+better|/ˈbetər/|adj|A1|更好的|I feel better now.|我現在好多了。
+last|/læst/|adj|A1|最後的；上一個|I saw her last week.|我上週見過她。
+next|/nekst/|adj|A1|下一個的|See you next time.|下次見。
+final|/ˈfaɪnəl/|adj|B1|最後的|This is my final offer.|這是我最後的出價。
+recent|/ˈriːsənt/|adj|B1|最近的|Have you seen his recent photos?|你有看到他最近的照片嗎？
+current|/ˈkɝːənt/|adj|B1|目前的|What's your current address?|你目前的地址是哪裡？
+present|/ˈprezənt/|adj|B1|目前的；在場的|How many people were present?|有多少人在場？
+ancient|/ˈeɪnʃənt/|adj|B1|古老的|We visited an ancient temple.|我們參觀了一座古老的寺廟。
+huge|/hjuːdʒ/|adj|A2|巨大的|They have a huge garden.|他們有一個超大的花園。
+tiny|/ˈtaɪni/|adj|A2|很小的|My apartment is tiny.|我的公寓超小。
+wide|/waɪd/|adj|B1|寬的|The road is very wide.|這條路很寬。
+narrow|/ˈnæroʊ/|adj|B1|窄的|The streets in the old town are narrow.|老城區的街道很窄。
+deep|/diːp/|adj|B1|深的|Is the water deep here?|這裡的水深嗎？
+thick|/θɪk/|adj|B1|厚的|I need a thick blanket.|我需要一條厚毯子。
+thin|/θɪn/|adj|A2|薄的；瘦的|The walls are really thin.|牆壁真的很薄。
+fat|/fæt/|adj|A2|胖的|Our cat is getting fat.|我們的貓越來越胖了。
+tall|/tɔːl/|adj|A1|高的|He's very tall.|他很高。
+round|/raʊnd/|adj|A2|圓的|We sat at a round table.|我們坐在一張圓桌。
+flat|/flæt/|adj|B1|平的；（輪胎）沒氣的|I have a flat tire.|我的輪胎沒氣了。
+sharp|/ʃɑːrp/|adj|B1|鋒利的|Be careful, the knife is sharp.|小心，刀子很利。
+smooth|/smuːð/|adj|B1|平滑的；順利的|The flight was smooth.|這趟飛行很平穩。
+rough|/rʌf/|adj|B1|粗糙的；艱難的|I had a rough day.|我今天很不順。
+wet|/wet/|adj|A2|濕的|My shoes are wet.|我的鞋子濕了。
+dry|/draɪ/|adj|A2|乾的|Is the laundry dry yet?|衣服乾了嗎？
+fresh|/freʃ/|adj|A2|新鮮的|The fish is very fresh.|這魚很新鮮。
+sweet|/swiːt/|adj|A1|甜的；貼心的|That's so sweet of you.|你真貼心。
+healthy|/ˈhelθi/|adj|A2|健康的|I'm trying to eat healthy food.|我在努力吃健康的食物。
+alive|/əˈlaɪv/|adj|B1|活著的|Is the fish still alive?|這魚還活著嗎？
+dead|/ded/|adj|A2|死的；沒電的|My phone is dead.|我的手機沒電了。
+lost|/lɔːst/|adj|A2|迷路的；遺失的|I think we're lost.|我想我們迷路了。
+missing|/ˈmɪsɪŋ/|adj|B1|不見的；缺少的|One of my socks is missing.|我有一隻襪子不見了。
+correct|/kəˈrekt/|adj|A2|正確的|Is this the correct address?|這是正確的地址嗎？
+exact|/ɪɡˈzækt/|adj|B1|確切的|What's the exact time?|確切時間是幾點？
+clear|/klɪr/|adj|A2|清楚的；晴朗的|Is that clear?|這樣清楚嗎？
+certain|/ˈsɝːtən/|adj|B1|確定的；某些|I'm certain I locked the door.|我確定我有鎖門。
+serious|/ˈsɪriəs/|adj|B1|嚴重的；認真的|Are you serious?|你是認真的嗎？
+careful|/ˈkerfəl/|adj|A2|小心的|Be careful on the stairs.|走樓梯要小心。
+careless|/ˈkerləs/|adj|B1|粗心的|It was a careless mistake.|那是個粗心的錯誤。
+kind|/kaɪnd/|adj|A2|親切的|That's very kind of you.|你人真好。
+nice-looking|/ˌnaɪs ˈlʊkɪŋ/|adj|B1|好看的|He's a nice-looking guy.|他是個帥哥。
+smart|/smɑːrt/|adj|A2|聰明的|She's really smart.|她真的很聰明。
+clever|/ˈklevər/|adj|A2|聰明的；巧妙的|That's a clever idea.|這個點子很巧妙。
+stupid|/ˈstuːpɪd/|adj|A2|愚蠢的|It was a stupid mistake.|那是個很蠢的錯誤。
+lazy|/ˈleɪzi/|adj|A2|懶惰的|I'm feeling lazy today.|我今天好懶。
+brave|/breɪv/|adj|B1|勇敢的|That was very brave of you.|你真勇敢。
+calm|/kɑːm/|adj|B1|冷靜的|Try to stay calm.|試著保持冷靜。
+gentle|/ˈdʒentəl/|adj|B1|溫柔的|Be gentle with the baby.|對寶寶要溫柔。
+fair|/fer/|adj|B1|公平的|That's not fair!|那不公平！
+lucky|/ˈlʌki/|adj|A2|幸運的|You're so lucky!|你好幸運！
+afraid|/əˈfreɪd/|adj|A2|害怕的|I'm afraid of dogs.|我怕狗。
+worried|/ˈwɝːid/|adj|A2|擔心的|I'm worried about my exam.|我很擔心考試。
+bored|/bɔːrd/|adj|A2|覺得無聊的|I'm so bored at home.|我在家好無聊。
+interested|/ˈɪntrəstɪd/|adj|A2|感興趣的|I'm interested in photography.|我對攝影有興趣。
+alone|/əˈloʊn/|adj|A2|獨自的|I live alone.|我一個人住。
+single|/ˈsɪŋɡəl/|adj|A2|單身的；單一的|Is he single?|他單身嗎？
+married|/ˈmærid/|adj|A2|已婚的|Are you married?|你結婚了嗎？
+pregnant|/ˈpreɡnənt/|adj|B1|懷孕的|My sister is pregnant.|我姊姊懷孕了。
+awake|/əˈweɪk/|adj|B1|醒著的|Are you still awake?|你還醒著嗎？
+asleep|/əˈsliːp/|adj|B1|睡著的|The baby is asleep.|寶寶睡著了。
+comfortable|/ˈkʌmftəbəl/|adj|A2|舒服的|These shoes are really comfortable.|這雙鞋真的很舒服。
+uncomfortable|/ʌnˈkʌmftəbəl/|adj|B1|不舒服的；不自在的|The chair is uncomfortable.|這張椅子坐起來不舒服。
+similar|/ˈsɪmələr/|adj|A2|相似的|Our jobs are similar.|我們的工作很像。
+equal|/ˈiːkwəl/|adj|B1|相等的；平等的|Cut it into equal pieces.|把它切成一樣大的塊。
+extra|/ˈekstrə/|adj|A2|額外的|Can I get extra sauce?|可以多給我一點醬嗎？
+enough|/ɪˈnʌf/|adj|A1|足夠的|Do we have enough time?|我們時間夠嗎？
+several|/ˈsevrəl/|adj|A2|幾個的|I've been there several times.|我去過那裡好幾次。
+various|/ˈveriəs/|adj|B1|各種的|They sell various kinds of tea.|他們賣各式各樣的茶。
+entire|/ɪnˈtaɪər/|adj|B1|全部的|I spent the entire day cleaning.|我花了一整天打掃。
+basic|/ˈbeɪsɪk/|adj|A2|基本的|I only know basic Japanese.|我只會基礎日文。
+major|/ˈmeɪdʒər/|adj|B1|主要的；重大的|It's a major problem.|這是個大問題。
+minor|/ˈmaɪnər/|adj|B1|次要的；小的|It's just a minor injury.|只是小傷。
+obvious|/ˈɑːbviəs/|adj|B1|明顯的|The answer is obvious.|答案很明顯。
+silly|/ˈsɪli/|adj|A2|傻的|Don't be silly.|別傻了。
+crazy|/ˈkreɪzi/|adj|A2|瘋狂的|That's a crazy idea.|那是個瘋狂的點子。
+cute|/kjuːt/|adj|A2|可愛的|Your puppy is so cute!|你的小狗好可愛！
+handsome|/ˈhænsəm/|adj|A2|英俊的|Her boyfriend is very handsome.|她男朋友很帥。
+elderly|/ˈeldərli/|adj|B1|年長的|Please give your seat to elderly people.|請讓座給長者。
+active|/ˈæktɪv/|adj|B1|活躍的|My grandma is still very active.|我奶奶還是很活躍。
+independent|/ˌɪndɪˈpendənt/|adj|B1|獨立的|She's very independent.|她很獨立。
+responsible|/rɪˈspɑːnsəbəl/|adj|B1|負責的|Who is responsible for this?|這件事誰負責？
+successful|/səkˈsesfəl/|adj|B1|成功的|The event was very successful.|這次活動很成功。
+professional|/prəˈfeʃənəl/|adj|B1|專業的|She's very professional.|她非常專業。
+valuable|/ˈvæljuəbəl/|adj|B1|貴重的；有價值的|Don't leave valuable items in the car.|不要把貴重物品留在車上。
+fantastic|/fænˈtæstɪk/|adj|A2|極好的|The concert was fantastic.|演唱會超棒。
+horrible|/ˈhɔːrəbəl/|adj|B1|可怕的；很糟的|The food was horrible.|食物超難吃。
+pleasant|/ˈplezənt/|adj|B1|宜人的；愉快的|The weather is pleasant today.|今天天氣很舒服。
+lovely|/ˈlʌvli/|adj|A2|可愛的；很好的|What a lovely house!|好漂亮的房子！
+cloudy|/ˈklaʊdi/|adj|A1|多雲的|It's cloudy today.|今天多雲。
+sunny|/ˈsʌni/|adj|A1|晴朗的|It's sunny and warm.|天氣晴朗又溫暖。
+rainy|/ˈreɪni/|adj|A1|下雨的|I don't like rainy days.|我不喜歡下雨天。
+windy|/ˈwɪndi/|adj|A2|風大的|It's very windy outside.|外面風很大。
+foggy|/ˈfɑːɡi/|adj|B1|有霧的|It's too foggy to drive fast.|霧太大不能開快。
+humid|/ˈhjuːmɪd/|adj|B1|潮濕的|Summer in Taipei is hot and humid.|台北的夏天又熱又濕。
+messy|/ˈmesi/|adj|B1|凌亂的|My desk is always messy.|我的桌子總是亂七八糟。
+neat|/niːt/|adj|B1|整齊的|Her room is always neat.|她的房間總是很整齊。
+fancy|/ˈfænsi/|adj|B1|高級的；花俏的|Let's go somewhere fancy for dinner.|我們去高級一點的地方吃晚餐吧。
+plain|/pleɪn/|adj|B1|樸素的；原味的|I'll have a plain bagel.|我要一個原味貝果。
+fluent|/ˈfluːənt/|adj|B1|流利的|She's fluent in three languages.|她會說流利的三種語言。
+native|/ˈneɪtɪv/|adj|B1|本土的；母語的|Chinese is my native language.|中文是我的母語。
+foreign|/ˈfɔːrən/|adj|A2|外國的|Do you speak any foreign languages?|你會說外語嗎？
+familiar|/fəˈmɪljər/|adj|B1|熟悉的|This song sounds familiar.|這首歌聽起來好熟。
+unknown|/ʌnˈnoʊn/|adj|B1|未知的|The cause is still unknown.|原因仍不明。
+illegal|/ɪˈliːɡəl/|adj|B1|違法的|It's illegal to park here.|在這裡停車是違法的。
+legal|/ˈliːɡəl/|adj|B1|合法的|Is it legal to drink outside?|在戶外喝酒合法嗎？
+fake|/feɪk/|adj|B1|假的|I think this bag is fake.|我覺得這個包是假的。
+original|/əˈrɪdʒənəl/|adj|B1|原本的；原創的|I prefer the original version.|我比較喜歡原版。
+digital|/ˈdɪdʒɪtəl/|adj|B1|數位的|Do you have a digital copy?|你有電子檔嗎？
+online|/ˌɑːnˈlaɪn/|adj|A2|線上的|I took an online course.|我上了一門線上課程。
+automatic|/ˌɔːtəˈmætɪk/|adj|B1|自動的|The doors are automatic.|門是自動的。
+electric|/ɪˈlektrɪk/|adj|B1|電動的|He bought an electric scooter.|他買了一台電動機車。
+confident|/ˈkɑːnfɪdənt/|adj|B1|有自信的|She's very confident on stage.|她在台上很有自信。
+helpful|/ˈhelpfəl/|adj|A2|有幫助的|Thanks, that's really helpful.|謝謝，那真的很有幫助。
+generous|/ˈdʒenərəs/|adj|B1|大方的|Thank you, you're very generous.|謝謝，你真大方。
+creative|/kriˈeɪtɪv/|adj|B1|有創意的|She's very creative.|她很有創意。
+romantic|/roʊˈmæntɪk/|adj|B1|浪漫的|What a romantic dinner!|好浪漫的晚餐！
+annoyed|/əˈnɔɪd/|adj|B1|惱怒的|I'm a bit annoyed with him.|我對他有點不爽。
+satisfied|/ˈsætɪsfaɪd/|adj|B1|滿意的|Are you satisfied with the service?|您對服務滿意嗎？
+sleepy|/ˈsliːpi/|adj|A2|想睡的|I always feel sleepy after lunch.|我午餐後總是很想睡。
+favorite|/ˈfeɪvərɪt/|adj|A1|最喜歡的|What's your favorite food?|你最喜歡的食物是什麼？
+glad|/ɡlæd/|adj|A2|高興的|I'm glad you came.|很高興你來了。
+unusual|/ʌnˈjuːʒuəl/|adj|B1|不尋常的|It's unusual for him to be late.|他遲到很不尋常。
+unhappy|/ʌnˈhæpi/|adj|A2|不開心的|She looks unhappy today.|她今天看起來不開心。
+unfair|/ʌnˈfer/|adj|B1|不公平的|The rules are unfair.|這些規則不公平。
+unable|/ʌnˈeɪbəl/|adj|B1|無法的|I'm unable to attend the meeting.|我無法參加會議。
+alright|/ɔːlˈraɪt/|adj|A2|還好；沒問題|Are you alright?|你還好嗎？
+average|/ˈævərɪdʒ/|adj|B1|平均的；普通的|The food was just average.|食物只是普普通通。
+typical|/ˈtɪpɪkəl/|adj|B1|典型的|This is a typical Taiwanese breakfast.|這是典型的台式早餐。
+weekly|/ˈwiːkli/|adj|B1|每週的|We have a weekly meeting on Monday.|我們星期一有每週例會。`,
+life:`time|/taɪm/|n|A1|時間|Do you have time to talk?|你有時間聊一下嗎？
+year|/jɪr/|n|A1|年|I moved here last year.|我去年搬來這裡。
+day|/deɪ/|n|A1|天；白天|Have a good day!|祝你今天愉快！
+week|/wiːk/|n|A1|週|See you next week.|下週見。
+month|/mʌnθ/|n|A1|月|I pay rent every month.|我每個月付房租。
+hour|/aʊr/|n|A1|小時|The flight takes two hours.|飛行時間兩小時。
+minute|/ˈmɪnɪt/|n|A1|分鐘|I'll be there in five minutes.|我五分鐘後到。
+second|/ˈsekənd/|n|A1|秒；一下子|Wait a second.|等一下。
+morning|/ˈmɔːrnɪŋ/|n|A1|早上|I drink coffee every morning.|我每天早上喝咖啡。
+afternoon|/ˌæftərˈnuːn/|n|A1|下午|Let's meet this afternoon.|我們今天下午見。
+evening|/ˈiːvnɪŋ/|n|A1|傍晚；晚上|What are you doing this evening?|你今晚要做什麼？
+night|/naɪt/|n|A1|夜晚|Good night!|晚安！
+today|/təˈdeɪ/|n|A1|今天|What's the date today?|今天幾號？
+tomorrow|/təˈmɑːroʊ/|n|A1|明天|See you tomorrow.|明天見。
+yesterday|/ˈjestərdeɪ/|n|A1|昨天|I saw him yesterday.|我昨天看到他。
+weekend|/ˈwiːkend/|n|A1|週末|Any plans for the weekend?|週末有什麼計畫嗎？
+holiday|/ˈhɑːlədeɪ/|n|A1|假日；假期|Tomorrow is a holiday.|明天放假。
+birthday|/ˈbɝːθdeɪ/|n|A1|生日|Happy birthday!|生日快樂！
+moment|/ˈmoʊmənt/|n|A2|片刻；時刻|Just a moment, please.|請稍等一下。
+future|/ˈfjuːtʃər/|n|A2|未來|What are your plans for the future?|你對未來有什麼計畫？
+past|/pæst/|n|A2|過去|Let's forget the past.|過去的就讓它過去吧。
+century|/ˈsentʃəri/|n|B1|世紀|This temple is three centuries old.|這間廟有三百年歷史。
+season|/ˈsiːzən/|n|A2|季節|Summer is my favorite season.|夏天是我最喜歡的季節。
+spring|/sprɪŋ/|n|A1|春天|The flowers bloom in spring.|花在春天開。
+summer|/ˈsʌmər/|n|A1|夏天|Summer here is very hot.|這裡的夏天很熱。
+autumn|/ˈɔːtəm/|n|A2|秋天|Autumn is the best time to visit.|秋天是最適合來玩的時候。
+winter|/ˈwɪntər/|n|A1|冬天|It snows a lot in winter.|冬天常下雪。
+person|/ˈpɝːsən/|n|A1|人|She's a very kind person.|她是個很好的人。
+people|/ˈpiːpəl/|n|A1|人們|There are so many people here.|這裡好多人。
+man|/mæn/|n|A1|男人|Who is that man?|那個男人是誰？
+woman|/ˈwʊmən/|n|A1|女人|The woman at the desk can help you.|櫃檯那位女士可以幫你。
+child|/tʃaɪld/|n|A1|小孩|Each child gets a gift.|每個小孩都有一份禮物。
+kid|/kɪd/|n|A1|小孩|How many kids do you have?|你有幾個小孩？
+baby|/ˈbeɪbi/|n|A1|嬰兒|The baby is sleeping.|寶寶在睡覺。
+boy|/bɔɪ/|n|A1|男孩|The boy is playing with a ball.|男孩在玩球。
+girl|/ɡɝːl/|n|A1|女孩|That girl is my niece.|那個女孩是我姪女。
+family|/ˈfæməli/|n|A1|家庭；家人|I spend weekends with my family.|我週末都跟家人在一起。
+parent|/ˈperənt/|n|A1|父母（其一）|My parents live in Tainan.|我爸媽住在台南。
+mother|/ˈmʌðər/|n|A1|母親|My mother is a great cook.|我媽媽很會煮菜。
+father|/ˈfɑːðər/|n|A1|父親|My father works in a bank.|我爸爸在銀行上班。
+brother|/ˈbrʌðər/|n|A1|兄弟|My brother is two years older than me.|我哥哥比我大兩歲。
+sister|/ˈsɪstər/|n|A1|姊妹|My sister lives in London.|我姊姊住在倫敦。
+son|/sʌn/|n|A1|兒子|Their son just started school.|他們的兒子剛開始上學。
+daughter|/ˈdɔːtər/|n|A1|女兒|My daughter loves drawing.|我女兒很愛畫畫。
+husband|/ˈhʌzbənd/|n|A1|丈夫|This is my husband, Tom.|這是我先生湯姆。
+wife|/waɪf/|n|A1|妻子|His wife is a nurse.|他太太是護理師。
+grandmother|/ˈɡrænmʌðər/|n|A1|祖母；外婆|My grandmother is ninety.|我奶奶九十歲了。
+grandfather|/ˈɡrænfɑːðər/|n|A1|祖父；外公|My grandfather was a farmer.|我爺爺以前是農夫。
+uncle|/ˈʌŋkəl/|n|A1|叔叔；舅舅|My uncle lives in Canada.|我叔叔住在加拿大。
+aunt|/ænt/|n|A1|阿姨；姑姑|My aunt makes the best dumplings.|我阿姨包的水餃最好吃。
+cousin|/ˈkʌzən/|n|A2|表／堂兄弟姊妹|My cousin is getting married.|我表姊要結婚了。
+friend|/frend/|n|A1|朋友|She's my best friend.|她是我最好的朋友。
+boyfriend|/ˈbɔɪfrend/|n|A1|男朋友|Her boyfriend is from Japan.|她男朋友是日本人。
+girlfriend|/ˈɡɝːlfrend/|n|A1|女朋友|I'm meeting my girlfriend for dinner.|我要跟女朋友吃晚餐。
+partner|/ˈpɑːrtnər/|n|B1|伴侶；合夥人|Are you bringing your partner?|你會帶另一半來嗎？
+guest|/ɡest/|n|A2|客人|We have guests coming tonight.|今晚有客人要來。
+stranger|/ˈstreɪndʒər/|n|B1|陌生人|Don't talk to strangers.|不要跟陌生人說話。
+adult|/əˈdʌlt/|n|A2|成人|Tickets are ten dollars for adults.|成人票十元。
+teenager|/ˈtiːneɪdʒər/|n|A2|青少年|My son is a teenager now.|我兒子現在是青少年了。
+student|/ˈstuːdənt/|n|A1|學生|I'm a university student.|我是大學生。
+teacher|/ˈtiːtʃər/|n|A1|老師|My teacher is very patient.|我的老師很有耐心。
+doctor|/ˈdɑːktər/|n|A1|醫生|You should see a doctor.|你應該去看醫生。
+police|/pəˈliːs/|n|A1|警察|Call the police!|快報警！
+driver|/ˈdraɪvər/|n|A1|司機|The bus driver was very friendly.|公車司機很親切。
+farmer|/ˈfɑːrmər/|n|A2|農夫|The farmer grows rice.|農夫種稻米。
+artist|/ˈɑːrtɪst/|n|A2|藝術家|She's a talented artist.|她是很有才華的藝術家。
+engineer|/ˌendʒɪˈnɪr/|n|A2|工程師|My brother is a software engineer.|我哥哥是軟體工程師。
+lawyer|/ˈlɔːjər/|n|A2|律師|You should talk to a lawyer.|你應該找律師談談。
+chef|/ʃef/|n|A2|主廚|The chef came out to say hello.|主廚出來打招呼。
+boss|/bɔːs/|n|A1|老闆；上司|My boss is on vacation.|我老闆在休假。
+member|/ˈmembər/|n|A2|成員|Are you a member?|你是會員嗎？
+leader|/ˈliːdər/|n|B1|領導者|She's a natural leader.|她是天生的領導者。
+expert|/ˈekspɝːt/|n|B1|專家|He's an expert in AI.|他是 AI 專家。
+crowd|/kraʊd/|n|B1|人群|There was a huge crowd at the concert.|演唱會人超多。
+group|/ɡruːp/|n|A1|團體；組|We'll work in groups.|我們會分組合作。
+team|/tiːm/|n|A1|團隊；隊伍|Which team do you support?|你支持哪一隊？
+place|/pleɪs/|n|A1|地方|This is my favorite place.|這是我最喜歡的地方。
+city|/ˈsɪti/|n|A1|城市|Taipei is a busy city.|台北是個繁忙的城市。
+town|/taʊn/|n|A1|小鎮|I grew up in a small town.|我在一個小鎮長大。
+village|/ˈvɪlɪdʒ/|n|A2|村莊|We stayed in a mountain village.|我們住在一個山上的村莊。
+country|/ˈkʌntri/|n|A1|國家；鄉下|Which country are you from?|你是哪一國人？
+world|/wɝːld/|n|A1|世界|I want to travel around the world.|我想環遊世界。
+area|/ˈeriə/|n|A2|地區|Is this a safe area?|這區安全嗎？
+street|/striːt/|n|A1|街道|Go down this street and turn right.|沿著這條街走再右轉。
+road|/roʊd/|n|A1|道路|The road is closed.|這條路封閉了。
+building|/ˈbɪldɪŋ/|n|A1|建築物|Which building is your office in?|你的辦公室在哪一棟？
+school|/skuːl/|n|A1|學校|What time does school start?|學校幾點開始上課？
+university|/ˌjuːnɪˈvɝːsəti/|n|A2|大學|Which university did you go to?|你讀哪間大學？
+library|/ˈlaɪbreri/|n|A1|圖書館|I study at the library.|我在圖書館讀書。
+hospital|/ˈhɑːspɪtəl/|n|A1|醫院|She's still in the hospital.|她還在住院。
+bank|/bæŋk/|n|A1|銀行|I need to go to the bank.|我需要去銀行。
+post office|/ˈpoʊst ˌɔːfɪs/|n|A1|郵局|Where's the nearest post office?|最近的郵局在哪裡？
+market|/ˈmɑːrkɪt/|n|A1|市場|We buy vegetables at the market.|我們在市場買菜。
+supermarket|/ˈsuːpərmɑːrkɪt/|n|A1|超市|I'm going to the supermarket.|我要去超市。
+restaurant|/ˈrestərɑːnt/|n|A1|餐廳|Let's try that new restaurant.|我們去試試那家新餐廳吧。
+café|/kæˈfeɪ/|n|A1|咖啡店|I work at a café on weekends.|我週末在咖啡店工作。
+church|/tʃɝːtʃ/|n|A2|教堂|There's an old church in the square.|廣場上有一座老教堂。
+temple|/ˈtempəl/|n|A2|寺廟|We visited a famous temple.|我們參觀了一座有名的寺廟。
+beach|/biːtʃ/|n|A1|海灘|Let's go to the beach this weekend.|我們這週末去海邊吧。
+mountain|/ˈmaʊntən/|n|A1|山|We climbed a mountain last summer.|我們去年夏天爬了一座山。
+river|/ˈrɪvər/|n|A1|河|There's a bike path along the river.|河邊有一條自行車道。
+lake|/leɪk/|n|A1|湖|The lake is beautiful in the morning.|湖在早上很美。
+sea|/siː/|n|A1|海|I can see the sea from my window.|我從窗戶看得到海。
+island|/ˈaɪlənd/|n|A2|島|Taiwan is an island.|台灣是一座島。
+forest|/ˈfɔːrɪst/|n|A2|森林|We walked through the forest.|我們穿過森林。
+field|/fiːld/|n|A2|田野；領域|What field do you work in?|你在哪個領域工作？
+garden|/ˈɡɑːrdən/|n|A1|花園|My mom loves working in the garden.|我媽媽很喜歡整理花園。
+sky|/skaɪ/|n|A1|天空|The sky is so blue today.|今天天空好藍。
+sun|/sʌn/|n|A1|太陽|Don't stay in the sun too long.|不要曬太久。
+moon|/muːn/|n|A1|月亮|The moon is so bright tonight.|今晚月亮好亮。
+star|/stɑːr/|n|A1|星星|You can see the stars here.|這裡看得到星星。
+rain|/reɪn/|n|A1|雨|We got caught in the rain.|我們被雨淋到了。
+snow|/snoʊ/|n|A1|雪|Have you ever seen snow?|你看過雪嗎？
+wind|/wɪnd/|n|A2|風|The wind is really strong today.|今天風很大。
+weather|/ˈweðər/|n|A1|天氣|How's the weather today?|今天天氣如何？
+air|/er/|n|A2|空氣|Let's get some fresh air.|我們出去透透氣吧。
+water|/ˈwɔːtər/|n|A1|水|Can I have some water?|可以給我一點水嗎？
+tree|/triː/|n|A1|樹|There's a big tree in front of my house.|我家前面有一棵大樹。
+flower|/ˈflaʊər/|n|A1|花|He bought her some flowers.|他買了花給她。
+plant|/plænt/|n|A2|植物|I have a lot of plants at home.|我家裡有很多植物。
+animal|/ˈænɪməl/|n|A1|動物|What's your favorite animal?|你最喜歡什麼動物？
+dog|/dɔːɡ/|n|A1|狗|I take my dog for a walk every day.|我每天帶狗去散步。
+cat|/kæt/|n|A1|貓|My cat sleeps all day.|我的貓整天都在睡。
+bird|/bɝːd/|n|A1|鳥|I can hear the birds singing.|我聽得到鳥在叫。
+fish|/fɪʃ/|n|A1|魚|We had fish for dinner.|我們晚餐吃魚。
+horse|/hɔːrs/|n|A1|馬|Have you ever ridden a horse?|你騎過馬嗎？
+thing|/θɪŋ/|n|A1|東西；事情|I have a lot of things to do.|我有很多事要做。
+way|/weɪ/|n|A1|方法；路|Is this the way to the station?|這是去車站的路嗎？
+part|/pɑːrt/|n|A1|部分|This is the best part of the movie.|這是電影最精彩的部分。
+side|/saɪd/|n|A2|邊；側|The bank is on the other side of the street.|銀行在對街。
+end|/end/|n|A1|結束；盡頭|The bathroom is at the end of the hall.|廁所在走廊盡頭。
+top|/tɑːp/|n|A2|頂端|Put it on the top shelf.|放在最上層。
+bottom|/ˈbɑːtəm/|n|A2|底部|Sign at the bottom of the page.|在頁面最下方簽名。
+middle|/ˈmɪdəl/|n|A2|中間|Sit in the middle.|坐中間。
+center|/ˈsentər/|n|A2|中心|The hotel is in the city center.|飯店在市中心。
+front|/frʌnt/|n|A2|前面|Let's sit in the front.|我們坐前面吧。
+back|/bæk/|n|A2|後面；背|There's a parking lot at the back.|後面有停車場。
+edge|/edʒ/|n|B1|邊緣|Don't stand too close to the edge.|不要站得離邊緣太近。
+line|/laɪn/|n|A2|線；隊伍|There's a long line outside.|外面排了好長的隊。
+number|/ˈnʌmbər/|n|A1|數字；號碼|What's your phone number?|你的電話號碼是幾號？
+name|/neɪm/|n|A1|名字|What's your name?|你叫什麼名字？
+word|/wɝːd/|n|A1|單字|What's the English word for this?|這個的英文怎麼說？
+language|/ˈlæŋɡwɪdʒ/|n|A1|語言|How many languages do you speak?|你會說幾種語言？
+question|/ˈkwestʃən/|n|A1|問題|Do you have any questions?|你有任何問題嗎？
+problem|/ˈprɑːbləm/|n|A1|問題；麻煩|No problem!|沒問題！
+idea|/aɪˈdiːə/|n|A1|主意；想法|That's a great idea.|好主意。
+reason|/ˈriːzən/|n|A2|原因；理由|What's the reason for the delay?|延誤的原因是什麼？
+example|/ɪɡˈzæmpəl/|n|A1|例子|Can you give me an example?|你可以給我一個例子嗎？
+fact|/fækt/|n|A2|事實|Is that a fact or an opinion?|那是事實還是意見？
+truth|/truːθ/|n|B1|真相|Tell me the truth.|告訴我實話。
+story|/ˈstɔːri/|n|A1|故事|Tell me a story.|講個故事給我聽。
+news|/nuːz/|n|A1|新聞；消息|I have good news!|我有好消息！
+information|/ˌɪnfərˈmeɪʃən/|n|A1|資訊|Where can I get more information?|哪裡可以拿到更多資訊？
+message|/ˈmesɪdʒ/|n|A1|訊息|I'll send you a message.|我傳訊息給你。
+letter|/ˈletər/|n|A1|信；字母|I got a letter from my bank.|我收到銀行寄來的信。
+email|/ˈiːmeɪl/|n|A1|電子郵件|Please check your email.|請查看你的電子郵件。
+phone|/foʊn/|n|A1|電話；手機|Can I borrow your phone?|可以借你的手機嗎？
+money|/ˈmʌni/|n|A1|錢|I don't have enough money.|我錢不夠。
+job|/dʒɑːb/|n|A1|工作|I love my job.|我很喜歡我的工作。
+life|/laɪf/|n|A1|生活；生命|Life is short.|人生苦短。
+health|/helθ/|n|A2|健康|Health is more important than money.|健康比錢重要。
+body|/ˈbɑːdi/|n|A1|身體|Listen to your body.|聽聽身體的聲音。
+heart|/hɑːrt/|n|A2|心臟；內心|She has a kind heart.|她心地善良。
+feeling|/ˈfiːlɪŋ/|n|A2|感覺|I have a bad feeling about this.|我對這件事有不好的預感。
+fun|/fʌn/|n|A1|樂趣|Have fun!|玩得開心！
+game|/ɡeɪm/|n|A1|遊戲；比賽|Did you watch the game last night?|你昨晚有看比賽嗎？
+sport|/spɔːrt/|n|A1|運動|What's your favorite sport?|你最喜歡什麼運動？
+music|/ˈmjuːzɪk/|n|A1|音樂|What kind of music do you like?|你喜歡什麼樣的音樂？
+song|/sɔːŋ/|n|A1|歌曲|This is my favorite song.|這是我最愛的歌。
+movie|/ˈmuːvi/|n|A1|電影|Let's watch a movie tonight.|我們今晚看電影吧。
+book|/bʊk/|n|A1|書|I'm reading a great book.|我正在讀一本很棒的書。
+picture|/ˈpɪktʃər/|n|A1|圖片；照片|Can you take a picture of us?|可以幫我們拍張照嗎？
+party|/ˈpɑːrti/|n|A1|派對|Are you coming to the party?|你會來派對嗎？
+gift|/ɡɪft/|n|A1|禮物|This is a gift for you.|這是給你的禮物。
+chance|/tʃæns/|n|A2|機會；可能性|Give me one more chance.|再給我一次機會。
+choice|/tʃɔɪs/|n|A2|選擇|You made the right choice.|你做了正確的選擇。
+decision|/dɪˈsɪʒən/|n|B1|決定|It was a hard decision.|那是個困難的決定。
+mistake|/mɪˈsteɪk/|n|A2|錯誤|Everyone makes mistakes.|每個人都會犯錯。
+result|/rɪˈzʌlt/|n|A2|結果|When will we get the results?|我們什麼時候會拿到結果？
+rule|/ruːl/|n|A2|規則|You have to follow the rules.|你必須遵守規則。
+law|/lɔː/|n|B1|法律|It's against the law.|那是違法的。
+war|/wɔːr/|n|A2|戰爭|My grandpa lived through the war.|我爺爺經歷過戰爭。
+peace|/piːs/|n|B1|和平；平靜|I just want some peace and quiet.|我只想要一點安靜。
+power|/ˈpaʊər/|n|B1|力量；電力|The power went out last night.|昨晚停電了。
+energy|/ˈenərdʒi/|n|B1|精力；能源|I have no energy today.|我今天完全沒力氣。
+noise|/nɔɪz/|n|A2|噪音|What's that noise?|那是什麼聲音？
+sound|/saʊnd/|n|A2|聲音|I love the sound of rain.|我喜歡雨聲。
+voice|/vɔɪs/|n|A2|聲音；嗓音|She has a beautiful voice.|她的聲音很好聽。
+color|/ˈkʌlər/|n|A1|顏色|What color do you want?|你要什麼顏色？
+shape|/ʃeɪp/|n|A2|形狀；狀態|I'm in bad shape.|我狀況很差。
+level|/ˈlevəl/|n|A2|程度；層級|What's your English level?|你的英文程度如何？
+amount|/əˈmaʊnt/|n|B1|數量；金額|That's a huge amount of money.|那是一大筆錢。
+piece|/piːs/|n|A2|片；塊|Can I have another piece of cake?|我可以再吃一塊蛋糕嗎？
+list|/lɪst/|n|A1|清單|I made a list of things to buy.|我列了一張購物清單。
+key|/kiː/|n|A1|鑰匙；關鍵|I lost my car key.|我把車鑰匙弄丟了。
+door|/dɔːr/|n|A1|門|Please close the door.|請關門。
+window|/ˈwɪndoʊ/|n|A1|窗戶|Can I open the window?|我可以開窗嗎？
+wall|/wɔːl/|n|A1|牆|Hang the picture on that wall.|把畫掛在那面牆上。
+floor|/flɔːr/|n|A1|地板；樓層|My office is on the fifth floor.|我的辦公室在五樓。
+room|/ruːm/|n|A1|房間；空間|Is there room for one more?|還有空間多一個人嗎？
+table|/ˈteɪbəl/|n|A1|桌子|A table for two, please.|兩位，謝謝。
+chair|/tʃer/|n|A1|椅子|Is this chair free?|這張椅子有人坐嗎？
+bed|/bed/|n|A1|床|I'm going to bed.|我要去睡了。
+box|/bɑːks/|n|A1|箱子；盒子|Put everything in this box.|把所有東西放進這個箱子。
+bag|/bæɡ/|n|A1|袋子；包包|Do you need a bag?|你需要袋子嗎？
+bottle|/ˈbɑːtəl/|n|A1|瓶子|Bring a bottle of water.|帶一瓶水。
+cup|/kʌp/|n|A1|杯子|Would you like a cup of coffee?|要來杯咖啡嗎？
+glass|/ɡlæs/|n|A1|玻璃杯；玻璃|Can I have a glass of water?|可以給我一杯水嗎？
+paper|/ˈpeɪpər/|n|A1|紙|Do you have a piece of paper?|你有紙嗎？
+pen|/pen/|n|A1|筆|Can I borrow a pen?|可以借支筆嗎？
+clothes|/kloʊz/|n|A1|衣服|I need to buy new clothes.|我需要買新衣服。
+shirt|/ʃɝːt/|n|A1|襯衫|I like your shirt.|我喜歡你的襯衫。
+shoe|/ʃuː/|n|A1|鞋子|Take off your shoes, please.|請脫鞋。
+hat|/hæt/|n|A1|帽子|Wear a hat in the sun.|在太陽下要戴帽子。
+jacket|/ˈdʒækɪt/|n|A1|夾克；外套|Take a jacket, it's cold.|帶件外套，很冷。
+umbrella|/ʌmˈbrelə/|n|A1|雨傘|Don't forget your umbrella.|別忘了帶傘。
+wallet|/ˈwɑːlɪt/|n|A2|皮夾|I left my wallet at home.|我把皮夾忘在家裡了。
+glasses|/ˈɡlæsɪz/|n|A1|眼鏡|I can't read without my glasses.|沒戴眼鏡我看不到字。
+computer|/kəmˈpjuːtər/|n|A1|電腦|My computer is very slow.|我的電腦很慢。
+camera|/ˈkæmərə/|n|A1|相機|I bought a new camera for the trip.|我為了旅行買了一台新相機。
+car|/kɑːr/|n|A1|汽車|Where did you park your car?|你把車停在哪裡？
+bike|/baɪk/|n|A1|腳踏車|I ride my bike to work.|我騎腳踏車上班。
+bus|/bʌs/|n|A1|公車|The bus is late again.|公車又遲到了。
+train|/treɪn/|n|A1|火車|The train leaves at nine.|火車九點開。
+plane|/pleɪn/|n|A1|飛機|The plane landed safely.|飛機安全降落。
+boat|/boʊt/|n|A1|船|We took a boat to the island.|我們搭船去島上。
+ticket|/ˈtɪkɪt/|n|A1|票|I bought two tickets for the concert.|我買了兩張演唱會的票。
+map|/mæp/|n|A1|地圖|Let me check the map.|讓我看一下地圖。
+trip|/trɪp/|n|A1|旅行|How was your trip?|你的旅行怎麼樣？
+vacation|/veɪˈkeɪʃən/|n|A1|假期|I'm going on vacation next week.|我下週要去度假。
+hotel|/hoʊˈtel/|n|A1|飯店|Our hotel is near the station.|我們的飯店在車站附近。
+airport|/ˈerpɔːrt/|n|A1|機場|How do I get to the airport?|去機場怎麼走？
+station|/ˈsteɪʃən/|n|A1|車站|Meet me at the station.|在車站跟我會合。
+dinner|/ˈdɪnər/|n|A1|晚餐|What's for dinner?|晚餐吃什麼？
+lunch|/lʌntʃ/|n|A1|午餐|Let's have lunch together.|我們一起吃午餐吧。
+breakfast|/ˈbrekfəst/|n|A1|早餐|I never skip breakfast.|我從不跳過早餐。
+meal|/miːl/|n|A2|一餐|Enjoy your meal.|請慢用。
+food|/fuːd/|n|A1|食物|The food here is great.|這裡的食物很棒。
+class|/klæs/|n|A1|課；班級|I have a yoga class tonight.|我今晚有瑜伽課。
+lesson|/ˈlesən/|n|A1|課程；教訓|I learned my lesson.|我學到教訓了。
+homework|/ˈhoʊmwɝːk/|n|A1|作業|Did you finish your homework?|你作業寫完了嗎？
+exam|/ɪɡˈzæm/|n|A1|考試|I have an exam tomorrow.|我明天有考試。
+office|/ˈɔːfɪs/|n|A1|辦公室|I'll be in the office all day.|我整天都在辦公室。
+company|/ˈkʌmpəni/|n|A2|公司；陪伴|Which company do you work for?|你在哪家公司上班？
+meeting|/ˈmiːtɪŋ/|n|A1|會議|I have a meeting at ten.|我十點有個會。
+project|/ˈprɑːdʒekt/|n|A2|專案；計畫|I'm working on a new project.|我正在做一個新專案。
+business|/ˈbɪznəs/|n|A2|生意；商業|How's business?|生意如何？
+service|/ˈsɝːvɪs/|n|A2|服務|The service here is excellent.|這裡的服務很好。
+system|/ˈsɪstəm/|n|B1|系統|The system is down.|系統當機了。
+program|/ˈproʊɡræm/|n|A2|節目；程式|What's your favorite TV program?|你最喜歡的電視節目是什麼？
+problem-solving|/ˈprɑːbləm ˌsɑːlvɪŋ/|n|B2|解決問題|Problem-solving is a key skill.|解決問題是很重要的能力。
+history|/ˈhɪstəri/|n|A2|歷史|I love learning about history.|我喜歡學歷史。
+science|/ˈsaɪəns/|n|A2|科學|Science was my favorite subject.|科學是我最喜歡的科目。
+art|/ɑːrt/|n|A1|藝術|We went to an art museum.|我們去了一間美術館。
+nature|/ˈneɪtʃər/|n|A2|大自然|I feel relaxed in nature.|在大自然裡我覺得很放鬆。
+environment|/ɪnˈvaɪrənmənt/|n|B1|環境|We need to protect the environment.|我們需要保護環境。
+society|/səˈsaɪəti/|n|B1|社會|Technology has changed society.|科技改變了社會。
+culture|/ˈkʌltʃər/|n|A2|文化|I'm interested in Japanese culture.|我對日本文化有興趣。
+religion|/rɪˈlɪdʒən/|n|B1|宗教|We don't talk about religion at work.|我們上班不談宗教。
+education|/ˌedʒʊˈkeɪʃən/|n|B1|教育|Education is very important.|教育非常重要。
+technology|/tekˈnɑːlədʒi/|n|B1|科技|Technology changes so fast.|科技變化好快。
+internet|/ˈɪntərnet/|n|A1|網路|The internet is down.|網路斷了。
+website|/ˈwebsaɪt/|n|A2|網站|You can book on our website.|可以在我們的網站上預訂。
+video|/ˈvɪdioʊ/|n|A1|影片|I watched a funny video.|我看了一支好笑的影片。
+address|/ˈædres/|n|A1|地址|What's your address?|你的地址是哪裡？
+age|/eɪdʒ/|n|A2|年紀|What age did you start working?|你幾歲開始工作？
+memory|/ˈmeməri/|n|B1|記憶；回憶|I have a bad memory for names.|我很不會記名字。
+surprise|/sərˈpraɪz/|n|A2|驚喜|It's a surprise!|這是個驚喜！
+luck|/lʌk/|n|A2|運氣|Good luck!|祝你好運！
+fault|/fɔːlt/|n|B1|過錯|It's not your fault.|那不是你的錯。
+attention|/əˈtenʃən/|n|B1|注意|Pay attention to the road.|注意看路。
+interest|/ˈɪntrəst/|n|B1|興趣；利息|I have no interest in sports.|我對運動沒興趣。
+safety|/ˈseɪfti/|n|B1|安全|Safety comes first.|安全第一。
+danger|/ˈdeɪndʒər/|n|B1|危險|The patient is out of danger.|病人脫離險境了。
+risk|/rɪsk/|n|B1|風險|It's not worth the risk.|不值得冒這個險。
+success|/səkˈses/|n|B1|成功|The party was a big success.|派對非常成功。
+dictionary|/ˈdɪkʃəneri/|n|A2|字典|Check the dictionary if you don't know.|不知道就查字典。
+subject|/ˈsʌbdʒekt/|n|A2|科目；主題|What's your favorite subject?|你最喜歡哪個科目？
+grade|/ɡreɪd/|n|B1|成績；年級|She got good grades this year.|她今年成績很好。
+classroom|/ˈklæsruːm/|n|A1|教室|The classroom is on the second floor.|教室在二樓。
+ground|/ɡraʊnd/|n|A2|地面|Don't sit on the ground.|不要坐在地上。
+earth|/ɝːθ/|n|A2|地球；土|The earth goes around the sun.|地球繞著太陽轉。
+space|/speɪs/|n|B1|空間；太空|There isn't enough space in the car.|車上空間不夠。
+rock|/rɑːk/|n|A2|岩石|Don't throw rocks.|不要丟石頭。
+sand|/sænd/|n|A2|沙子|There's sand in my shoes.|我的鞋子裡有沙。
+wood|/wʊd/|n|A2|木頭|The table is made of wood.|這張桌子是木頭做的。
+metal|/ˈmetəl/|n|B1|金屬|This chair is made of metal.|這張椅子是金屬做的。
+gold|/ɡoʊld/|n|A2|黃金|She won a gold medal.|她得了金牌。
+silver|/ˈsɪlvər/|n|A2|銀|I bought a silver ring.|我買了一只銀戒指。
+paper bag|/ˈpeɪpər bæɡ/|n|A2|紙袋|Can I have a paper bag?|可以給我一個紙袋嗎？
+object|/ˈɑːbdʒɪkt/|n|B1|物體|There's a strange object in the sky.|天空有個奇怪的物體。
+step|/step/|n|A2|步驟；一步|Follow these steps.|照著這些步驟做。
+way of life|/ˌweɪ əv ˈlaɪf/|n|B1|生活方式|I love the slow way of life here.|我喜歡這裡慢步調的生活方式。
+lifestyle|/ˈlaɪfstaɪl/|n|B1|生活方式|She has a healthy lifestyle.|她的生活方式很健康。
+weekday|/ˈwiːkdeɪ/|n|A2|平日|The museum is quieter on weekdays.|博物館平日比較少人。
+midnight|/ˈmɪdnaɪt/|n|A2|午夜|I went to bed after midnight.|我過了午夜才睡。
+noon|/nuːn/|n|A2|中午|Let's meet at noon.|我們中午見。
+o'clock|/əˈklɑːk/|adv|A1|…點鐘|It's three o'clock.|現在三點。
+half|/hæf/|n|A1|一半|I'll be there in half an hour.|我半小時後到。
+quarter|/ˈkwɔːrtər/|n|A2|四分之一；一刻鐘|It's a quarter past five.|現在五點十五分。
+pair|/per/|n|A2|一雙；一對|I need a new pair of shoes.|我需要一雙新鞋。
+couple|/ˈkʌpəl/|n|A2|情侶；幾個|I'll be back in a couple of days.|我過幾天就回來。
+dozen|/ˈdʌzən/|n|B1|一打|I bought a dozen eggs.|我買了一打雞蛋。
+million|/ˈmɪljən/|n|A2|百萬|The city has two million people.|這座城市有兩百萬人。
+thousand|/ˈθaʊzənd/|n|A1|千|It costs a thousand dollars.|它要一千元。
+hundred|/ˈhʌndrəd/|n|A1|百|There were hundreds of people.|那裡有好幾百人。
+first|/fɝːst/|adj|A1|第一的|Is this your first time in Taiwan?|這是你第一次來台灣嗎？
+third|/θɝːd/|adj|A1|第三的|My office is on the third floor.|我的辦公室在三樓。
+half price|/ˌhæf ˈpraɪs/|n|A2|半價|Drinks are half price after nine.|九點後飲料半價。
+kilo|/ˈkiːloʊ/|n|A2|公斤|This bag weighs two kilos.|這袋重兩公斤。
+meter|/ˈmiːtər/|n|A2|公尺|The pool is fifty meters long.|游泳池長五十公尺。
+holiday season|/ˈhɑːlədeɪ ˌsiːzən/|n|B1|假期旺季|Hotels are expensive during the holiday season.|假期旺季飯店很貴。
+situation|/ˌsɪtʃuˈeɪʃən/|n|B1|情況|It's a difficult situation.|這是個困難的處境。
+condition|/kənˈdɪʃən/|n|B1|狀況；條件|The car is in good condition.|這台車狀況很好。
+difference|/ˈdɪfərəns/|n|A2|差異|What's the difference between them?|它們有什麼不同？
+purpose|/ˈpɝːpəs/|n|B1|目的|What's the purpose of your visit?|您來訪的目的是什麼？
+method|/ˈmeθəd/|n|B1|方法|This method works well.|這個方法很有效。
+nickname|/ˈnɪkneɪm/|n|B1|綽號|What's your nickname?|你的綽號是什麼？
+hometown|/ˈhoʊmtaʊn/|n|A2|家鄉|My hometown is in the south.|我的家鄉在南部。`,
+link:`also|/ˈɔːlsoʊ/|adv|A1|也|I also like jazz.|我也喜歡爵士樂。
+too|/tuː/|adv|A1|也；太|It's too hot today.|今天太熱了。
+very|/ˈveri/|adv|A1|非常|Thank you very much.|非常謝謝你。
+really|/ˈriːəli/|adv|A1|真的|I really like it.|我真的很喜歡。
+just|/dʒʌst/|adv|A1|只是；剛剛|I just got home.|我剛到家。
+only|/ˈoʊnli/|adv|A1|只有|I only have five dollars.|我只有五塊錢。
+still|/stɪl/|adv|A2|仍然|Are you still at work?|你還在上班嗎？
+already|/ɔːlˈredi/|adv|A2|已經|I've already eaten.|我已經吃過了。
+yet|/jet/|adv|A2|還（沒）|I haven't finished yet.|我還沒做完。
+again|/əˈɡen/|adv|A1|再一次|Please say it again.|請再說一次。
+always|/ˈɔːlweɪz/|adv|A1|總是|She's always on time.|她總是很準時。
+usually|/ˈjuːʒuəli/|adv|A1|通常|I usually get up at seven.|我通常七點起床。
+often|/ˈɔːfən/|adv|A1|常常|How often do you exercise?|你多常運動？
+sometimes|/ˈsʌmtaɪmz/|adv|A1|有時候|Sometimes I work from home.|我有時候在家工作。
+never|/ˈnevər/|adv|A1|從不|I never eat breakfast.|我從不吃早餐。
+ever|/ˈevər/|adv|A2|曾經|Have you ever been to Japan?|你去過日本嗎？
+rarely|/ˈrerli/|adv|B1|很少|I rarely watch TV.|我很少看電視。
+soon|/suːn/|adv|A1|很快；不久|See you soon!|待會見！
+now|/naʊ/|adv|A1|現在|I'm busy right now.|我現在很忙。
+then|/ðen/|adv|A1|然後；那時|Finish your work, then you can play.|做完功課就可以玩。
+later|/ˈleɪtər/|adv|A1|稍後|Talk to you later.|晚點再聊。
+before|/bɪˈfɔːr/|prep|A1|在…之前|Wash your hands before eating.|吃東西前要洗手。
+after|/ˈæftər/|prep|A1|在…之後|Let's go after lunch.|我們午餐後再去。
+during|/ˈdʊrɪŋ/|prep|A2|在…期間|Please turn off your phone during the movie.|看電影時請關手機。
+until|/ənˈtɪl/|prep|A2|直到|The shop is open until ten.|這家店開到十點。
+since|/sɪns/|prep|A2|自從|I've lived here since 2020.|我從 2020 年就住在這裡。
+ago|/əˈɡoʊ/|adv|A1|以前|I met him two years ago.|我兩年前認識他。
+recently|/ˈriːsəntli/|adv|B1|最近|Have you seen any good movies recently?|你最近有看什麼好電影嗎？
+finally|/ˈfaɪnəli/|adv|A2|終於|We finally arrived.|我們終於到了。
+suddenly|/ˈsʌdənli/|adv|A2|突然|Suddenly, the lights went out.|燈突然熄了。
+immediately|/ɪˈmiːdiətli/|adv|B1|立刻|Please call me immediately.|請立刻打給我。
+quickly|/ˈkwɪkli/|adv|A2|快速地|Come here quickly!|快過來！
+slowly|/ˈsloʊli/|adv|A2|慢慢地|Could you speak more slowly?|你可以說慢一點嗎？
+carefully|/ˈkerfəli/|adv|A2|小心地|Drive carefully.|小心開車。
+easily|/ˈiːzəli/|adv|A2|容易地|You can easily get there by bus.|搭公車很容易就能到。
+well|/wel/|adv|A1|好地|You speak English very well.|你英文說得很好。
+together|/təˈɡeðər/|adv|A1|一起|Let's go together.|我們一起去吧。
+almost|/ˈɔːlmoʊst/|adv|A2|幾乎|I'm almost done.|我快好了。
+nearly|/ˈnɪrli/|adv|B1|幾乎；差點|I nearly missed the train.|我差點錯過火車。
+quite|/kwaɪt/|adv|A2|相當|It's quite cold today.|今天相當冷。
+rather|/ˈræðər/|adv|B1|相當；寧願|I'd rather stay home.|我寧願待在家。
+especially|/ɪˈspeʃəli/|adv|B1|尤其|I love fruit, especially mangoes.|我愛水果，尤其是芒果。
+exactly|/ɪɡˈzæktli/|adv|A2|確切地；正是|That's exactly what I mean.|那正是我的意思。
+probably|/ˈprɑːbəbli/|adv|A2|大概|I'll probably be late.|我大概會晚到。
+maybe|/ˈmeɪbi/|adv|A1|也許|Maybe we can meet tomorrow.|也許我們可以明天見。
+perhaps|/pərˈhæps/|adv|A2|或許|Perhaps you're right.|也許你是對的。
+definitely|/ˈdefɪnətli/|adv|B1|肯定地|I'll definitely be there.|我一定會到。
+certainly|/ˈsɝːtənli/|adv|B1|當然；確實|Certainly, I can help.|當然，我可以幫忙。
+actually|/ˈæktʃuəli/|adv|A2|其實|Actually, I've changed my mind.|其實我改變主意了。
+of course|/əv ˈkɔːrs/|phr|A1|當然|Of course you can come.|你當然可以來。
+anyway|/ˈeniweɪ/|adv|B1|總之；反正|Anyway, let's get started.|總之，我們開始吧。
+however|/haʊˈevər/|adv|B1|然而|It was expensive. However, it was worth it.|很貴，不過很值得。
+although|/ɔːlˈðoʊ/|conj|B1|雖然|Although it was raining, we went out.|雖然在下雨，我們還是出門了。
+though|/ðoʊ/|conj|B1|雖然；不過|It's hard. I'll try, though.|很難，不過我會試試看。
+because|/bɪˈkɔːz/|conj|A1|因為|I'm late because of the traffic.|我因為塞車遲到了。
+so|/soʊ/|conj|A1|所以|It was raining, so we stayed home.|在下雨，所以我們待在家。
+but|/bʌt/|conj|A1|但是|I like it, but it's too expensive.|我喜歡，但太貴了。
+or|/ɔːr/|conj|A1|或者|Coffee or tea?|咖啡還是茶？
+if|/ɪf/|conj|A1|如果|Call me if you need anything.|有需要就打給我。
+unless|/ənˈles/|conj|B1|除非|I'll come unless it rains.|除非下雨，不然我會來。
+while|/waɪl/|conj|A2|當…時；然而|I read while I wait.|我等的時候會看書。
+when|/wen/|conj|A1|當…的時候|Call me when you get home.|到家時打給我。
+whether|/ˈweðər/|conj|B1|是否|I don't know whether he's coming.|我不知道他會不會來。
+instead|/ɪnˈsted/|adv|A2|代替；反而|Let's walk instead.|我們改用走的吧。
+besides|/bɪˈsaɪdz/|adv|B1|此外；除了|Besides, it's too late now.|況且現在也太晚了。
+otherwise|/ˈʌðərwaɪz/|adv|B1|否則|Hurry up, otherwise we'll be late.|快一點，不然會遲到。
+therefore|/ˈðerfɔːr/|adv|B2|因此|He was sick; therefore, he stayed home.|他生病了，因此待在家。
+for example|/fər ɪɡˈzæmpəl/|phr|A2|例如|I like fruit, for example apples.|我喜歡水果，例如蘋果。
+at least|/æt ˈliːst/|phr|A2|至少|It will take at least an hour.|至少要一個小時。
+at first|/æt ˈfɝːst/|phr|A2|起初|At first, I didn't like it.|一開始我不喜歡。
+in fact|/ɪn ˈfækt/|phr|B1|事實上|In fact, I've never been there.|事實上我從沒去過。
+as soon as|/æz ˈsuːn æz/|phr|B1|一…就|Call me as soon as you arrive.|你一到就打給我。
+even|/ˈiːvən/|adv|A2|甚至|Even my mom likes this song.|連我媽都喜歡這首歌。
+either|/ˈiːðər/|adv|A2|也（不）|I don't like it either.|我也不喜歡。
+neither|/ˈniːðər/|adv|B1|兩者都不|Neither of them came.|他們兩個都沒來。
+both|/boʊθ/|pron|A1|兩者都|Both of my parents are teachers.|我爸媽都是老師。
+each|/iːtʃ/|det|A2|每一個|Each room has a balcony.|每間房間都有陽台。
+every|/ˈevri/|det|A1|每一|I go running every day.|我每天去跑步。
+all|/ɔːl/|det|A1|全部|All the shops are closed.|所有的店都關了。
+some|/sʌm/|det|A1|一些|Would you like some tea?|要喝點茶嗎？
+any|/ˈeni/|det|A1|任何|Do you have any questions?|有任何問題嗎？
+many|/ˈmeni/|det|A1|許多|How many people are coming?|有多少人要來？
+much|/mʌtʃ/|det|A1|很多|How much is this?|這個多少錢？
+few|/fjuː/|det|A2|很少；幾個|I need a few more minutes.|我需要再幾分鐘。
+little|/ˈlɪtəl/|det|A1|一點；小的|Just a little sugar, please.|一點點糖就好。
+most|/moʊst/|det|A2|大多數|Most people here speak English.|這裡大部分人會說英文。
+other|/ˈʌðər/|det|A1|其他的|Do you have any other colors?|有其他顏色嗎？
+another|/əˈnʌðər/|det|A1|另一個|Can I have another one?|可以再給我一個嗎？
+else|/els/|adv|A2|其他|Anything else?|還需要什麼嗎？
+everything|/ˈevriθɪŋ/|pron|A1|一切|Everything is ready.|一切都準備好了。
+something|/ˈsʌmθɪŋ/|pron|A1|某事；某物|I need to tell you something.|我有事要告訴你。
+nothing|/ˈnʌθɪŋ/|pron|A1|沒有東西|There's nothing in the fridge.|冰箱裡什麼都沒有。
+anything|/ˈeniθɪŋ/|pron|A1|任何事物|Do you need anything?|你需要什麼嗎？
+everyone|/ˈevriwʌn/|pron|A1|每個人|Everyone is here.|大家都到了。
+someone|/ˈsʌmwʌn/|pron|A1|某人|Someone is at the door.|有人在門口。
+nobody|/ˈnoʊbɑːdi/|pron|A2|沒有人|Nobody knows the answer.|沒人知道答案。
+anyone|/ˈeniwʌn/|pron|A1|任何人|Does anyone have a charger?|有人有充電器嗎？
+somewhere|/ˈsʌmwer/|adv|A2|某處|Let's go somewhere quiet.|我們去個安靜的地方吧。
+everywhere|/ˈevriwer/|adv|A2|到處|I looked everywhere for it.|我到處找過了。
+anywhere|/ˈeniwer/|adv|A2|任何地方|You can sit anywhere.|你可以隨便坐。
+here|/hɪr/|adv|A1|這裡|Come here, please.|請過來這裡。
+there|/ðer/|adv|A1|那裡|I'll meet you there.|我們在那裡碰面。
+inside|/ɪnˈsaɪd/|adv|A2|在裡面|Let's go inside.|我們進去吧。
+outside|/ˌaʊtˈsaɪd/|adv|A2|在外面|The kids are playing outside.|小孩在外面玩。
+upstairs|/ˌʌpˈsterz/|adv|A2|在樓上|The bathroom is upstairs.|廁所在樓上。
+downstairs|/ˌdaʊnˈsterz/|adv|A2|在樓下|I'll wait for you downstairs.|我在樓下等你。
+away|/əˈweɪ/|adv|A2|離開；遠離|Go away!|走開！
+far|/fɑːr/|adv|A1|遠|Is it far from here?|離這裡遠嗎？
+near|/nɪr/|prep|A1|在…附近|I live near the park.|我住在公園附近。
+next to|/ˈnekst tuː/|prep|A1|在…旁邊|The bank is next to the post office.|銀行在郵局旁邊。
+between|/bɪˈtwiːn/|prep|A1|在…之間|The café is between the bank and the school.|咖啡店在銀行和學校中間。
+behind|/bɪˈhaɪnd/|prep|A1|在…後面|The car park is behind the building.|停車場在大樓後面。
+in front of|/ɪn ˈfrʌnt əv/|prep|A1|在…前面|Let's meet in front of the station.|我們在車站前面碰面。
+opposite|/ˈɑːpəzɪt/|prep|A2|在…對面|The hotel is opposite the station.|飯店在車站對面。
+across|/əˈkrɔːs/|prep|A2|橫越；在對面|The shop is across the street.|那家店在對街。
+along|/əˈlɔːŋ/|prep|A2|沿著|Walk along the river.|沿著河走。
+through|/θruː/|prep|A2|穿過|We drove through the tunnel.|我們開車穿過隧道。
+toward|/tɔːrd/|prep|B1|朝向|He walked toward the door.|他朝門口走去。
+around|/əˈraʊnd/|prep|A1|在周圍；大約|See you around eight.|八點左右見。
+above|/əˈbʌv/|prep|A2|在…上方|There's a light above the table.|桌子上方有一盞燈。
+below|/bɪˈloʊ/|prep|A2|在…下方|Write your name below.|在下面寫你的名字。
+under|/ˈʌndər/|prep|A1|在…下面|The cat is under the table.|貓在桌子下面。
+without|/wɪˈðaʊt/|prep|A2|沒有|I can't live without coffee.|我不能沒有咖啡。
+except|/ɪkˈsept/|prep|B1|除了|Everyone came except Tom.|除了湯姆大家都來了。
+instead of|/ɪnˈsted əv/|prep|B1|而不是|Let's have tea instead of coffee.|我們喝茶不要喝咖啡。
+because of|/bɪˈkɔːz əv/|prep|A2|因為|The game was canceled because of the rain.|比賽因為下雨取消了。
+thanks to|/ˈθæŋks tuː/|prep|B1|多虧|Thanks to you, we won.|多虧你，我們贏了。
+once|/wʌns/|adv|A2|一次；曾經|I've been there once.|我去過那裡一次。
+twice|/twaɪs/|adv|A2|兩次|I brush my teeth twice a day.|我一天刷兩次牙。
+forever|/fərˈevər/|adv|B1|永遠|I'll love you forever.|我會永遠愛你。`,
+food:`rice|/raɪs/|n|A1|米飯|I'd like a bowl of rice.|我想要一碗白飯。
+noodle|/ˈnuːdəl/|n|A1|麵|Beef noodle soup is my favorite.|牛肉麵是我的最愛。
+bread|/bred/|n|A1|麵包|I bought some bread for breakfast.|我買了麵包當早餐。
+egg|/eɡ/|n|A1|蛋|How would you like your eggs?|您的蛋要怎麼做？
+meat|/miːt/|n|A1|肉|I don't eat much meat.|我不太吃肉。
+beef|/biːf/|n|A1|牛肉|Is this beef or pork?|這是牛肉還是豬肉？
+pork|/pɔːrk/|n|A1|豬肉|I'll have the pork rice.|我要滷肉飯。
+chicken|/ˈtʃɪkɪn/|n|A1|雞肉|Fried chicken is so good.|炸雞好好吃。
+seafood|/ˈsiːfuːd/|n|A2|海鮮|Are you allergic to seafood?|你對海鮮過敏嗎？
+shrimp|/ʃrɪmp/|n|A2|蝦子|Could I get it without shrimp?|可以不要加蝦嗎？
+vegetable|/ˈvedʒtəbəl/|n|A1|蔬菜|You should eat more vegetables.|你應該多吃蔬菜。
+fruit|/fruːt/|n|A1|水果|I eat fruit every day.|我每天吃水果。
+apple|/ˈæpəl/|n|A1|蘋果|An apple a day keeps the doctor away.|一天一蘋果，醫生遠離我。
+banana|/bəˈnænə/|n|A1|香蕉|I have a banana for breakfast.|我早餐吃一根香蕉。
+orange|/ˈɔːrɪndʒ/|n|A1|柳橙|Can I have an orange juice?|可以給我一杯柳橙汁嗎？
+tomato|/təˈmeɪtoʊ/|n|A1|番茄|Add some tomato to the salad.|在沙拉裡加點番茄。
+potato|/pəˈteɪtoʊ/|n|A1|馬鈴薯|I'd like mashed potatoes, please.|我要馬鈴薯泥，謝謝。
+onion|/ˈʌnjən/|n|A1|洋蔥|No onions, please.|請不要加洋蔥。
+garlic|/ˈɡɑːrlɪk/|n|A2|大蒜|This dish has a lot of garlic.|這道菜加了很多蒜。
+salt|/sɔːlt/|n|A1|鹽|Could you pass the salt?|可以把鹽遞給我嗎？
+sugar|/ˈʃʊɡər/|n|A1|糖|Less sugar, please.|少糖，謝謝。
+pepper|/ˈpepər/|n|A2|胡椒；甜椒|Add some black pepper.|加點黑胡椒。
+sauce|/sɔːs/|n|A2|醬汁|Can I have the sauce on the side?|醬汁可以另外放嗎？
+oil|/ɔɪl/|n|A2|油|Heat the oil in a pan.|在鍋裡熱油。
+butter|/ˈbʌtər/|n|A1|奶油|Do you want butter on your toast?|你的吐司要塗奶油嗎？
+cheese|/tʃiːz/|n|A1|起司|Extra cheese, please.|起司加量，謝謝。
+milk|/mɪlk/|n|A1|牛奶|Do you take milk in your coffee?|你的咖啡要加牛奶嗎？
+juice|/dʒuːs/|n|A1|果汁|I'll have an apple juice.|我要一杯蘋果汁。
+tea|/tiː/|n|A1|茶|Would you like some tea?|要喝茶嗎？
+coffee|/ˈkɔːfi/|n|A1|咖啡|I need coffee to wake up.|我需要咖啡才能清醒。
+beer|/bɪr/|n|A1|啤酒|Let's grab a beer after work.|下班去喝杯啤酒吧。
+wine|/waɪn/|n|A1|葡萄酒|Red wine or white wine?|紅酒還是白酒？
+soup|/suːp/|n|A1|湯|The soup is too hot.|湯太燙了。
+salad|/ˈsæləd/|n|A1|沙拉|I'll start with a salad.|我先來一份沙拉。
+sandwich|/ˈsænwɪtʃ/|n|A1|三明治|I made a sandwich for lunch.|我做了三明治當午餐。
+cake|/keɪk/|n|A1|蛋糕|Who wants some cake?|誰要吃蛋糕？
+cookie|/ˈkʊki/|n|A1|餅乾|These cookies are homemade.|這些餅乾是自己做的。
+chocolate|/ˈtʃɔːklət/|n|A1|巧克力|I can't stop eating chocolate.|我停不下來一直吃巧克力。
+ice cream|/ˈaɪs kriːm/|n|A1|冰淇淋|Let's get some ice cream.|我們去吃冰淇淋吧。
+dumpling|/ˈdʌmplɪŋ/|n|A2|水餃；餃子|We made dumplings together.|我們一起包水餃。
+tofu|/ˈtoʊfuː/|n|A2|豆腐|Stinky tofu smells bad but tastes good.|臭豆腐聞起來臭但很好吃。
+spoon|/spuːn/|n|A1|湯匙|Could I have a spoon, please?|可以給我一支湯匙嗎？
+fork|/fɔːrk/|n|A1|叉子|I dropped my fork.|我的叉子掉了。
+knife|/naɪf/|n|A1|刀子|This knife isn't sharp.|這把刀不利。
+plate|/pleɪt/|n|A1|盤子|Can I get an extra plate?|可以多給我一個盤子嗎？
+bowl|/boʊl/|n|A1|碗|A small bowl of rice, please.|一小碗白飯，謝謝。
+straw|/strɔː/|n|A2|吸管|No straw, please.|不用吸管，謝謝。
+kitchen|/ˈkɪtʃən/|n|A1|廚房|The kitchen is always busy.|廚房總是很忙。
+dish|/dɪʃ/|n|A2|一道菜；盤子|What's your favorite dish?|你最喜歡哪道菜？
+bite|/baɪt/|n|B1|一口|Can I have a bite?|我可以吃一口嗎？
+slice|/slaɪs/|n|B1|一片|I'll have a slice of pizza.|我要一片披薩。
+bake|/beɪk/|v|A2|烘焙|My sister loves to bake cakes.|我妹妹很愛烤蛋糕。
+steam|/stiːm/|v|B1|蒸|Steam the fish for ten minutes.|魚蒸十分鐘。
+chop|/tʃɑːp/|v|B1|切碎|Chop the onions finely.|把洋蔥切細。
+heat|/hiːt/|v|B1|加熱|Heat the soup before serving.|上桌前把湯加熱。`,
+shop:`store|/stɔːr/|n|A1|商店|Is there a store near here?|這附近有商店嗎？
+mall|/mɔːl/|n|A2|購物中心|Let's go to the mall.|我們去逛百貨公司吧。
+convenience store|/kənˈviːniəns stɔːr/|n|A2|便利商店|There's a convenience store on every corner.|每個轉角都有便利商店。
+customer service|/ˈkʌstəmər ˈsɝːvɪs/|n|B1|客服|I called customer service about my order.|我打給客服詢問我的訂單。
+credit card|/ˈkredɪt kɑːrd/|n|A2|信用卡|Do you accept credit cards?|你們收信用卡嗎？
+total|/ˈtoʊtəl/|n|A2|總額|What's the total?|總共多少？
+tax|/tæks/|n|B1|稅|Is tax included?|有含稅嗎？
+sale|/seɪl/|n|A2|拍賣；銷售|Everything is on sale today.|今天全部都在特價。
+gift card|/ˈɡɪft kɑːrd/|n|A2|禮物卡|I got a gift card for my birthday.|我生日收到一張禮物卡。
+brand-new|/ˌbrænd ˈnuː/|adj|B1|全新的|Is this brand-new or used?|這是全新的還是二手的？
+used|/juːzd/|adj|B1|二手的|I bought a used car.|我買了一台二手車。
+dress|/dres/|n|A1|洋裝|She bought a red dress for the party.|她為了派對買了一件紅色洋裝。
+skirt|/skɝːt/|n|A1|裙子|This skirt is too short.|這件裙子太短了。
+pants|/pænts/|n|A1|褲子|These pants are too long.|這條褲子太長了。
+jeans|/dʒiːnz/|n|A1|牛仔褲|I wear jeans almost every day.|我幾乎每天穿牛仔褲。
+T-shirt|/ˈtiː ʃɝːt/|n|A1|T 恤|I'll take this T-shirt.|我要買這件 T 恤。
+sweater|/ˈswetər/|n|A1|毛衣|Bring a sweater, it gets cold at night.|帶件毛衣，晚上會冷。
+coat|/koʊt/|n|A1|大衣|Hang your coat here.|把大衣掛這裡。
+sock|/sɑːk/|n|A1|襪子|I need new socks.|我需要新襪子。
+boot|/buːt/|n|A2|靴子|These boots are waterproof.|這雙靴子防水。
+belt|/belt/|n|A2|皮帶|This belt is too tight.|這條皮帶太緊了。
+necklace|/ˈnekləs/|n|B1|項鍊|She wore a gold necklace.|她戴著金項鍊。
+earring|/ˈɪrɪŋ/|n|B1|耳環|I lost one of my earrings.|我掉了一隻耳環。
+makeup|/ˈmeɪkʌp/|n|B1|化妝品|She doesn't wear much makeup.|她不太化妝。
+perfume|/pərˈfjuːm/|n|B1|香水|What perfume are you wearing?|你擦的是什麼香水？
+shampoo|/ʃæmˈpuː/|n|A2|洗髮精|We're out of shampoo.|洗髮精用完了。
+toothpaste|/ˈtuːθpeɪst/|n|A2|牙膏|Don't forget to buy toothpaste.|別忘了買牙膏。
+battery|/ˈbætəri/|n|A2|電池|My battery is almost dead.|我快沒電了。
+charger|/ˈtʃɑːrdʒər/|n|A2|充電器|Can I borrow your charger?|可以借你的充電器嗎？
+headphones|/ˈhedfoʊnz/|n|A2|耳機|I left my headphones on the train.|我把耳機忘在火車上了。
+laptop|/ˈlæptɑːp/|n|A2|筆記型電腦|I bring my laptop everywhere.|我到哪都帶著筆電。
+tablet|/ˈtæblət/|n|B1|平板電腦|My son watches videos on his tablet.|我兒子用平板看影片。
+screen|/skriːn/|n|A2|螢幕|My phone screen is cracked.|我的手機螢幕裂了。`,
+home:`house|/haʊs/|n|A1|房子|They bought a new house.|他們買了新房子。
+home|/hoʊm/|n|A1|家|I'm going home.|我要回家了。
+bedroom|/ˈbedruːm/|n|A1|臥室|The apartment has two bedrooms.|這間公寓有兩間臥室。
+bathroom|/ˈbæθruːm/|n|A1|浴室；廁所|Where's the bathroom?|廁所在哪裡？
+living room|/ˈlɪvɪŋ ruːm/|n|A1|客廳|We watch TV in the living room.|我們在客廳看電視。
+balcony|/ˈbælkəni/|n|A2|陽台|I dry my clothes on the balcony.|我在陽台曬衣服。
+roof|/ruːf/|n|A2|屋頂|The roof is leaking.|屋頂在漏水。
+stairs|/sterz/|n|A1|樓梯|Take the stairs, the elevator is broken.|走樓梯吧，電梯壞了。
+elevator|/ˈeləveɪtər/|n|A1|電梯|Let's take the elevator.|我們搭電梯吧。
+sofa|/ˈsoʊfə/|n|A1|沙發|I fell asleep on the sofa.|我在沙發上睡著了。
+desk|/desk/|n|A1|書桌|My desk is next to the window.|我的書桌在窗戶旁。
+shelf|/ʃelf/|n|A2|架子|Put the books on the shelf.|把書放到書架上。
+lamp|/læmp/|n|A1|檯燈|Turn on the lamp, please.|請把檯燈打開。
+mirror|/ˈmɪrər/|n|A2|鏡子|Look in the mirror.|照照鏡子。
+carpet|/ˈkɑːrpɪt/|n|A2|地毯|Don't spill coffee on the carpet.|不要把咖啡灑在地毯上。
+curtain|/ˈkɝːtən/|n|A2|窗簾|Close the curtains, please.|請把窗簾拉上。
+pillow|/ˈpɪloʊ/|n|A2|枕頭|I need a softer pillow.|我需要軟一點的枕頭。
+blanket|/ˈblæŋkɪt/|n|A2|毯子|Can I have an extra blanket?|可以多給我一條毯子嗎？
+towel|/ˈtaʊəl/|n|A1|毛巾|Can I get a clean towel?|可以給我一條乾淨的毛巾嗎？
+soap|/soʊp/|n|A1|肥皂|Wash your hands with soap.|用肥皂洗手。
+toilet|/ˈtɔɪlət/|n|A1|馬桶；廁所|The toilet is blocked.|馬桶塞住了。
+shower|/ˈʃaʊər/|n|A1|淋浴|I take a shower every night.|我每晚都洗澡。
+sink|/sɪŋk/|n|A2|水槽|Put the dishes in the sink.|把碗盤放進水槽。
+oven|/ˈʌvən/|n|A2|烤箱|Put the cake in the oven.|把蛋糕放進烤箱。
+stove|/stoʊv/|n|B1|爐子|Turn off the stove when you leave.|離開時要關爐火。
+washing machine|/ˈwɑːʃɪŋ məˌʃiːn/|n|A2|洗衣機|The washing machine is making a strange noise.|洗衣機發出奇怪的聲音。
+air conditioner|/ˈer kənˌdɪʃənər/|n|A2|冷氣|Can you turn on the air conditioner?|你可以開冷氣嗎？
+fan|/fæn/|n|A2|電扇；粉絲|Turn on the fan, it's hot.|開電扇吧，好熱。
+TV|/ˌtiːˈviː/|n|A1|電視|What's on TV tonight?|今晚電視演什麼？
+remote|/rɪˈmoʊt/|n|B1|遙控器|Where's the remote?|遙控器在哪裡？
+switch|/swɪtʃ/|n|B1|開關|The light switch is by the door.|電燈開關在門邊。
+plug|/plʌɡ/|n|B1|插頭|The plug doesn't fit.|插頭插不進去。
+bin|/bɪn/|n|A2|垃圾桶|Throw it in the bin.|丟進垃圾桶。
+broom|/bruːm/|n|B1|掃把|Where's the broom?|掃把在哪裡？
+bucket|/ˈbʌkɪt/|n|B1|水桶|Fill the bucket with water.|把水桶裝滿水。
+tool|/tuːl/|n|A2|工具|Do you have the right tools?|你有適合的工具嗎？
+hammer|/ˈhæmər/|n|B1|鐵鎚|I need a hammer and some nails.|我需要一把鐵鎚和一些釘子。
+neighborhood|/ˈneɪbərhʊd/|n|A2|社區；鄰近地區|It's a quiet neighborhood.|這是個安靜的社區。
+yard|/jɑːrd/|n|A2|院子|The kids are playing in the yard.|小孩在院子裡玩。
+mailbox|/ˈmeɪlbɑːks/|n|A2|信箱|Check the mailbox, please.|請看一下信箱。
+housework|/ˈhaʊswɝːk/|n|A2|家事|We share the housework.|我們分擔家事。
+dishes|/ˈdɪʃɪz/|n|A1|碗盤|It's your turn to do the dishes.|輪到你洗碗了。
+sweep|/swiːp/|v|B1|掃（地）|Can you sweep the floor?|你可以掃地嗎？
+wipe|/waɪp/|v|B1|擦|Wipe the table, please.|請擦一下桌子。
+decorate|/ˈdekəreɪt/|v|B1|裝飾|We decorated the room for the party.|我們為了派對佈置房間。
+turn on|/tɝːn ˈɑːn/|phr|A1|打開（電器）|Turn on the lights, please.|請開燈。
+turn off|/tɝːn ˈɔːf/|phr|A1|關掉（電器）|Don't forget to turn off the lights.|別忘了關燈。
+put away|/pʊt əˈweɪ/|phr|A2|收拾好|Put your toys away.|把玩具收好。
+clean up|/kliːn ˈʌp/|phr|A2|清理乾淨|Let's clean up after dinner.|晚餐後我們來收拾吧。
+wake up|/weɪk ˈʌp/|phr|A1|醒來|I wake up at six every day.|我每天六點醒來。
+get up|/ɡet ˈʌp/|phr|A1|起床|What time do you get up?|你幾點起床？
+go to bed|/ɡoʊ tə ˈbed/|phr|A1|上床睡覺|I usually go to bed at eleven.|我通常十一點睡。
+take a shower|/teɪk ə ˈʃaʊər/|phr|A1|洗澡|I take a shower after the gym.|我健身完會洗澡。
+brush teeth|/brʌʃ ˈtiːθ/|phr|A1|刷牙|Brush your teeth before bed.|睡前要刷牙。
+make the bed|/meɪk ðə ˈbed/|phr|A2|整理床鋪|I make the bed every morning.|我每天早上整理床鋪。
+take out the trash|/teɪk aʊt ðə ˈtræʃ/|phr|A2|倒垃圾|Can you take out the trash?|你可以去倒垃圾嗎？
+do the laundry|/duː ðə ˈlɔːndri/|phr|A2|洗衣服|I do the laundry on Sundays.|我星期天洗衣服。`,
+move:`MRT|/ˌem ɑːr ˈtiː/|n|A2|捷運|Take the MRT to Taipei 101.|搭捷運到台北 101。
+subway|/ˈsʌbweɪ/|n|A1|地鐵|The subway is faster than the bus.|地鐵比公車快。
+taxi|/ˈtæksi/|n|A1|計程車|Let's take a taxi.|我們搭計程車吧。
+scooter|/ˈskuːtər/|n|A2|機車；滑板車|Many people ride scooters in Taiwan.|台灣很多人騎機車。
+motorcycle|/ˈmoʊtərsaɪkəl/|n|A2|摩托車|He rides a motorcycle to work.|他騎摩托車上班。
+truck|/trʌk/|n|A2|卡車|A big truck is blocking the road.|一台大卡車擋住了路。
+flight|/flaɪt/|n|A2|班機|My flight was delayed.|我的班機延誤了。
+seat|/siːt/|n|A1|座位|Is this seat taken?|這個位子有人坐嗎？
+window seat|/ˈwɪndoʊ siːt/|n|A2|靠窗座位|Can I have a window seat?|可以給我靠窗的位子嗎？
+bus stop|/ˈbʌs stɑːp/|n|A1|公車站|The bus stop is across the street.|公車站在對街。
+traffic|/ˈtræfɪk/|n|A2|交通；車流|The traffic is terrible today.|今天交通超塞。
+traffic light|/ˈtræfɪk laɪt/|n|A2|紅綠燈|Turn left at the traffic light.|在紅綠燈左轉。
+highway|/ˈhaɪweɪ/|n|A2|高速公路|There's an accident on the highway.|高速公路上有車禍。
+bridge|/brɪdʒ/|n|A2|橋|We crossed the bridge on foot.|我們走路過橋。
+tunnel|/ˈtʌnəl/|n|B1|隧道|The train goes through a long tunnel.|火車穿過一條長隧道。
+gas station|/ˈɡæs ˌsteɪʃən/|n|A2|加油站|We need to stop at a gas station.|我們需要停一下加油站。
+helmet|/ˈhelmɪt/|n|B1|安全帽|Always wear a helmet.|一定要戴安全帽。
+license|/ˈlaɪsəns/|n|B1|執照；駕照|Do you have a driver's license?|你有駕照嗎？
+distance|/ˈdɪstəns/|n|B1|距離|What's the distance from here to the airport?|從這裡到機場多遠？
+journey|/ˈdʒɝːni/|n|B1|旅程|How was your journey?|你的旅程如何？
+arrival|/əˈraɪvəl/|n|B1|抵達|Please check the arrival time.|請查一下抵達時間。
+north|/nɔːrθ/|n|A2|北方|The airport is north of the city.|機場在城市北邊。
+south|/saʊθ/|n|A2|南方|We're driving south to Kenting.|我們要往南開去墾丁。
+east|/iːst/|n|A2|東方|The sun rises in the east.|太陽從東邊升起。
+west|/west/|n|A2|西方|The beach is on the west coast.|海灘在西海岸。
+left|/left/|n|A1|左邊|Turn left at the corner.|在轉角左轉。
+straight ahead|/streɪt əˈhed/|phr|A2|直走|Go straight ahead for two blocks.|直走兩個路口。
+get lost|/ɡet ˈlɔːst/|phr|A2|迷路|I always get lost in this area.|我在這一區總是迷路。
+slow down|/sloʊ ˈdaʊn/|phr|A2|減速；放慢|Slow down, you're driving too fast.|慢一點，你開太快了。
+speed|/spiːd/|n|B1|速度|The train travels at high speed.|火車以高速行駛。`,
+trip:`tourist|/ˈtʊrɪst/|n|A2|觀光客|This place is full of tourists.|這裡滿滿都是觀光客。
+guide|/ɡaɪd/|n|A2|導遊；指南|Our guide speaks great English.|我們的導遊英文很好。
+tour|/tʊr/|n|A2|旅遊；導覽|We joined a walking tour.|我們參加了徒步導覽。
+camping|/ˈkæmpɪŋ/|n|A2|露營|We went camping in the mountains.|我們去山上露營。
+tent|/tent/|n|A2|帳篷|It's hard to put up a tent in the rain.|下雨天很難搭帳篷。
+suitcase|/ˈsuːtkeɪs/|n|A2|行李箱|My suitcase is too heavy.|我的行李箱太重了。
+room key|/ˈruːm kiː/|n|A2|房卡；房間鑰匙|I left my room key in the room.|我把房卡留在房間裡了。
+single room|/ˈsɪŋɡəl ruːm/|n|A2|單人房|I'd like to book a single room.|我想訂一間單人房。
+double room|/ˈdʌbəl ruːm/|n|A2|雙人房|Is there a double room available?|還有雙人房嗎？
+reception|/rɪˈsepʃən/|n|B1|櫃檯|Please leave your key at reception.|請把鑰匙留在櫃檯。
+breakfast included|/ˈbrekfəst ɪnˈkluːdɪd/|phr|B1|含早餐|Is breakfast included?|有含早餐嗎？
+festival|/ˈfestɪvəl/|n|A2|節慶|The lantern festival is beautiful.|元宵節很美。
+night market|/ˈnaɪt ˌmɑːrkɪt/|n|A2|夜市|Let's go to the night market.|我們去逛夜市吧。
+castle|/ˈkæsəl/|n|A2|城堡|We visited an old castle.|我們參觀了一座古堡。
+gallery|/ˈɡæləri/|n|B1|美術館；藝廊|The gallery is free on Sundays.|美術館星期天免費。
+zoo|/zuː/|n|A1|動物園|The kids love the zoo.|小孩很喜歡動物園。
+waterfall|/ˈwɔːtərfɔːl/|n|B1|瀑布|There's a waterfall at the end of the trail.|步道盡頭有一座瀑布。
+trail|/treɪl/|n|B1|步道|This trail takes about two hours.|這條步道大約要兩小時。
+coast|/koʊst/|n|B1|海岸|We drove along the coast.|我們沿著海岸開車。
+sunset|/ˈsʌnset/|n|A2|夕陽|Let's watch the sunset.|我們去看夕陽吧。
+take a picture|/teɪk ə ˈpɪktʃər/|phr|A1|拍照|Could you take a picture of us?|你可以幫我們拍照嗎？
+go sightseeing|/ɡoʊ ˈsaɪtsiːɪŋ/|phr|A2|去觀光|We went sightseeing all day.|我們觀光了一整天。`,
+health:`head|/hed/|n|A1|頭|My head hurts.|我頭痛。
+face|/feɪs/|n|A1|臉|Wash your face.|洗把臉。
+eye|/aɪ/|n|A1|眼睛|My eyes are tired.|我眼睛很累。
+ear|/ɪr/|n|A1|耳朵|My ear hurts.|我耳朵痛。
+nose|/noʊz/|n|A1|鼻子|My nose is blocked.|我鼻塞。
+mouth|/maʊθ/|n|A1|嘴巴|Open your mouth, please.|請張開嘴巴。
+tooth|/tuːθ/|n|A1|牙齒|I have a bad tooth.|我有一顆蛀牙。
+hair|/her/|n|A1|頭髮|I like your hair.|我喜歡你的髮型。
+neck|/nek/|n|A2|脖子|I have a stiff neck.|我脖子僵硬。
+shoulder|/ˈʃoʊldər/|n|A2|肩膀|My shoulders are sore.|我肩膀痠痛。
+arm|/ɑːrm/|n|A1|手臂|I hurt my arm playing tennis.|我打網球傷到手臂。
+hand|/hænd/|n|A1|手|Raise your hand.|舉手。
+finger|/ˈfɪŋɡər/|n|A1|手指|I cut my finger.|我割到手指。
+leg|/leɡ/|n|A1|腿|My legs are tired.|我的腿好累。
+knee|/niː/|n|A2|膝蓋|My knee hurts when I run.|我跑步時膝蓋會痛。
+foot|/fʊt/|n|A1|腳|I hurt my foot playing soccer.|我踢足球弄傷了腳。
+stomach|/ˈstʌmək/|n|A2|胃；肚子|My stomach hurts.|我肚子痛。
+skin|/skɪn/|n|A2|皮膚|She has very soft skin.|她的皮膚很柔嫩。
+blood|/blʌd/|n|A2|血|I don't like the sight of blood.|我不喜歡看到血。
+bone|/boʊn/|n|A2|骨頭|He broke a bone in his foot.|他腳骨折了。
+brain|/breɪn/|n|B1|大腦|My brain isn't working today.|我今天腦袋不靈光。
+medicine|/ˈmedɪsən/|n|A2|藥|Take this medicine after meals.|飯後吃這個藥。
+dentist|/ˈdentɪst/|n|A2|牙醫|I have a dentist appointment.|我約了看牙醫。
+hurt|/hɝːt/|v|A2|受傷；疼痛|Does it hurt?|會痛嗎？
+vomit|/ˈvɑːmɪt/|v|B1|嘔吐|I feel like I'm going to vomit.|我覺得我快吐了。
+treatment|/ˈtriːtmənt/|n|B1|治療|The treatment takes two weeks.|療程要兩週。
+health insurance|/ˈhelθ ɪnˌʃʊrəns/|n|B1|健保|Do you have health insurance?|你有健保嗎？
+weight|/weɪt/|n|B1|體重；重量|I'm trying to lose weight.|我在努力減重。
+gym|/dʒɪm/|n|A1|健身房|I go to the gym after work.|我下班後去健身房。
+yoga|/ˈjoʊɡə/|n|A2|瑜伽|Yoga helps me relax.|瑜伽幫助我放鬆。
+jog|/dʒɑːɡ/|v|B1|慢跑|I jog in the park every morning.|我每天早上在公園慢跑。
+stress|/stres/|n|B1|壓力|I'm under a lot of stress.|我壓力很大。
+feel sick|/fiːl ˈsɪk/|phr|A2|覺得不舒服|I feel sick after eating that.|我吃了那個之後覺得不舒服。
+take medicine|/teɪk ˈmedɪsən/|phr|A2|吃藥|Remember to take your medicine.|記得吃藥。
+see a doctor|/siː ə ˈdɑːktər/|phr|A2|看醫生|You should see a doctor.|你應該去看醫生。
+lose weight|/luːz ˈweɪt/|phr|B1|減重|I want to lose weight before summer.|我想在夏天前減重。`,
+office:`document|/ˈdɑːkjəmənt/|n|A2|文件|Please sign this document.|請簽這份文件。
+file|/faɪl/|n|A2|檔案|Can you send me the file?|你可以把檔案傳給我嗎？
+folder|/ˈfoʊldər/|n|A2|資料夾|Save it in this folder.|存在這個資料夾裡。
+password|/ˈpæswɝːd/|n|A2|密碼|I forgot my password.|我忘了密碼。
+account|/əˈkaʊnt/|n|B1|帳戶；帳號|I need to open a bank account.|我需要開一個銀行帳戶。
+calendar|/ˈkæləndər/|n|A2|行事曆|I'll put it in my calendar.|我會記在行事曆上。
+plan ahead|/plæn əˈhed/|phr|B1|提前計畫|It's better to plan ahead.|最好提前計畫。
+staff|/stæf/|n|B1|員工|The staff here are very helpful.|這裡的員工很熱心。
+team leader|/ˈtiːm ˌliːdər/|n|B1|組長|I'll ask my team leader.|我會問我的組長。
+director|/dəˈrektər/|n|B1|主管；導演|The director will join the meeting.|處長會參加會議。
+product|/ˈprɑːdʌkt/|n|A2|產品|We're launching a new product.|我們要推出新產品。
+sales|/seɪlz/|n|B1|業績；銷售|Sales were up this quarter.|這一季業績成長了。
+price list|/ˈpraɪs lɪst/|n|B1|價目表|Can you send me your price list?|可以寄價目表給我嗎？
+plan B|/ˌplæn ˈbiː/|n|B1|備案|We need a plan B.|我們需要一個備案。
+note|/noʊt/|n|A2|筆記；便條|I'll leave you a note.|我會留張字條給你。
+notes|/noʊts/|n|A2|筆記|Can I see your notes from the meeting?|我可以看你的會議筆記嗎？
+topic|/ˈtɑːpɪk/|n|A2|主題|What's the topic of the meeting?|會議的主題是什麼？
+chart|/tʃɑːrt/|n|B1|圖表|This chart shows our growth.|這張圖表顯示我們的成長。
+graph|/ɡræf/|n|B1|曲線圖|Look at this graph.|看看這張圖。
+request|/rɪˈkwest/|n|B1|請求|I have a small request.|我有個小請求。
+approval|/əˈpruːvəl/|n|B2|批准|We need approval from the manager.|我們需要經理批准。
+discussion|/dɪˈskʌʃən/|n|B1|討論|We had a long discussion.|我們討論了很久。
+agreement|/əˈɡriːmənt/|n|B1|協議；同意|We reached an agreement.|我們達成了協議。
+plan out|/plæn ˈaʊt/|phr|B1|仔細規劃|Let's plan out the week.|我們來規劃這週的事。
+lunch break|/ˈlʌntʃ breɪk/|n|A2|午休|I take a walk during my lunch break.|我午休時去散步。
+busy season|/ˈbɪzi ˌsiːzən/|n|B1|旺季；忙季|December is our busy season.|十二月是我們的旺季。
+work from home|/ˌwɝːk frəm ˈhoʊm/|phr|A2|在家工作|I work from home on Fridays.|我星期五在家工作。
+take notes|/teɪk ˈnoʊts/|phr|A2|做筆記|Can you take notes for me?|你可以幫我做筆記嗎？
+send out|/send ˈaʊt/|phr|B1|發送|I'll send out the invitations today.|我今天會把邀請發出去。
+look into|/lʊk ˈɪntuː/|phr|B1|調查；研究|I'll look into it.|我會查一下。
+go over|/ɡoʊ ˈoʊvər/|phr|B1|檢查；複習|Let's go over the plan again.|我們再看一次計畫。
+point out|/pɔɪnt ˈaʊt/|phr|B1|指出|Thanks for pointing out the mistake.|謝謝你指出錯誤。
+work on|/ˈwɝːk ɑːn/|phr|A2|致力於；處理|I'm working on the report.|我正在寫報告。
+email address|/ˈiːmeɪl ˌædres/|n|A2|電子郵件地址|What's your email address?|你的電子郵件地址是什麼？
+phone call|/ˈfoʊn kɔːl/|n|A2|電話|I have to make a phone call.|我得打個電話。
+attachment|/əˈtætʃmənt/|n|B1|附件|Please check the attachment.|請查看附件。
+form|/fɔːrm/|n|A2|表格|Please fill out this form.|請填寫這張表格。
+signature|/ˈsɪɡnətʃər/|n|B1|簽名|I need your signature here.|這裡需要你的簽名。
+copy machine|/ˈkɑːpi məˌʃiːn/|n|A2|影印機|The copy machine is jammed.|影印機卡紙了。
+paperwork|/ˈpeɪpərwɝːk/|n|B1|文書工作|I have so much paperwork to do.|我有好多文書工作要做。
+office hours|/ˈɔːfɪs ˌaʊrz/|n|B1|上班時間|Please call during office hours.|請在上班時間來電。`,
+job:`interviewer|/ˈɪntərvjuːər/|n|B1|面試官|The interviewer asked about my experience.|面試官問了我的經歷。
+applicant|/ˈæplɪkənt/|n|B2|應徵者|There were over a hundred applicants.|有超過一百位應徵者。
+application|/ˌæplɪˈkeɪʃən/|n|B1|申請|I sent my application last week.|我上週寄出申請了。
+company culture|/ˈkʌmpəni ˌkʌltʃər/|n|B1|公司文化|I like the company culture here.|我喜歡這裡的公司文化。
+working hours|/ˈwɝːkɪŋ ˌaʊrz/|n|B1|工作時間|What are the working hours?|工作時間是幾點到幾點？
+pay raise|/ˈpeɪ reɪz/|n|B1|加薪|I'm asking for a pay raise.|我要求加薪。
+promotion|/prəˈmoʊʃən/|n|B1|升遷|Congratulations on your promotion!|恭喜你升職！
+retire|/rɪˈtaɪər/|v|B1|退休|My dad retired last year.|我爸去年退休了。
+unemployed|/ˌʌnɪmˈplɔɪd/|adj|B1|失業的|He's been unemployed for months.|他失業好幾個月了。
+ability|/əˈbɪləti/|n|B1|能力|She has the ability to lead.|她有領導能力。
+talent|/ˈtælənt/|n|B1|天賦；人才|She has a talent for music.|她有音樂天賦。
+career path|/kəˈrɪr pæθ/|n|B2|職涯路線|I'm not sure about my career path.|我不確定我的職涯方向。
+work hard|/wɝːk ˈhɑːrd/|phr|A2|努力工作|She works hard every day.|她每天都很努力工作。
+get a job|/ɡet ə ˈdʒɑːb/|phr|A2|找到工作|I want to get a job in Japan.|我想在日本找工作。`,
+news:`president|/ˈprezɪdənt/|n|B1|總統；總裁|The president gave a speech.|總統發表了演講。
+politics|/ˈpɑːlətɪks/|n|B1|政治|I'm not interested in politics.|我對政治沒興趣。
+population|/ˌpɑːpjəˈleɪʃən/|n|B1|人口|Taiwan has a population of about 23 million.|台灣大約有兩千三百萬人口。
+event|/ɪˈvent/|n|A2|事件；活動|The event was canceled because of the rain.|活動因雨取消。
+article|/ˈɑːrtɪkəl/|n|B1|文章|I read an interesting article today.|我今天讀了一篇有趣的文章。
+magazine|/ˌmæɡəˈziːn/|n|A2|雜誌|I bought a magazine at the station.|我在車站買了一本雜誌。
+newspaper|/ˈnuːzpeɪpər/|n|A1|報紙|My dad reads the newspaper every morning.|我爸每天早上看報紙。
+journalist|/ˈdʒɝːnəlɪst/|n|B1|記者|She works as a journalist.|她是一名記者。
+crime|/kraɪm/|n|B1|犯罪|Crime is low in this city.|這座城市犯罪率低。
+thief|/θiːf/|n|B1|小偷|A thief stole my bike.|有小偷偷了我的腳踏車。
+steal|/stiːl/|v|B1|偷|Someone tried to steal my wallet.|有人想偷我的錢包。
+attack|/əˈtæk/|n|B1|攻擊|There was a shark attack at the beach.|海灘上發生了鯊魚攻擊事件。
+flood|/flʌd/|n|B1|洪水|The flood damaged many homes.|洪水損壞了很多房子。
+storm|/stɔːrm/|n|A2|暴風雨|A storm is coming tonight.|今晚有暴風雨要來。
+global warming|/ˌɡloʊbəl ˈwɔːrmɪŋ/|n|B1|全球暖化|Global warming is a serious problem.|全球暖化是個嚴重的問題。
+plastic|/ˈplæstɪk/|n|A2|塑膠|We should use less plastic.|我們應該少用塑膠。
+research|/ˈriːsɝːtʃ/|n|B1|研究|Research shows that sleep is important.|研究顯示睡眠很重要。
+percent|/pərˈsent/|n|B1|百分之…|Prices went up five percent.|物價漲了百分之五。
+rate|/reɪt/|n|B1|比率；費率|What's the interest rate?|利率是多少？
+growth|/ɡroʊθ/|n|B1|成長|The company showed strong growth.|公司成長強勁。
+public opinion|/ˈpʌblɪk əˈpɪnjən/|n|B2|輿論|Public opinion is changing.|輿論正在改變。
+point of view|/ˌpɔɪnt əv ˈvjuː/|n|B1|觀點|I understand your point of view.|我理解你的觀點。
+in my opinion|/ɪn maɪ əˈpɪnjən/|phr|A2|依我看|In my opinion, it's too expensive.|依我看，那太貴了。
+weather forecast|/ˈweðər ˌfɔːrkæst/|n|A2|天氣預報|The weather forecast says it will rain.|天氣預報說會下雨。
+public transport|/ˈpʌblɪk ˈtrænspɔːrt/|n|B1|大眾運輸|Public transport here is cheap.|這裡的大眾運輸很便宜。
+price increase|/ˈpraɪs ˌɪnkriːs/|n|B1|漲價|There's a price increase next month.|下個月要漲價。`,
+social:`hello|/həˈloʊ/|excl|A1|哈囉|Hello, nice to meet you.|哈囉，很高興認識你。
+sorry|/ˈsɑːri/|adj|A1|抱歉的|Sorry, I didn't hear you.|抱歉，我沒聽到。
+please|/pliːz/|adv|A1|請|Please sit down.|請坐。
+excuse me|/ɪkˈskjuːz miː/|phr|A1|不好意思|Excuse me, where is the station?|不好意思，車站在哪裡？
+how are you|/haʊ ˈɑːr juː/|phr|A1|你好嗎|Hi, how are you today?|嗨，你今天好嗎？
+nice to meet you|/naɪs tə ˈmiːt juː/|phr|A1|很高興認識你|Nice to meet you, I'm Amy.|很高興認識你，我是艾咪。
+see you|/ˈsiː juː/|phr|A1|再見|See you tomorrow!|明天見！
+take care|/teɪk ˈker/|phr|A2|保重|Take care and see you soon.|保重，再見。
+have fun|/hæv ˈfʌn/|phr|A1|玩得開心|Have fun at the party!|派對玩得開心！
+good luck|/ɡʊd ˈlʌk/|phr|A1|祝好運|Good luck with your interview!|祝你面試順利！
+never mind|/ˌnevər ˈmaɪnd/|phr|A2|沒關係；算了|Never mind, it's not important.|算了，不重要。
+it doesn't matter|/ɪt ˈdʌzənt ˈmætər/|phr|A2|沒關係|It doesn't matter if you're late.|你遲到也沒關係。
+I'm not sure|/aɪm nɑːt ˈʃʊr/|phr|A2|我不確定|I'm not sure what time it starts.|我不確定幾點開始。
+conversation|/ˌkɑːnvərˈseɪʃən/|n|A2|對話|We had a nice conversation.|我們聊得很愉快。
+relationship|/rɪˈleɪʃənʃɪp/|n|B1|關係|They're in a long relationship.|他們交往很久了。
+date|/deɪt/|n|A2|約會；日期|We went on a date last night.|我們昨晚去約會。
+wedding|/ˈwedɪŋ/|n|A2|婚禮|Are you going to the wedding?|你會去參加婚禮嗎？
+emotion|/ɪˈmoʊʃən/|n|B1|情緒|It's okay to show your emotions.|表達情緒是沒關係的。
+anger|/ˈæŋɡər/|n|B1|憤怒|He couldn't hide his anger.|他藏不住怒氣。
+joy|/dʒɔɪ/|n|B1|喜悅|The baby brought us so much joy.|寶寶帶給我們好多喜悅。
+fun fact|/ˈfʌn fækt/|n|B1|冷知識|Here's a fun fact about cats.|這裡有一個關於貓的冷知識。
+sense of humor|/ˌsens əv ˈhjuːmər/|n|B1|幽默感|He has a great sense of humor.|他很有幽默感。
+make fun of|/meɪk ˈfʌn əv/|phr|B1|取笑|Don't make fun of him.|不要取笑他。
+get to know|/ɡet tə ˈnoʊ/|phr|B1|認識；了解|I'd like to get to know you better.|我想多認識你一點。
+how about|/ˈhaʊ əˌbaʊt/|phr|A1|…如何|How about dinner tonight?|今晚一起吃晚餐如何？
+what about|/ˈwʌt əˌbaʊt/|phr|A1|那…呢|What about you?|那你呢？
+I mean|/aɪ ˈmiːn/|phr|A2|我的意思是|I mean, it's not bad.|我是說，還不錯啦。
+you know|/juː ˈnoʊ/|phr|A2|你知道的|It's, you know, a little expensive.|那個，你知道的，有點貴。
+kind of|/ˈkaɪnd əv/|phr|A2|有點|I'm kind of tired.|我有點累。
+a lot of|/ə ˈlɑːt əv/|phr|A1|很多|I have a lot of work.|我有很多工作。
+a bit|/ə ˈbɪt/|phr|A2|一點點|I'm a bit nervous.|我有點緊張。`
+};
 const SCENES={
  food:["餐廳・美食","At a restaurant"],
  shop:["購物・付款","Shopping"],
@@ -1311,6 +2644,10 @@ const SCENES={
  office:["辦公室・會議","At the office"],
  job:["求職・職涯","Job hunting"],
  news:["新聞・討論","News & opinions"],
+ verb:["常用動詞","Everyday verbs"],
+ adj:["形容・感受","Describing words"],
+ life:["生活名詞","Everyday nouns"],
+ link:["連接・副詞","Linking words"],
  c:["我的單字","My words"]
 };
 const SCENE_OF={
@@ -1855,7 +3192,7 @@ function petLine(){
 }
 
 /* ================= ICONS ================= */
-const SC={food:"#FF9500",shop:"#FF2D55",move:"#007AFF",trip:"#FFCC00",health:"#FF3B30",home:"#34C759",social:"#AF52DE",office:"#5856D6",job:"#30B0C7",news:"#8E8E93",c:"#FF2D55"};
+const SC={food:"#FF9500",shop:"#FF2D55",move:"#007AFF",trip:"#FFCC00",health:"#FF3B30",home:"#34C759",social:"#AF52DE",office:"#5856D6",job:"#30B0C7",news:"#8E8E93",verb:"#0A84FF",adj:"#FF6482",life:"#32ADE6",link:"#A2845E",c:"#FF2D55"};
 const IC={
  food:'<path d="M7 3v8a2 2 0 002 2v8M7 3v6M11 3v6M17 21V3c-2.2 1.2-3 4-3 7h3"/>',
  shop:'<path d="M5 8h14l-1.2 12H6.2zM9 8V6.5a3 3 0 016 0V8"/>',
@@ -1867,6 +3204,10 @@ const IC={
  office:'<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V5h8v3M3 13h18"/>',
  job:'<path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.6 9.1l5.8-.8z"/>',
  news:'<path d="M4 5h13v14H6.5A2.5 2.5 0 014 16.5zM17 9h3v8.5a2.5 2.5 0 01-2.5 2.5"/><path d="M7.5 9h6M7.5 12.5h6M7.5 16h4"/>',
+ verb:'<path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/>',
+ adj:'<circle cx="12" cy="12" r="8.5"/><path d="M8.5 14.5c1.8 2 5.2 2 7 0M9 9.5h.01M15 9.5h.01"/>',
+ life:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+ link:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
  c:'<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 7l3 3"/>',
  cards:'<rect x="4" y="7" width="12" height="14" rx="2"/><path d="M8 4h10a2 2 0 012 2v12"/>',
  quiz:'<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.6a2.5 2.5 0 114 2c-1 .6-1.6 1.2-1.6 2.4M12 17h.01"/>',
@@ -1931,7 +3272,7 @@ Object.assign(IC,{
  crown:'<path d="M4 17l-1-10 5 4 4-6 4 6 5-4-1 10z"/><path d="M4 20h16"/>',
  trophy:'<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M8 20h8M9.5 17h5"/>'
 });
-const SC2={food:"#FF5E3A",shop:"#C644FC",move:"#5856D6",trip:"#FF9500",health:"#FF2D55",home:"#30B0C7",social:"#5856D6",office:"#AF52DE",job:"#34C759",news:"#48484A",c:"#AF52DE"};
+const SC2={food:"#FF5E3A",shop:"#C644FC",move:"#5856D6",trip:"#FF9500",health:"#FF2D55",home:"#30B0C7",social:"#5856D6",office:"#AF52DE",job:"#34C759",news:"#48484A",verb:"#5E5CE6",adj:"#FF9F0A",life:"#34C759",link:"#7D5A3C",c:"#AF52DE"};
 /* medal look per achievement: shape, colour A, colour B, icon */
 const ACHV={first:["circle","#34C759","#30B0C7","check"],train1:["hex","#007AFF","#5856D6","cards"],streak3:["circle","#FF9500","#FF2D55","flame"],
  streak7:["shield","#FF9500","#FF3B30","flame"],streak30:["burst","#FF2D55","#AF52DE","flame"],goal:["hex","#FA2D55","#FF9500","target"],
@@ -2794,8 +4135,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112121600";
-const APP_NAME="1.19";
+const APP_VER="20261112125232";
+const APP_NAME="1.20";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -2944,6 +4285,8 @@ const BUILTIN=(()=>{
   const seen=new Set(out.map(w=>w.w.toLowerCase()));
   for(const [sc,txt] of Object.entries(RAW3))for(const line of txt.split("\n")){const p=line.split("|");if(p.length<7||seen.has(p[0].toLowerCase()))continue;seen.add(p[0].toLowerCase());
     out.push({id:"v3_"+p[0].replace(/[^A-Za-z0-9]+/g,"_"),w:p[0],ipa:p[1],pos:p[2],lvl:p[3],zh:p[4],ex:p[5],exZh:p[6],cat:sc})}
+  for(const [sc,txt] of Object.entries(RAW4))for(const line of txt.split("\n")){const p=line.split("|");if(p.length<7||seen.has(p[0].toLowerCase()))continue;seen.add(p[0].toLowerCase());
+    out.push({id:"v4_"+p[0].replace(/[^A-Za-z0-9]+/g,"_"),w:p[0],ipa:p[1],pos:p[2],lvl:p[3],zh:p[4],ex:p[5],exZh:p[6],cat:sc})}
   return out})();
 const LV=["A1","A2","B1","B2","C1"];
 const rank=l=>{const i=LV.indexOf(l);return i<0?2:i};
@@ -2957,6 +4300,7 @@ const DEF=()=>({srs:{},days:{},goal:40,tlen:"std",rate:0.9,custom:[],wk:{},cats:
 let S=Object.assign(DEF(),load());
 function migrate(){
   if(!Array.isArray(S.cats)||!S.cats.length||S.cats.some(k=>!SCENES[k]))S.cats=Object.keys(SCENES);
+  if(!S.catsV){for(const k of ["verb","adj","life","link"])if(!S.cats.includes(k))S.cats.push(k);S.catsV=1}
   if(S.wrong){for(const [id,n] of Object.entries(S.wrong))if(!S.wk[id])S.wk[id]={n,s:{},ok:0,d:"",lt:0};delete S.wrong}
   delete S.qd;
   if(!S.refund1){const P={c_berry:80,c_matcha:80,c_taro:120,c_mango:120,c_soda:160,party:40,beret:90,cap:110,crown:300,glasses:60,shades:150,scarf:50,bow:70,phones:120};
@@ -3849,7 +5193,7 @@ function onboarding(step){ROOT=false;
       <div class="stack" style="gap:10px">${LEVELS.map(([k,n,d,ex])=>`<button class="mode ${S.lvl===k&&S.onb?"sel":""}" data-lv="${k}"><span class="mode-t">${n}</span><span class="mode-d">${d}</span><span class="mode-ex">${ex}</span></button>`).join("")}</div></div>`;
     view().querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{OB.lvl=b.dataset.lv;onboarding(2)});
   }else{
-    OB.cats=OB.cats||(S.onb||Object.keys(S.srs).length?S.cats.slice():["food","shop","move","trip","social","home"]);
+    OB.cats=OB.cats||(S.onb||Object.keys(S.srs).length?S.cats.slice():["food","shop","move","trip","social","home","verb","adj","life","link"]);
     const draw=()=>{view().innerHTML=`<div class="stack onbw"><div><div class="label">設定 2 / 2</div><h2 style="margin-top:6px">你最想用英文做什麼？</h2>
       <p class="sub" style="margin:0">可以多選，之後在單字庫隨時調整。</p></div>
       <div class="filters big-chips">${Object.entries(SCENES).filter(([k])=>k!=="c").map(([k,[zh]])=>`<button data-c="${k}" aria-pressed="${OB.cats.includes(k)}">${zh}</button>`).join("")}</div>
