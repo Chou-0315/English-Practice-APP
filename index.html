@@ -941,7 +941,7 @@ nav .in{grid-template-columns:repeat(5,1fr)!important}
 
 <div class="app">
   <header>
-    <div class="hbar"><button class="lv" id="lvBtn" aria-label="等級與經驗值"><b id="lvName">Lv.1 Rookie</b><div class="lvtrack"><i id="lvBar" style="width:0"></i></div><span id="lvXp" hidden>0 / 50 XP</span></button><div class="chips"><span class="chip-s" title="連續天數"><span id="flameI"></span><b id="streakN">0</b></span><button class="chip-s" id="coinChip" aria-label="金幣與主題顏色"><span id="coinI"></span><b id="coinN">0</b></button></div></div>
+    <div class="hbar"><button class="lv" id="lvBtn" aria-label="等級與經驗值"><span class="wordmark">England</span><b id="lvName">Lv.1</b><div class="lvtrack"><i id="lvBar" style="width:0"></i></div><span id="lvXp" hidden>0 / 50 XP</span></button><div class="chips"><span class="chip-s" title="連續天數"><span id="flameI"></span><b id="streakN">0</b></span><button class="chip-s" id="coinChip" aria-label="金幣與主題顏色"><span id="coinI"></span><b id="coinN">0</b></button></div></div>
   </header>
   <main id="view"></main>
 </div>
@@ -1225,6 +1225,67 @@ nav button[aria-current="true"] svg .f{fill-opacity:.22}
 .chip-s .flame path{fill:var(--muted)!important}.chip-s .flame{opacity:.9}
 .chip-s .coin circle:first-child{fill:#E8C65A!important}.chip-s .coin circle+circle{stroke:#B9962E!important}
 .toast.ach::before{color:#C9A227!important}
+
+/* ===== v1.26: umanmade pass — wordmark bar, centred hero, section titles, tighter radii ===== */
+header{padding:14px 16px 10px!important;border-bottom:1px solid var(--sep);background:var(--bg)!important;position:sticky;top:0;z-index:5}
+.hbar{min-height:36px}
+.wordmark{font-family:var(--f-disp);font-weight:800;font-size:1.25rem;letter-spacing:-.05em;color:var(--ink);line-height:1}
+.hbar .lv{gap:8px}
+.hbar .lv b{font-size:.7rem!important;font-weight:600!important;color:var(--muted)!important;opacity:1!important;background:var(--fill);border-radius:999px;padding:3px 8px;letter-spacing:.02em}
+.hbar .lvtrack{max-width:56px;height:4px}
+.hbar .chips{gap:6px}
+.chip-s{background:var(--glass-strong)!important;border:1px solid var(--glass-brd)!important;border-radius:999px;padding:5px 10px!important;font-size:.8rem!important;min-height:30px;box-shadow:0 1px 1px rgba(0,0,0,.03)}
+.chip-s.gear{padding:5px 7px!important}
+.chip-s.mus{padding:5px 7px!important}
+/* hero: centred, silver light, grain */
+.hero{align-items:center!important;text-align:center;padding:26px 20px 18px!important;gap:14px!important;border-radius:18px!important}
+.hero .tc-main{display:flex;flex-direction:column;align-items:center}
+.hero .tc-rings{width:72px;height:72px;margin-bottom:-2px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+.hero .tc-eyebrow{font-size:.7rem!important}
+.h-big{font-size:2.9rem!important;margin-top:4px!important}
+.h-meta{font-size:.92rem!important}
+.hero .cta{max-width:260px;min-height:50px!important;font-size:1rem!important;border-radius:999px!important}
+.hero .tc-bar{width:100%;max-width:260px;height:4px!important}
+.hero::after{inset:12px;opacity:.3}
+.h-date{text-align:left}
+/* section titles: like "Featured" */
+.ghead,.sec-h{font-family:var(--f-disp)!important;font-size:1.15rem!important;font-weight:500!important;color:var(--ink)!important;letter-spacing:-.03em!important;padding:4px 4px 8px!important;text-transform:none!important}
+.ghead span:last-child,.sec-h .note{font-family:var(--f-body)!important;font-size:.8rem!important;font-weight:400!important;color:var(--muted)!important;letter-spacing:0!important}
+h2{font-size:1.9rem!important}
+.sub{font-size:.9rem;letter-spacing:0}
+/* radii: cards tighter, pills round */
+.group,.modes,.list,.h-tile,.islcard,.card,.taskcard:not(.hero),details,.scene,.medals,.skil{border-radius:14px!important}
+.card{border-radius:18px!important}
+.opt{border-radius:12px!important}
+.h-tile{padding:14px 14px}
+/* lists */
+.grow{min-height:56px}
+.grow-r .ic.chev{color:var(--muted)!important;width:12px;height:12px}
+/* scene tiles: icon-first, like work cards */
+.scene-main{align-items:center;text-align:center;padding:18px 12px 12px!important;gap:3px}
+.scene-ic{width:44px!important;height:44px!important;margin-bottom:8px!important}
+.scene-ic .ic{width:24px!important;height:24px!important}
+.scene-ic{order:1}.scene-zh{order:2;font-size:.95rem!important;font-weight:600!important;letter-spacing:-.01em}
+.scene-en{order:3;font-size:.68rem!important}.scene-n{order:4;font-size:.72rem;color:var(--muted);margin-top:6px}.scene-bar{order:5;width:100%;margin:6px 0 0!important}
+.scene-main{padding-bottom:40px!important}
+.scene-tog{right:50%!important;transform:translateX(50%);bottom:10px!important;padding:4px 12px!important}
+/* filter-style chips (album / bank "只看") */
+.chips2 button,.ac-chip,[data-ac]{border-radius:999px!important;border:1px solid var(--glass-brd)!important;background:var(--glass-strong)!important;color:var(--ink)!important;font-size:.82rem!important;padding:7px 12px!important}
+[data-ac][aria-pressed="true"],[data-ac].on{background:var(--pill-dk)!important;color:var(--pill-dk-ink)!important;border-color:transparent!important}
+/* sheets */
+.sheet{border-radius:22px 22px 0 0!important;padding-top:14px}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--fill)}
+.sheet .btn{border-radius:999px!important}
+.sheet-in{padding-bottom:12px;border-bottom:1px solid var(--sep);margin-bottom:12px}
+/* footer */
+.um-foot{margin:34px 4px 10px;padding-top:18px;border-top:1px solid var(--sep)}
+.um-mark{display:flex;align-items:center;gap:12px;color:var(--ink);font-size:1.05rem;line-height:1.2;letter-spacing:-.02em}
+.um-mark .wordmark{font-size:1.6rem}
+.um-foot .appver{margin:10px 0 0;font-size:.75rem;color:var(--muted)}
+/* nav: slimmer, hairline */
+nav{border-radius:999px!important;padding:5px 6px calc(5px + env(safe-area-inset-bottom,0px))!important}
+nav button{border-radius:999px!important;font-size:.66rem}
+nav button svg{width:22px!important;height:22px!important}
 </style>
 <script>
 const ORIG=[
@@ -4264,8 +4325,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112141643";
-const APP_NAME="1.25";
+const APP_VER="20261112142546";
+const APP_NAME="1.26";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -4590,7 +4651,7 @@ const xpFor=n=>25*n*(n-1);
 const rankOf=l=>RANKS[Math.min(l-1,RANKS.length-1)];
 function renderHeader(){
   const l=levelOf(S.xp),a=xpFor(l),b=xpFor(l+1),p=(S.xp-a)/(b-a);
-  $("#lvName").textContent=`Lv.${l} ${rankOf(l)}`;$("#lvBar").style.width=(p*100).toFixed(1)+"%";
+  $("#lvName").textContent=`Lv.${l}`;$("#lvName").title=rankOf(l);$("#lvBar").style.width=(p*100).toFixed(1)+"%";
   $("#lvXp").textContent=`${S.xp-a} / ${b-a} XP`;
   let bc=document.getElementById("boostChip");if(!bc){bc=document.createElement("span");bc.id="boostChip";bc.className="chip-s boost";const ch=document.querySelector(".chips");if(ch)ch.prepend(bc)}
   const bl=typeof boostLeft==="function"?boostLeft():0;bc.hidden=!bl;if(bl)bc.innerHTML=`${icon("bolt")}×2 <small>${Math.ceil(bl/60000)}分</small>`;$("#streakN").textContent=streak();$("#coinN").textContent=coins();
@@ -4795,8 +4856,8 @@ function home(){
   <div class="stack home">
     <div class="h-date">${new Date().toLocaleDateString("zh-TW",{month:"long",day:"numeric",weekday:"long"})}</div>
     <section class="taskcard hero ${T.all?"done":""}">
-      <div class="tc-top"><div class="tc-main"><div class="tc-eyebrow">${head}</div><div class="h-big">${big}</div><div class="h-meta">${meta}</div></div>
-        <button class="tc-rings" id="petTap" aria-label="今日圓環：題數 ${done}/${g}，新字 ${newToday()}/${TL().nw}">${rings(ringVals(),60,"anim")}</button></div>
+      <button class="tc-rings" id="petTap" aria-label="今日圓環：題數 ${done}/${g}，新字 ${newToday()}/${TL().nw}">${rings(ringVals(),72,"anim")}</button>
+      <div class="tc-main"><div class="tc-eyebrow">${head}</div><div class="h-big">${big}</div><div class="h-meta">${meta}</div></div>
       ${T.started&&!T.all?`<div class="tc-bar" role="progressbar" aria-valuenow="${T.pct}" aria-valuemin="0" aria-valuemax="100" aria-label="今日練習進度"><i style="width:${T.pct}%"></i></div>`:""}
       <button class="btn ${T.all?"":"primary"} cta" id="train">${btn}</button>
       <span id="petSay" hidden></span>
@@ -4871,7 +4932,7 @@ function settingsView(){if(typeof endTry==="function")endTry();clearSheet();TR=n
         <div id="rsMsg" class="note"></div>
       </div></details>`}
     </div></details>
-    <p class="appver">England v${APP_NAME}</p>
+    <footer class="um-foot"><div class="um-mark"><span class="wordmark">England</span><span>made for friends,<br>by a friend</span></div><p class="appver">v${APP_NAME}</p></footer>
     </section>
   </div>`;
   wireMore()}
