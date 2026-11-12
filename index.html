@@ -331,10 +331,11 @@ body.onb nav{display:none}
 .syncline:has(.sync-err) .sdot,.syncline:has(.sync-ro) .sdot{background:var(--bad)}
 /* ===== SYSTEM-APP STYLE: grouped inset lists, large titles, activity rings, translucent bars ===== */
 body{font-family:var(--f-body);background:var(--bg);color:var(--ink);font-size:17px;line-height:1.4;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+.sub,.note,.foot,.grow-l small,.mode-d,.tc-body,.tc-sub{text-wrap:pretty}
 .app{max-width:560px}
 main{padding:0 16px 110px}
 h2{font-family:var(--f-disp);font-weight:700;font-size:2.125rem;letter-spacing:.005em;line-height:1.15;margin:14px 0 10px}
-.sub{color:var(--muted);font-size:.94rem;margin:0 0 18px;line-height:1.45}
+.sub{color:var(--muted);font-size:.9rem;margin:0 0 16px;line-height:1.45;letter-spacing:.01em}
 .label,.kind{font-size:.8rem;color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none;font-family:var(--f-body)}
 .note{color:var(--muted);font-size:.8rem}
 .ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
@@ -3186,7 +3187,7 @@ function petLine(){
   if(done>=g&&all&&newToday()>=TL().nw)return ["","三個圓環都完成了。"];
   if(done>=g&&all)return ["",`再學 ${Math.max(0,TL().nw-newToday())} 個新字，就能完成所有圓環。`];
   if(all)return ["",`今日訓練已完成，再 ${Math.max(0,g-done)} 題達成目標。`];
-  if(done>=g)return ["",`今天的題數目標達成了！再完成今日訓練，就能補滿綠色圓環。`];
+  if(done>=g)return ["",`題數達標！完成今日練習就能補滿圓環。`];
   if(done>0)return ["",`再 ${g-done} 題達成今日目標。`];
   if(hr>=22||hr<5)return ["","睡前花幾分鐘複習，記得更牢。"];
   if(streak()>0)return ["",`已連續 ${streak()} 天。`];
@@ -3260,7 +3261,7 @@ function shop(){
   <h2>主題顏色</h2>
   <div class="group"><div class="grow"><span class="grow-l">金幣</span><span class="grow-r">${COIN}<b>${coins()}</b></span></div>
     <div class="grow"><span class="grow-l">等級</span><span class="grow-r">Lv.${levelOf(S.xp)} ${rankOf(levelOf(S.xp))}</span></div></div>
-  <p class="foot">每 4 XP 換 1 枚金幣。點已解鎖的顏色就會套用到按鈕、進度條和選取狀態。</p>
+  <p class="foot">點已解鎖的顏色就會套用</p>
   <div class="group swatches">${ITEMS.map(i=>{const has=own.includes(i.id),on=themeId()===i.id;
     return `<button class="sw ${on?"on":""} ${shopArmed===i.id?"armed":""}" data-it="${i.id}" aria-label="${i.name}">
       <span class="sw-c" style="--c:${i.l};--cd:${i.d}">${on?icon("check"):!has?`<span class="lock"></span>`:""}</span>
@@ -3308,7 +3309,7 @@ function medalStrip(){const got=ACH.filter(a=>S.ach[a[0]]),lock=ACH.filter(a=>!S
   <div class="medals">${list.map(([k,n])=>`<button class="md" data-md="${k}">${medal(k,64,!S.ach[k])}<span>${n}</span></button>`).join("")}</div>`}
 function awards(){ROOT=false;clearSheet();enter("home");
   view().innerHTML=`<button class="back" onclick="go('home')">${icon("chev","flip")}今日</button><h2>獎章</h2>
-  <p class="sub">已獲得 ${Object.keys(S.ach).length} / ${ACH.length} 個。點獎章看取得條件。</p>
+  <p class="sub">已獲得 ${Object.keys(S.ach).length} / ${ACH.length} · 點獎章看條件</p>
   <div class="medals all">${ACH.map(([k,n])=>`<button class="md" data-md="${k}">${medal(k,84,!S.ach[k])}<span>${n}</span></button>`).join("")}</div>`;
   wireMedals()}
 function wireMedals(){view().querySelectorAll("[data-md]").forEach(b=>b.onclick=()=>medalInfo(b.dataset.md))}
@@ -3517,12 +3518,12 @@ let albumCat="all";
 function album(){ROOT=false;clearSheet();enter("home");const all=ALL(),col=collected(),cnt={N:0,R:0,SR:0,SSR:0};col.forEach(w=>cnt[rarityOf(w)]++);
   const list=col.filter(w=>albumCat==="all"||w.cat===albumCat).sort((a,b)=>["SSR","SR","R","N"].indexOf(rarityOf(a))-["SSR","SR","R","N"].indexOf(rarityOf(b)));
   view().innerHTML=`<button class="back" onclick="go('home')">${icon("chev","flip")}今日</button><h2>單字卡冊</h2>
-  <p class="sub">單字練到「已掌握」（隔 7 天以上還記得），就會收進卡冊。程度越高的字越稀有。</p>
+  <p class="sub">掌握的字會收進卡冊，程度越高越稀有</p>
   <div class="group"><div class="grow"><span class="grow-l"><b>已收集</b></span><span class="grow-r"><b style="color:var(--ink)">${col.length}</b> / ${all.length}</span></div>
     <div class="grow rarity">${Object.entries(RAR).map(([k,[n,c]])=>`<span style="--rc:${c}"><i></i>${n} <b>${cnt[k]}</b></span>`).join("")}</div></div>
   <div class="filters" id="acat" style="margin-top:16px">${[["all","全部"],...Object.entries(CATS)].map(([k,l])=>`<button data-ac="${k}" aria-pressed="${albumCat===k}">${l}</button>`).join("")}</div>
   ${list.length?`<div class="holos">${list.map(w=>holo(w)).join("")}</div>`
-   :`<div class="empty-album">${holo({id:"x",w:"resilient",ipa:"",zh:"有韌性的",cat:"health",lvl:"B2"})}<p class="sub">${col.length?"這個場景還沒有收藏卡。":"還沒有收藏卡。持續完成今日訓練，第一張卡大約一週後就會出現。"}</p></div>`}`;
+   :`<div class="empty-album">${holo({id:"x",w:"resilient",ipa:"",zh:"有韌性的",cat:"health",lvl:"B2"})}<p class="sub">${col.length?"這個場景還沒有收藏卡。":"還沒有收藏卡，大約一週後會收到第一張"}</p></div>`}`;
   view().querySelectorAll("[data-ac]").forEach(b=>b.onclick=()=>{albumCat=b.dataset.ac;album()});
   view().querySelectorAll(".holos [data-hc]").forEach(c=>c.onclick=()=>cardModal(c.dataset.hc));
 }
@@ -3563,17 +3564,17 @@ function shop(){
     return `<button class="sw ${on&&!TRY?"on":""} ${tr?"trying":""}" data-it="${i.id}" aria-label="${i.name}">
       <span class="sw-c" style="--c:${i.l};--cd:${i.d}">${on?icon("check"):!has?`<span class="lock"></span>`:""}</span>
       <span class="sw-n">${i.name}</span><span class="sw-p">${tr?"試穿中":on?"使用中":has?"已解鎖":`${COIN}${i.price}`}</span></button>`}).join("")}</div>
-    <p class="foot">點還沒解鎖的顏色可以先試穿，整個 App 會換成那個顏色，喜歡再買。</p>`;
+    <p class="foot">未解鎖的顏色可以先試穿</p>`;
   if(shopTab==="bg")body=`<div class="bggrid">${BGS.map(b=>{const has=ownBg.includes(b.id),on=(S.bg||"aurora")===b.id,c=b.c||["#7FB2FF","#FF9EC7","#9CF0D8","#FFD38A"];
     const tr=TRY&&TRY.kind==="bg"&&TRY.id===b.id;
     return `<button class="bgi ${on&&!TRY?"on":""} ${tr?"trying":""}" data-bg="${b.id}"><span class="bgprev" style="background:radial-gradient(circle at 20% 25%,${c[0]},transparent 55%),radial-gradient(circle at 85% 30%,${c[1]},transparent 55%),radial-gradient(circle at 30% 90%,${c[2]},transparent 55%),radial-gradient(circle at 80% 85%,${c[3]},transparent 55%),#fff">${on?icon("check"):""}</span>
       <span class="sw-n">${b.name}</span><span class="sw-p">${tr?"試穿中":on?"使用中":has?"已解鎖":`${COIN}${b.price}`}</span></button>`}).join("")}</div>
-    <p class="foot">點還沒解鎖的背景可以先試穿，看看整個 App 的樣子再決定。驚喜盒也有機會開出新背景。</p>`;
+    <p class="foot">未解鎖的背景可以先試穿，驚喜盒也會開出背景</p>`;
   if(shopTab==="item"){const IT=[["freeze","連勝保護","錯過一天時自動使用，連續天數不會歸零。",60,`擁有 ${I.freeze} 個`,"flame","#FF9500"],["boost","雙倍經驗 15 分鐘","期間內獲得的 XP 加倍。",40,boostLeft()?`剩 ${Math.ceil(boostLeft()/60000)} 分鐘`:"未啟用","bolt","#AF52DE"],["box","驚喜盒","三選一，可能開出金幣、道具或背景。",80,`擁有 ${S.boxes||0} 個`,"gift","#FF2D55"]];
     body=`<div class="group">${IT.map(([k,n,d,p,st,ic,col])=>`<button class="grow" data-buy="${k}">${sq(ic,col)}<span class="grow-l"><b>${n}</b><small>${d}<br>${st}</small></span><span class="grow-r ${shopArmed==="it_"+k?"armed-t":""}">${shopArmed==="it_"+k?"確定購買":`${COIN}${p}`}</span></button>`).join("")}</div>
     ${(S.boxes||0)>0?`<button class="btn primary cta" id="openBox" style="width:100%;margin-top:14px">打開驚喜盒（${S.boxes}）</button>`:""}`}
   view().innerHTML=`<button class="back" onclick="go('home')">${icon("chev","flip")}今日</button><h2>商店</h2>
-  <div class="group"><div class="grow"><span class="grow-l"><b>金幣</b><small>每 4 XP 換 1 枚，解鎖成就另送 20 枚</small></span><span class="grow-r">${COIN}<b style="color:var(--ink);font-weight:600">${coins()}</b></span></div></div>
+  <div class="group"><div class="grow"><span class="grow-l"><b>金幣</b><small>每 4 XP 換 1 枚 · 獎章另送 20</small></span><span class="grow-r">${COIN}<b style="color:var(--ink);font-weight:600">${coins()}</b></span></div></div>
   <div style="margin:16px 0 12px">${tabs}</div>${body}`;
   view().querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{shopTab=b.dataset.st;shopArmed=null;endTry();shop()});
   const pay=(price,key,ok,btn)=>{if(coins()<price){shopArmed=null;btn.classList.remove("shake");void btn.offsetWidth;btn.classList.add("shake");toast(`還差 ${price-coins()} 金幣`);sfx("bad");return}
@@ -3653,7 +3654,7 @@ const WATER='<svg class="res-ic" viewBox="0 0 24 24" aria-hidden="true"><path d=
 const SUN='<svg class="res-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="#FFB020"/><g stroke="#FFB020" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg>';
 /* level defs: w water · s sun · c coins · t minutes · il island level · land · req [[id,lv]] · n name · d note */
 const ITEMS3={
- grass:{name:"草地",lv:[{w:15,t:1,n:"草地",d:"讓光禿禿的小島長出綠意"}]},
+ grass:{name:"草地",lv:[{w:15,t:1,n:"草地",d:"讓小島長出綠意"}]},
  tree:{name:"樹",lv:[{w:20,s:5,t:5,req:[["grass",1]],n:"種下樹苗",d:"每天澆水，好幾週才會長成大樹"}]},
  flowers:{name:"花圃",lv:[{w:30,s:10,t:10,req:[["grass",1]],n:"小花圃",d:"每天澆水會越開越多"},{w:90,s:30,t:60,il:4,n:"擴大花圃",d:"花的數量加倍"},{w:180,s:70,t:240,il:9,n:"花海",d:"整片滿開"}]},
  path:{name:"小徑",lv:[{c:40,t:10,req:[["grass",1]],n:"石板小徑",d:"鋪好小路才能蓋房子"},{c:140,t:60,il:5,n:"延伸小徑",d:"小路通到島的另一邊"}]},
@@ -3875,11 +3876,11 @@ function islPanel(){const I=ISL(),lv=islLevel(),pts=islPoints(),need=lvNeed(lv),
     ${has("flowers")?`<button class="btn care-b" id="wFlower" ${cf<=0||fs>=3?"disabled":""}>${WATER}<span>澆花<small>${fs>=3?"盛開":`${I.flower}/${FLOWER_ST[fs+1]} · 今天 ${cf}/3`}</small></span></button>`:""}
     ${ha?`<button class="btn primary care-b" id="harvest">${COIN}<span>收成<small>今天可收 ${ha} 金幣</small></span></button>`:""}
   </div>
-  <p class="foot">答對一題 +1 水滴（聽寫、造句 +2）；今日訓練每完成一項 +5 陽光，達成每日目標 +10 陽光。樹和花每天最多澆 3 次，一次只能蓋一樣東西。</p>
+  <p class="foot">答對 +1 水滴，聽寫、造句 +2 · 完成一步 +5 陽光</p>
   <div class="ghead"><span>建造與升級</span><span>${j?"施工中":"選一項開工"}</span></div>
   <div class="group">${rows}</div>
   <div class="ghead" style="margin-top:20px"><span>居民</span><span>${Object.keys(I.visitors).length} / ${VISITORS.length}</span></div>
-  <div class="group">${VISITORS.map(v=>{const got=I.visitors[v.id];return `<div class="grow"><span class="grow-l"><b>${got?v.name:"？？？"}</b><small>${got?`${v.d} · ${got} 搬來`:"小島變得更好時就會出現"}</small></span></div>`}).join("")}</div>`;
+  <div class="group">${VISITORS.map(v=>{const got=I.visitors[v.id];return `<div class="grow"><span class="grow-l"><b>${got?v.name:"？？？"}</b><small>${got?`${v.d} · ${got} 搬來`:"尚未搬來"}</small></span></div>`}).join("")}</div>`;
   view().querySelectorAll("[data-bd]").forEach(b=>b.onclick=()=>startBuild(b.dataset.bd,b));
   if($("#wTree"))$("#wTree").onclick=()=>water("tree");
   if($("#wFlower"))$("#wFlower").onclick=()=>water("flower");
@@ -4031,7 +4032,7 @@ function showGate(){const ua=navigator.userAgent,ios=/iPhone|iPod|iPad/i.test(ua
   const g=document.createElement("div");g.id="gate";g.innerHTML=`<div class="g-card">
     ${ic?`<img class="g-icon" src="${ic.href}" alt="">`:""}
     <h2>先把 England 加到主畫面</h2>
-    <p class="g-sub">從主畫面打開，畫面會是全螢幕，進度也會穩定保存在這支手機裡。</p>
+    <p class="g-sub">從主畫面打開才是全螢幕，進度也更穩定。</p>
     ${inapp?`<p class="g-warn">你現在是在 App 內建的瀏覽器裡，這裡沒辦法加到主畫面。</p>`:""}
     <ol class="g-steps">${steps}</ol>
     <button class="btn g-btn" id="gateInstall" hidden>安裝 England</button>
@@ -4067,7 +4068,7 @@ function pushNoteText(){const on=S.push&&S.push.on,hm=pushTimes().map(hmOf).join
   if(typeof IN_CLAUDE!=="undefined"&&IN_CLAUDE)return "通知只能在主畫面的 England 使用；在 Claude 裡可以改用行事曆提醒。";
   if(!pushOK())return /iPhone|iPad/.test(navigator.userAgent)&&!isInstalled()?"要從主畫面的 England 圖示打開，才能開啟通知（iOS 16.4 以上）。":"這個瀏覽器不支援通知，可以改用行事曆提醒。";
   if(on&&typeof Notification!=="undefined"&&Notification.permission==="denied")return "通知被關掉了：到 iPhone「設定 › 通知 › England」打開允許通知。";
-  return on?`每天 ${hm} 會跳通知提醒你；當天已經練習過就不會再吵你。`:"打開後，每天選定的時間 England 會主動跳通知提醒你練習。"}
+  return on?`每天 ${hm} 提醒，當天練過就不通知`:"每天定時跳通知提醒練習"}
 const b64uU8=s=>{s=s.replace(/-/g,"+").replace(/_/g,"/");const r=atob(s+"===".slice((s.length+3)%4));return Uint8Array.from(r,c=>c.charCodeAt(0))};
 const pjson=(path,body)=>fetch(PUSH_API+path,body?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:{}).then(r=>r.ok?r.json():Promise.reject(r.status));
 async function pushSub(create){const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
@@ -4103,14 +4104,14 @@ function pushAsk(force){try{
 }catch(e){}}
 /* ================= first-run quick tour (coach marks) ================= */
 const TOUR=[
-  {q:()=>document.querySelector(".taskcard"),t:"今日練習",d:"每天打開按這顆大按鈕就好：會告訴你今天要複習幾個字、學幾個新字、大概幾分鐘。中途離開，下次按「繼續」會回到同一題。"},
-  {q:()=>document.querySelector(".tc-route>summary"),t:"四步路線",d:"點開可以看單字卡、測驗、聽寫、造句四個步驟。練習長度（輕量／標準／加強）在右上角齒輪裡設定。右上的小圓環是今天的題數和新字。"},
-  {q:()=>document.querySelector('[data-tab="island"]'),t:"我的小島",d:"答對題目會得到水滴和陽光，拿來種植物、蓋房子，讓小島一級一級慢慢長大。"},
-  {q:()=>document.querySelector('[data-tab="practice"]'),t:"練習",d:"想多練就來這裡：單字卡、測驗、聽寫、造句、60 秒挑戰和泡泡遊戲。"},
-  {q:()=>document.querySelector('[data-tab="weak"]'),t:"弱點",d:"答錯的字會自動收集在這裡。之後在不同的兩天答對，它就會從弱點畢業。"},
+  {q:()=>document.querySelector(".taskcard"),t:"今日練習",d:"每天按這顆就好。中途離開，下次會接著做。"},
+  {q:()=>document.querySelector(".tc-route>summary"),t:"四步路線",d:"單字卡 → 測驗 → 聽寫 → 造句。長度在右上角齒輪設定。"},
+  {q:()=>document.querySelector('[data-tab="island"]'),t:"我的小島",d:"答對得水滴和陽光，拿來種樹、蓋房子。"},
+  {q:()=>document.querySelector('[data-tab="practice"]'),t:"練習",d:"想多練就來這裡"},
+  {q:()=>document.querySelector('[data-tab="weak"]'),t:"弱點",d:"答錯的字收在這裡，不同兩天答對就畢業。"},
   {q:()=>document.querySelector('[data-tab="bank"]'),t:"單字庫",d:"查看所有單字、調整想練的場景，也可以加入自己的單字。"},
-  {q:()=>document.getElementById("musicChip"),t:"背景音樂",d:"點這裡開關音樂。手機切到靜音也會照常播放；不想出聲時，點這裡關掉就好。"},
-  {q:()=>document.getElementById("gearBtn"),t:"設定與紀錄",d:"學習紀錄、設定、每日提醒和備份都在這裡。進度每天會自動備份；換手機前，記得在這裡存一份備份檔。"}];
+  {q:()=>document.getElementById("musicChip"),t:"背景音樂",d:"點這裡開關音樂"},
+  {q:()=>document.getElementById("gearBtn"),t:"設定與紀錄",d:"設定、提醒、備份都在這裡"}];
 let TS=null;
 function startTour(){if(TS||document.getElementById("gate"))return;if(cur!=="home")go("home");
   const ov=document.createElement("div");ov.id="tour";ov.innerHTML=`<div class="tr-spot"></div><div class="tr-card" role="dialog" aria-live="polite"><div class="tr-step"></div><h3></h3><p></p><div class="tr-row"><button class="link tr-skip">略過</button><div class="tr-dots"></div><button class="btn primary tr-next">下一步</button></div></div>`;
@@ -4138,8 +4139,8 @@ function endTour(done){if(!TS)return;const ov=TS.ov;removeEventListener("resize"
   try{(document.querySelector("main")||document.scrollingElement).scrollTo({top:0,behavior:"smooth"})}catch(e){}if(done)toast("準備好了，開始今天的練習吧！");setTimeout(()=>pushAsk(true),1200)}
 
 /* ================= v14: offline + update prompt, voices, file backup, stats ================= */
-const APP_VER="20261112134901";
-const APP_NAME="1.21";
+const APP_VER="20261112135650";
+const APP_NAME="1.22";
 const verLabel=x=>x===APP_VER?"v"+APP_NAME:(x&&/^\d/.test(x)&&x.length<8?"v"+x:"新版");
 function verBoot(){let last=null;try{last=localStorage.getItem("eng-ver");localStorage.setItem("eng-ver",APP_VER)}catch(e){}
   if(last&&last!==APP_VER)setTimeout(()=>toast(`已更新到 v${APP_NAME}`),1600)}
@@ -4166,7 +4167,7 @@ const voiceLabel=v=>{const acc={US:"美式",GB:"英式",AU:"澳洲",CA:"加拿�
   return `${v.name.replace(/\s*\((Enhanced|Premium|English.*?)\)/gi,m=>/Premium/i.test(m)?" · 高品質":/Enhanced/i.test(m)?" · 加強版":"")}${acc?" · "+acc:""}`};
 function voiceRow(){if(!canSpeak)return"";const L=engVoices();if(!L.length)return"";const curV=voice&&voice.voiceURI;
   return `<div class="seg"><span class="note">發音語音</span><select id="voiceSel" class="vsel" aria-label="發音語音">${L.map(v=>`<option value="${esc(v.voiceURI)}" ${v.voiceURI===curV?"selected":""}>${esc(voiceLabel(v))}</option>`).join("")}</select></div>
-  <p class="note" style="margin:0">這裡列的是 iPhone 開放給網頁使用的語音。另外在「設定」下載的語音（例如 Ava）iPhone 不開放給網頁 App，所以不會出現在這裡。</p>`}
+  <p class="note" style="margin:0">只列出 iPhone 開放給網頁的語音</p>`}
 function wireVoice(){const s=document.getElementById("voiceSel");if(!s)return;s.onchange=()=>{S.voice=s.value;save();pickVoice();say("Hello! This is how I sound.")}}
 
 /* ---- backup to / restore from a file ---- */
@@ -4316,7 +4317,7 @@ let SAVE_FAIL=0;
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(S));if(SAVE_FAIL){SAVE_FAIL=0;const b=document.getElementById("saveWarn");if(b)b.remove()}}
   catch(e){SAVE_FAIL++;if(SAVE_FAIL===1)setTimeout(saveWarn,0)}}
 function saveWarn(){if(document.getElementById("saveWarn"))return;const d=document.createElement("div");d.id="saveWarn";d.setAttribute("role","alert");
-  d.innerHTML=`<b>進度沒有存進手機</b><span>手機的儲存空間不足，或目前是無痕模式。請先到「設定與紀錄 › 自動備份與還原」儲存備份檔，以免進度遺失。</span><div class="sw-row"><button class="btn primary" id="swGo">去存備份檔</button><button class="link" id="swX">知道了</button></div>`;
+  d.innerHTML=`<b>進度沒有存進手機</b><span>儲存空間不足或在無痕模式，請先到設定存一份備份檔。</span><div class="sw-row"><button class="btn primary" id="swGo">去存備份檔</button><button class="link" id="swX">知道了</button></div>`;
   document.body.appendChild(d);d.querySelector("#swX").onclick=()=>d.remove();
   d.querySelector("#swGo").onclick=()=>{d.remove();if(typeof settingsView==="function"){settingsView();setTimeout(()=>{const s=[...document.querySelectorAll("summary")].find(x=>x.textContent.includes("自動備份"));if(s){s.parentElement.open=true;const m=document.querySelector(".bk-move");if(m)m.open=true;s.scrollIntoView({block:"start"})}},50)}}}
 function save(){S._t=Date.now();saveLocal();cloudQueue();if(typeof bkQueue==="function")bkQueue();if(typeof pushDoneQ==="function")pushDoneQ()}
@@ -4620,7 +4621,7 @@ function finishPage(first){const t=tdToday(),m=t.sum||{},c=m.cards,q=m.quiz,l=m.
       ${b?line("build","#FF9500",`造句 ${b.n} 句`,`一次排對 ${b.ok} · 用了提示 ${b.hint} · 排錯過 ${b.bad}`):""}
     </div>
     ${miss.length?`<div class="fin-miss"><div class="note">需要再加強的字</div><div class="chips2">${miss.map(w=>`<span class="chip2">${esc(w.w)} <small>${esc(w.zh)}</small></span>`).join("")}</div></div>`:""}
-    <div class="fin-reward"><div class="note">獎勵</div><div class="fin-rw">${first?"今日完成獎勵：+30 XP、驚喜盒 ×1。每完成一步也拿到 5 個陽光，可以去小島蓋東西。":"這是今天的加練，完成獎勵每天只發一次。"}</div>
+    <div class="fin-reward"><div class="note">獎勵</div><div class="fin-rw">${first?"+30 XP · 驚喜盒 ×1 · 每步 +5 陽光":"這是今天的加練，完成獎勵每天只發一次。"}</div>
       ${(S.boxes||0)>0?`<button class="btn primary cta" id="openBox" style="width:100%">打開驚喜盒${S.boxes>1?`（${S.boxes}）`:""}</button>`:""}
       <div class="row"><button class="btn" onclick="go('island')">去小島</button><button class="btn" onclick="go('home')">回首頁</button></div></div></div>`;
   if(first)gainXP(30);burst(.3);sfx("level");
@@ -4697,11 +4698,11 @@ function home(){
 /* contextual nudges: due reviews and weak words first, then rewards and the island */
 function nudgesHTML(o){const L=[],st=streak(),todayDone=!!S.days[today()];
   if(o.due>=5&&o.all)L.push(["cards","cards","#007AFF",`還有 ${o.due} 個單字到期`,"多複習一輪，記得更牢"]);
-  if(o.nw>=3)L.push(["weak","weak","#FF2D55",`有 ${o.nw} 個弱點字待複習`,"在不同的兩天答對，其中一次是測驗、聽寫或造句，就能畢業"]);
-  if((S.boxes||0)>0)L.push(["box","gift","#FF9500",`你有 ${S.boxes} 個驚喜盒`,"點一下，三張卡片選一張"]);
+  if(o.nw>=3)L.push(["weak","weak","#FF2D55",`有 ${o.nw} 個弱點字待複習`,"不同兩天主動答對就畢業"]);
+  if((S.boxes||0)>0)L.push(["box","gift","#FF9500",`你有 ${S.boxes} 個驚喜盒`,"三張選一張"]);
   const I=ISL(),j=I.job;
   if(j&&Date.now()>=j.end)L.push(["island","home","#34C759","小島的工程完成了","去看看新蓋好的東西"]);
-  else if(!j&&(I.water>=40||I.sun>=40))L.push(["island","home","#34C759",`有 ${I.water} 滴水、${I.sun} 個陽光`,"去小島澆水或蓋新東西"]);
+  else if(!j&&(I.water>=40||I.sun>=40))L.push(["island","home","#34C759",`有 ${I.water} 滴水、${I.sun} 個陽光`,"去澆水或蓋新東西"]);
   const MS=[[3,"三天打卡"],[7,"一週不間斷"],[30,"習慣養成"]].find(([n])=>!todayDone&&st+1===n);
   if(MS)L.push(["train","flame","#FF3B30",`今天練完就能拿到「${MS[1]}」獎章`,`已經連續 ${st} 天，再一天！`]);
   if(!L.length)return "";
@@ -4721,15 +4722,15 @@ function settingsView(){if(typeof endTry==="function")endTry();clearSheet();TR=n
       <div class="seg"><span class="note">每日目標</span><div class="rate">${[20,40,60,100].map(n=>`<button data-goal="${n}" aria-pressed="${g===n}">${n}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">音樂風格</span><div class="rate">${Object.entries(MSTYLES).map(([k,n])=>`<button data-mst="${k}" aria-pressed="${MSET().style===k}">${n.replace(" 鋼琴","")}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">音樂音量</span><div class="rate">${[[1,"小"],[2,"中"],[3,"大"]].map(([v,n])=>`<button data-mvol="${v}" aria-pressed="${MSET().vol===v}">${n}</button>`).join("")}</div></div>
-      <p class="note" style="margin:0">「自動」會依畫面切換：小島放自然音，練習時放專注音樂，其他時候放 Lo-fi。唸單字時音樂會自動變小聲。</p>
+      <p class="note" style="margin:0">自動：小島放自然音，練習放專注音樂</p>
       <div class="seg"><span class="note">靜音模式也播放</span><div class="rate"><button data-loud="1" aria-pressed="${S.loud!==false}">開</button><button data-loud="0" aria-pressed="${S.loud===false}">關</button></div></div>
-      <p class="note" style="margin:0">預設開啟：手機切到靜音也會有音樂和音效（iOS 17 以上效果最好）。單字發音是否跟著出聲依手機而定。上課、開會時可以關掉。</p>
+      <p class="note" style="margin:0">靜音時照常播放，開會時可以關掉</p>
       <div class="seg"><span class="note">音效</span><div class="rate"><button data-snd="1" aria-pressed="${S.sound}">開</button><button data-snd="0" aria-pressed="${!S.sound}">關</button></div></div>
       <div class="seg"><span class="note">聽不到聲音？</span><button class="link" id="sndTest">測試聲音</button></div>
       <div id="sndOut" class="note"></div>
       <div class="seg"><span class="note">發音速度${canSpeak?"":"（此裝置不支援）"}</span><div class="rate">${[[0.7,"慢"],[0.9,"標準"],[1.1,"快"]].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.rate===r}">${l}</button>`).join("")}</div></div>
       <div class="seg"><span class="note">線上發音</span><div class="rate"><button data-rv="1" aria-pressed="${S.realVoice!==false}">開</button><button data-rv="0" aria-pressed="${S.realVoice===false}">關</button></div></div>
-      <p class="note" style="margin:0">有網路時，單字和例句會用同一個線上語音播放，靜音模式也聽得到；沒網路時會自動改用手機語音。</p>
+      <p class="note" style="margin:0">離線時改用手機語音</p>
       <div class="seg"><span class="note">每日提醒</span><div class="rate"><button data-push="1" aria-pressed="${!!(S.push&&S.push.on)}">開</button><button data-push="0" aria-pressed="${!(S.push&&S.push.on)}">關</button></div></div>
       <div class="seg"><span class="note">提醒時間</span><span class="rem"><select id="remT1" class="vsel" aria-label="第一次提醒"><option value="0600">06:00</option><option value="0630">06:30</option><option value="0700">07:00</option><option value="0730">07:30</option><option value="0800">08:00</option><option value="0830">08:30</option><option value="0900">09:00</option><option value="0930">09:30</option><option value="1000">10:00</option><option value="1030">10:30</option><option value="1100">11:00</option><option value="1130">11:30</option><option value="1200">12:00</option><option value="1230">12:30</option><option value="1300">13:00</option><option value="1330">13:30</option><option value="1400">14:00</option><option value="1430">14:30</option><option value="1500">15:00</option><option value="1530">15:30</option><option value="1600">16:00</option><option value="1630">16:30</option><option value="1700">17:00</option><option value="1730">17:30</option><option value="1800">18:00</option><option value="1830">18:30</option><option value="1900">19:00</option><option value="1930">19:30</option><option value="2000">20:00</option><option value="2030">20:30</option><option value="2100">21:00</option><option value="2130">21:30</option><option value="2200">22:00</option><option value="2230">22:30</option><option value="2300">23:00</option><option value="2330">23:30</option></select><select id="remT2" class="vsel" aria-label="第二次提醒"><option value="">只提醒一次</option><option value="0600">06:00</option><option value="0630">06:30</option><option value="0700">07:00</option><option value="0730">07:30</option><option value="0800">08:00</option><option value="0830">08:30</option><option value="0900">09:00</option><option value="0930">09:30</option><option value="1000">10:00</option><option value="1030">10:30</option><option value="1100">11:00</option><option value="1130">11:30</option><option value="1200">12:00</option><option value="1230">12:30</option><option value="1300">13:00</option><option value="1330">13:30</option><option value="1400">14:00</option><option value="1430">14:30</option><option value="1500">15:00</option><option value="1530">15:30</option><option value="1600">16:00</option><option value="1630">16:30</option><option value="1700">17:00</option><option value="1730">17:30</option><option value="1800">18:00</option><option value="1830">18:30</option><option value="1900">19:00</option><option value="1930">19:30</option><option value="2000">20:00</option><option value="2030">20:30</option><option value="2100">21:00</option><option value="2130">21:30</option><option value="2200">22:00</option><option value="2230">22:30</option><option value="2300">23:00</option><option value="2330">23:30</option></select></span></div>
       <p class="note" id="pushNote" style="margin:0">${pushNoteText()}</p>
@@ -4740,9 +4741,9 @@ function settingsView(){if(typeof endTry==="function")endTry();clearSheet();TR=n
       <div class="note" id="bkStat"></div>
       <div class="bk-h">還原進度</div>
       <div class="bk-list" id="bkList"></div>
-      <p class="note" style="margin:0">每天自動存一份，最多保留 7 天。若進度不見，打開 App 時也會自動從備份找回來。</p>
+      <p class="note" style="margin:0">每天自動備份，保留 7 天</p>
       ${IN_CLAUDE?"":`      <details class="bk-move"><summary>換手機用的備份檔</summary><div class="body">
-        <div class="note">自動備份存在這支手機裡。換手機或刪掉 App 前，先把備份檔存到「檔案」或 iCloud；到新手機打開 England，再選這個檔案還原。</div>
+        <div class="note">換手機前，先把備份檔存到「檔案」或 iCloud，新手機再選檔案還原。</div>
         <button class="btn" id="bkSave">儲存備份檔</button>
         <button class="btn" id="bkPick">從備份檔還原</button>
         <input type="file" id="bkFile" accept=".json,application/json,text/plain" hidden>
@@ -4782,14 +4783,14 @@ function wireMore(){
 function practice(){
   enter("practice");ROOT=true;
   const act=ACTIVE(),due=dueReviews(act).length,nn=act.filter(w=>srs(w.id).box===0).length,wl=weakList().length;
-  view().innerHTML=`<h2>練習</h2><p class="sub">想多練哪一項就點哪一項。範圍：${S.cats.length} 個場景 · ${lvName()}程度。</p>
+  view().innerHTML=`<h2>練習</h2><p class="sub">${S.cats.length} 個場景 · ${lvName()}</p>
   <div class="modes">
     <button class="mode" data-m="cards" style="--sc:#3D9BFF"><span class="mode-ic">${icon("cards")}</span><span class="mode-t">單字卡</span><span class="mode-d">${due} 個到期${nn?` · 加 ${Math.min(nn,5)} 個新字`:""}</span></button>
-    <button class="mode" data-m="quiz" style="--sc:#8B5CF6"><span class="mode-ic">${icon("quiz")}</span><span class="mode-t">測驗</span><span class="mode-d">10 題，六種題型，優先考弱點</span></button>
+    <button class="mode" data-m="quiz" style="--sc:#8B5CF6"><span class="mode-ic">${icon("quiz")}</span><span class="mode-t">測驗</span><span class="mode-d">10 題 · 先考弱點</span></button>
     <button class="mode" data-m="rush" style="--sc:#FF7A1A"><span class="mode-ic">${icon("rush")}</span><span class="mode-t">60 秒挑戰</span><span class="mode-d">答錯扣 3 秒</span><span class="mode-best">最佳 ${S.best} 題</span></button>
-    <button class="mode" data-m="bubble" style="--sc:#30B0C7"><span class="mode-ic">${icon("target")}</span><span class="mode-t">泡泡挑戰</span><span class="mode-d">點破正確單字的泡泡，三條命</span><span class="mode-best">最佳 ${S.bbBest||0}</span></button>
-    <button class="mode" data-m="listen" style="--sc:#12B3A6"><span class="mode-ic">${icon("listen")}</span><span class="mode-t">聽寫</span><span class="mode-d">聽句子，把它打出來</span></button>
-    <button class="mode" data-m="build" style="--sc:#FFB020"><span class="mode-ic">${icon("build")}</span><span class="mode-t">造句</span><span class="mode-d">把字塊排成正確句子</span></button>
+    <button class="mode" data-m="bubble" style="--sc:#30B0C7"><span class="mode-ic">${icon("target")}</span><span class="mode-t">泡泡挑戰</span><span class="mode-d">點破正確的泡泡 · 三條命</span><span class="mode-best">最佳 ${S.bbBest||0}</span></button>
+    <button class="mode" data-m="listen" style="--sc:#12B3A6"><span class="mode-ic">${icon("listen")}</span><span class="mode-t">聽寫</span><span class="mode-d">聽句子打出來</span></button>
+    <button class="mode" data-m="build" style="--sc:#FFB020"><span class="mode-ic">${icon("build")}</span><span class="mode-t">造句</span><span class="mode-d">排出正確句子</span></button>
   </div>`;
   view().querySelector(".modes").onclick=e=>{const b=e.target.closest("[data-m]");if(!b||b.disabled)return;
     ({cards:freeCards,quiz:()=>runQuiz({total:10}),rush:startRush,bubble:startBubbles,listen:()=>runListen({}),build:()=>runBuild({}),weak:weakDrill})[b.dataset.m]()};
@@ -4809,7 +4810,7 @@ function drawCard(){
     <div class="stack"><button class="btn primary" onclick="runQuiz({total:10})">做一輪測驗</button>
     <button class="btn" onclick="runCards(shuffle(ACTIVE()).slice(0,10),'自由複習')">不管排程，再看 10 個字</button></div>`;return}
   const w=c.deck[c.i],b=srs(w.id).box;if(typeof waPrefetch==="function")waPrefetch(c.deck.slice(c.i,c.i+6).map(x=>x.w));
-  view().innerHTML=`${backBtn()}<h2>${c.label}</h2><p class="sub">先自己想意思，再翻面。第 ${c.i+1} / ${c.deck.length} 張</p>
+  view().innerHTML=`${backBtn()}<h2>${c.label}</h2><p class="sub">第 ${c.i+1} / ${c.deck.length} 張 · 先想再翻面</p>
   <div class="progress"><i style="width:${c.i/c.deck.length*100}%"></i></div>
   <div class="card ${c.flipped?"flipin":""}" id="card" role="button" tabindex="0" aria-label="翻面" style="--sc:${SC[w.cat]}">
     <div class="card-band">${icon(w.cat)}<span>${CATS[w.cat]}</span><span class="stage s${stageOf(b)}">${STAGES[stageOf(b)]}</span></div>
@@ -4818,7 +4819,7 @@ function drawCard(){
     <div class="row" style="align-items:center;gap:8px"><span class="ipa">${esc(w.ipa)}</span><span class="pos">${esc(w.pos)}</span></div>
     ${c.flipped?`<div class="meaning">${esc(w.zh)}</div>
       ${w.ex?`<div class="ex"><div class="row" style="align-items:center;gap:8px;flex-wrap:nowrap"><div style="min-width:0">${esc(w.ex)}</div>${spkBtn(w.ex,"播放例句")}</div><div class="zh">${esc(w.exZh)}</div></div>`:""}`
-      :`<div class="hint">點一下看中文意思${w.ex?"和例句":""}</div>`}
+      :`<div class="hint">點卡片看意思</div>`}
   </div>
   <div class="row" style="margin-top:12px">${c.flipped?`
     <button class="btn bad" data-g="0">忘了</button><button class="btn meh" data-g="1">模糊</button><button class="btn good" data-g="2">記得</button>`
@@ -4939,7 +4940,7 @@ function endRush(){earn(Math.floor((rush?rush.score:0)/2),0);
   view().innerHTML=`${backBtn()}<h2>時間到</h2><div class="stack">
     <div class="result-row"><div><div class="big">${score}<small>題答對</small></div><p class="sub" style="margin:8px 0 0">答錯 ${wrong} 題${rec?" · 新紀錄！":` · 最佳紀錄 ${S.best} 題`}</p></div></div>
     <div class="row"><button class="btn primary" onclick="startRush()">再挑戰一次</button><button class="btn" onclick="go('practice')">回練習</button></div>
-    ${wrong?`<p class="note">答錯的字已經放進錯題本。60 秒挑戰練的是反應，不會讓單字升級。</p>`:`<p class="note">60 秒挑戰練的是反應，不會讓單字升級。</p>`}</div>`;
+    ${wrong?`<p class="note">答錯的字已放進錯題本</p>`:`<p class="note">60 秒挑戰練的是反應，不會讓單字升級。</p>`}</div>`;
   gainXP(score*3,$(".big"));if(rec&&score>0){confetti();sfx("level")}
 }
 
@@ -4970,7 +4971,7 @@ function nextListen(){
   let lt=ss?byId(ss.q[LS.i]):null;
   if(!lt){lt=fromQueue(LS,w=>!!w.ex)||pickUnused(LS,w=>!!w.ex);if(ss){ss.q[LS.i]=lt.id;save()}}
   LS.used.add(lt.id);LS.cur=lt;const prev=LS.res[LS.i];
-  view().innerHTML=`${backBtn()}<h2>聽寫</h2><p class="sub">${LS.n<Infinity?`第 ${LS.i+1} / ${LS.n} 句 · `:""}聽一句英文，把聽到的打出來。第一次檢查的結果會記錄下來。</p>
+  view().innerHTML=`${backBtn()}<h2>聽寫</h2><p class="sub">${LS.n<Infinity?`第 ${LS.i+1} / ${LS.n} 句 · `:""}聽完打出整句</p>
   ${LS.n<Infinity?`<div class="progress"><i style="width:${LS.i/LS.n*100}%"></i></div>`:""}
   <div class="stack">
     <div class="row"><button class="btn primary" id="p1">播放</button><button class="btn" id="p2">慢速播放</button></div>
@@ -4989,11 +4990,11 @@ function nextListen(){
   if(LS.ev)document.removeEventListener("say-state",LS.ev);clearTimeout(LS.slow);
   LS.ev=e=>{if(!document.body.contains(p1)){document.removeEventListener("say-state",LS.ev);return}const s2=e.detail.st;
     p1.classList.remove("pulse");clearTimeout(LS.slow);
-    if(s2==="loading"){p1.textContent="載入中…";LS.slow=setTimeout(()=>{if(document.body.contains(p1)&&p1.textContent==="載入中…"){st.textContent="發音載入比較慢。可以按「重新播放」，或先跳過這句。";p1.textContent="重新播放";showSkip()}},7000)}
+    if(s2==="loading"){p1.textContent="載入中…";LS.slow=setTimeout(()=>{if(document.body.contains(p1)&&p1.textContent==="載入中…"){st.textContent="載入較慢，可以重播或跳過";p1.textContent="重新播放";showSkip()}},7000)}
     else if(s2==="playing"){p1.textContent="播放中"}
     else if(s2==="ended"){p1.textContent="再聽一次"}
     else if(s2==="blocked"){p1.textContent="點我播放";p1.classList.add("pulse")}
-    else if(s2==="fallback"){p1.textContent="重新播放";st.textContent="線上發音暫時連不上，這句改用手機語音（手機靜音時會聽不到）。聽不到可以重新播放或跳過。";showSkip()}};
+    else if(s2==="fallback"){p1.textContent="重新播放";st.textContent="線上發音連不上，改用手機語音（靜音時聽不到）。";showSkip()}};
   document.addEventListener("say-state",LS.ev);
   $("#skip").onclick=()=>{if(LS.res[LS.i])return;LS.res[LS.i]={skip:1};if(ss){ss.i=LS.i+1;ss.pend=null;save()}toast("已跳過，這句不計分");LS.i++;nextListen()};
   $("#hint").onclick=()=>{$("#hintBox").hidden=false};
@@ -5045,8 +5046,8 @@ function nextBuild(){
 }
 function buildFlag(key){const ss=BD.sess;if(!ss)return;ss.cur=ss.cur||{};const c=ss.cur[BD.i]=ss.cur[BD.i]||{};c[key]=(c[key]||0)+1;save()}
 function drawBuild(){const {w,bank,picked,done}=BD;
-  const r=BD.res[BD.i],msg=!done?(r&&r.res===0?"這句之前排錯過，已記進弱點；排對後就能繼續（不會再扣分）。":""):BD.resumed?"這句離開前已完成，不重複計分。":r&&r.res===2?pick(PRAISE)+" 一次就排對":r&&r.res===1?"排對了。這句用了提示，記為「模糊」。":"排對了。這句一開始有排錯，已記進弱點。";
-  view().innerHTML=`${backBtn()}<h2>造句</h2><p class="sub">${BD.n<Infinity?`第 ${BD.i+1} / ${BD.n} 句 · `:""}把字塊排成正確的英文句子。點上方的字可以放回去。</p>
+  const r=BD.res[BD.i],msg=!done?(r&&r.res===0?"之前排錯過，排對就能繼續":""):BD.resumed?"這句離開前已完成，不重複計分。":r&&r.res===2?pick(PRAISE)+" 一次就排對":r&&r.res===1?"排對了。這句用了提示，記為「模糊」。":"排對了。這句一開始有排錯，已記進弱點。";
+  view().innerHTML=`${backBtn()}<h2>造句</h2><p class="sub">${BD.n<Infinity?`第 ${BD.i+1} / ${BD.n} 句 · `:""}點字塊排出句子</p>
   ${BD.n<Infinity?`<div class="progress"><i style="width:${BD.i/BD.n*100}%"></i></div>`:""}
   <div class="stack">
     <div><div class="note">中文意思</div><div style="font-size:1.1rem">${esc(w.exZh)}</div></div>
@@ -5089,25 +5090,25 @@ function weak(){
   const worstScene=Object.entries(byScene).sort((a,b)=>b[1]-a[1])[0];
   const TIP={rec:"多做單字卡，先把常見字認熟",recall:"多做中翻英和填空，練習自己想出單字",listen:"每天多聽寫幾句，聽不清楚就先用慢速",build:"多練造句，特別注意詞序"};
   let advice;
-  if(total<10)advice="先完成幾次今日訓練。累積 10 題以上的作答紀錄後，這裡會告訴你該加強什麼。";
+  if(total<10)advice="作答滿 10 題後，這裡會告訴你該加強什麼。";
   else{const parts=[];if(rated.length&&rated[0][1]<0.85)parts.push(`你的${SKILLS[rated[0][0]]}最弱（${Math.round(rated[0][1]*100)}%），建議${TIP[rated[0][0]]}`);
     if(worstScene)parts.push(`錯題最多的是「${SCENES[worstScene[0]][0]}」，可以先做錯題特訓`);
-    advice=parts.length?parts.join("。")+"。":"各項表現都很穩定。可以到設定把程度調高，挑戰更難的字。"}
+    advice=parts.length?parts.join("。")+"。":"表現很穩定，可以到設定調高程度。"}
   const pct=n=>act.length?n/act.length*100:0;
-  view().innerHTML=`<h2>弱點分析</h2><p class="sub">依照你的作答紀錄，看出哪些字真的會、哪些只是眼熟。</p>
+  view().innerHTML=`<h2>弱點分析</h2><p class="sub">哪些字真的會，哪些只是眼熟</p>
   <div class="stack">
     <section class="advice"><div><div class="label">下一步建議</div><div>${advice}</div></div></section>
     <section>
       <div class="sec-h"><span>單字掌握</span><span class="note">本週新掌握 +${wk7}</span></div>
       <div class="stagebar">${st.map((n,i)=>n?`<i class="s${i}" style="width:${pct(n)}%"></i>`:"").join("")}</div>
       <div class="legend">${STAGES.map((s,i)=>`<span><i class="s${i}"></i>${s} <b>${st[i]}</b></span>`).join("")}</div>
-      <p class="note">「已掌握」代表隔了 7 天以上還記得。四選一猜對最多只會把新字變成「學習中」。</p>
+      <p class="note">已掌握＝隔 7 天以上仍記得</p>
     </section>
     <section>
       <div class="sec-h"><span>能力表現</span><span class="note">最近 14 天</span></div>
       <div class="skills">${Object.entries(SKILLS).map(([k,n])=>{const [o,t]=acc[k],p=t?Math.round(o/t*100):0;
         return `<div class="skill"><span class="sk-n">${n}</span><span class="sk-bar"><i class="${t>=5&&p<70?"low":""}" style="width:${t>=5?p:0}%"></i></span><span class="sk-v">${t>=5?p+"%":t?"資料不足":"—"}</span></div>`}).join("")}</div>
-      <p class="note">認字＝看英文選中文　回想＝中翻英、填空、單字卡　聽力＝聽寫　造句＝排句子</p>
+      <p class="note">認字 英→中 · 回想 中→英、填空 · 聽力 聽寫 · 造句 排句子</p>
     </section>
     <section>
       <div class="sec-h"><span>錯題本 · ${wl.length}</span>${wl.length?`<button class="link" onclick="weakDrill()">錯題特訓</button>`:""}</div>
@@ -5115,8 +5116,8 @@ function weak(){
         return `<div class="it"><div style="min-width:0"><b>${esc(w.w)}</b> <span class="m">${esc(w.zh)}</span>
           <div class="wtags">${Object.entries(k.s).map(([s,n])=>`<span class="wtag ${s===k.last?"last":""}">${SKILLS[s]||s} ×${n}</span>`).join("")}</div></div>
           <span class="note" title="要在不同的兩天答對才會移出">${k.ok}/2 天</span></div>`}).join("")}</div>
-        <p class="note">要在答錯之後的不同兩天都答對，才會移出錯題本。深色標籤是最近一次錯的地方。</p>`
-      :`<p class="note">目前沒有錯題。答錯、按「忘了」、聽寫低於 60% 或造句排錯的字會出現在這裡。</p>`}
+        <p class="note">不同兩天都答對就會畢業</p>`
+      :`<p class="note">目前沒有錯題</p>`}
     </section>
   </div>`;
 }
@@ -5130,7 +5131,7 @@ function bank(){
       <button class="scene-main" data-open="${k}" aria-label="查看${zh}的單字"><span class="scene-ic">${icon(k)}</span><span class="scene-en">${en}</span><span class="scene-zh">${zh}</span>
       <span class="scene-n">${ws.length} 字${ws.length?` · 掌握 ${m}`:""}</span><span class="scene-bar"><i style="width:${ws.length?m/ws.length*100:0}%"></i></span></button>
       <button class="scene-tog" data-cat="${k}" aria-pressed="${S.cats.includes(k)}" aria-label="${zh}加入練習">${S.cats.includes(k)?"練習中":"未選"}</button></div>`}).join("");
-  view().innerHTML=`<h2>單字庫</h2><p class="sub">點場景看單字，右下角切換要不要練。</p>
+  view().innerHTML=`<h2>單字庫</h2><p class="sub">點場景看單字</p>
   <div class="stack">
     <div class="seg"><span class="label" id="scLabel">練習範圍 · ${S.cats.length} 個場景</span><button class="link" id="allOn">全選</button></div>
     <div class="scenes" id="cats">${sceneTiles}</div>
